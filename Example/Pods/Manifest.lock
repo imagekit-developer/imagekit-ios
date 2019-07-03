@@ -1,0 +1,33 @@
+PODS:
+  - Alamofire (4.8.2)
+  - AlamofireObjectMapper (5.0.0):
+    - Alamofire (~> 4.1)
+    - ObjectMapper (~> 3.0)
+  - imagekit (0.1.0):
+    - Alamofire (~> 4.0)
+    - AlamofireObjectMapper (= 5.0)
+    - ObjectMapper (= 3.3)
+  - ObjectMapper (3.3.0)
+
+DEPENDENCIES:
+  - imagekit (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - AlamofireObjectMapper
+    - ObjectMapper
+
+EXTERNAL SOURCES:
+  imagekit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
+  imagekit: 120aa4b43808c457f736f75da585ffb047abff13
+  ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
+
+PODFILE CHECKSUM: 45795cd24d30d2a806ddb24e645cd0b4820b1353
+
+COCOAPODS: 1.7.3

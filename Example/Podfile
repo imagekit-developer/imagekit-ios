@@ -1,6 +1,7 @@
 use_frameworks!
 
 target 'imagekit_Example' do
+  
   pod 'imagekit', :path => '../'
 
   target 'imagekit_Tests' do

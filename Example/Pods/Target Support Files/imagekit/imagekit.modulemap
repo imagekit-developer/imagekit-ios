@@ -1,0 +1,6 @@
+framework module imagekit {
+  umbrella header "imagekit-umbrella.h"
+
+  export *
+  module * { export * }
+}

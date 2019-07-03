@@ -7,12 +7,18 @@
 //
 
 import UIKit
+import imagekit
+import Alamofire
+import ObjectMapper
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        let i = ImageKit(clientPublicKey: "some", imageKitId: "some")
+        i.uploadImage(<#T##image: Data##Data#>, fileName: <#T##String#>, signature: <#T##String#>, timestamp: <#T##Date#>, tags: <#T##Array<String>?#>, folder: <#T##String?#>)
+        
     }
 
     override func didReceiveMemoryWarning() {
