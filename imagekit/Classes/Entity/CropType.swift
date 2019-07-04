@@ -13,7 +13,7 @@ enum CropType: String {
     case AT_LEAST = "at_least"
     case AT_MAX = "at_max"
 
-    init(string: String) {
+    static func getEnum(string: String) -> CropType {
         switch string {
         case MAINTAIN_RATIO.rawValue: return CropType.MAINTAIN_RATIO
         case FORCE.rawValue: return CropType.FORCE

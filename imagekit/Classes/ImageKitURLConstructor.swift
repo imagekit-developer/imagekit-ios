@@ -61,7 +61,7 @@ public class ImagekitUrlConstructor {
         if (!transformationMap.contains(where: TranformationMapping.width) &&
             !transformationMap.contains(where: TranformationMapping.height)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         }
         
         var s = String(format: "%s-%d-%d", TranformationMapping.aspectRatio, width, height)
@@ -80,7 +80,7 @@ public class ImagekitUrlConstructor {
      */
     func crop(cropType: CropType) -> ImagekitUrlConstructor {
         transformationMap[TranformationMapping.crop] = cropType
-        transformationList.append(String(format: "%s-%s", TranformationMapping.crop, cropType.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.crop, cropType.rawValue))
         return self
     }
     
@@ -93,7 +93,7 @@ public class ImagekitUrlConstructor {
      */
     func cropMode(cropMode: CropMode) -> ImagekitUrlConstructor {
         transformationMap[TranformationMapping.cropMode] = cropMode
-        transformationList.append(String(format: "%s-%s", TranformationMapping.cropMode, cropMode.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.cropMode, cropMode.rawValue))
         return self
     }
     
@@ -108,7 +108,7 @@ public class ImagekitUrlConstructor {
      */
     func focus(focusType: FocusType) -> ImagekitUrlConstructor {
         transformationMap[TranformationMapping.focus] = focusType
-        transformationList.append(String(format: "%s-%s", TranformationMapping.focus, focusType.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.focus, focusType.rawValue))
         return self
     }
     
@@ -142,7 +142,7 @@ public class ImagekitUrlConstructor {
      */
     func format(format: Format) -> ImagekitUrlConstructor {
         transformationMap[TranformationMapping.format] = format
-        transformationList.append(String(format: "%s-%s", TranformationMapping.format, format.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.format, format.rawValue))
         return self
     }
     
@@ -172,8 +172,9 @@ public class ImagekitUrlConstructor {
     func showInGrayscale(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TranformationMapping.eGrayscale] = flag
         
-        if (flag)
-        transformationList.append(String(format: "%s", TranformationMapping.eGrayscale))
+        if (flag) {
+            transformationList.append(String(format: "%s", TranformationMapping.eGrayscale))
+        }
         
         return self
     }
@@ -190,7 +191,7 @@ public class ImagekitUrlConstructor {
      */
     func devicePixelRatio(dpr: Float) throws -> ImagekitUrlConstructor {
         if (dpr < 0.1 || dpr > 5) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         transformationMap[TranformationMapping.dpr] = dpr
@@ -277,9 +278,9 @@ public class ImagekitUrlConstructor {
      */
     func trimEdges(value: Int) throws -> ImagekitUrlConstructor {
         if (transformationMap.contains(where: TranformationMapping.trimEdges)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         } else if (value < 1 || value > 99) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         transformationMap[TranformationMapping.trimEdges] = value
@@ -312,15 +313,15 @@ public class ImagekitUrlConstructor {
             || !transformationMap.contains(where: TranformationMapping.overlayText)
             || !transformationMap.contains(where: TranformationMapping.overlayBackground)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (transformationMap.contains(where: TranformationMapping.overlayX)
             || transformationMap.contains(where: TranformationMapping.overlayY)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         }
         
         transformationMap[TranformationMapping.overlayFocus] = overlayFocus
-        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayFocus, overlayFocus.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayFocus, overlayFocus.rawValue))
         return self
     }
     
@@ -339,11 +340,11 @@ public class ImagekitUrlConstructor {
             || !transformationMap.contains(where: TranformationMapping.overlayText)
             || !transformationMap.contains(where: TranformationMapping.overlayBackground)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (transformationMap.contains(where: TranformationMapping.overlayFocus)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         } else if (overlayPosX < 0) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         transformationMap[TranformationMapping.overlayX] = overlayPosX
@@ -366,11 +367,11 @@ public class ImagekitUrlConstructor {
             || !transformationMap.contains(where: TranformationMapping.overlayText)
             || !transformationMap.contains(where: TranformationMapping.overlayBackground)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (transformationMap.contains(where: TranformationMapping.overlayFocus)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         } else if (overlayPosY < 0) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         transformationMap[TranformationMapping.overlayY] = overlayPosY
@@ -394,11 +395,11 @@ public class ImagekitUrlConstructor {
             || !transformationMap.contains(where: TranformationMapping.overlayText)
             || !transformationMap.contains(where: TranformationMapping.overlayBackground)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (transformationMap.contains(where: TranformationMapping.overlayFocus)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         } else if (overlayNegX >= 0) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         var s = String(format: "%s-N%s", TranformationMapping.overlayX, overlayNegX)
@@ -423,11 +424,11 @@ public class ImagekitUrlConstructor {
             || !transformationMap.contains(where: TranformationMapping.overlayText)
             || !transformationMap.contains(where: TranformationMapping.overlayBackground)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (transformationMap.contains(where: TranformationMapping.overlayFocus)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         } else if (overlayNegY >= 0) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         var s = String(format: "%s-N%s", TranformationMapping.overlayY, overlayNegY)
@@ -481,17 +482,17 @@ public class ImagekitUrlConstructor {
      */
     func overlayTextColor(overlayTextColor: String)  throws -> ImagekitUrlConstructor {
         if (!transformationMap.contains(where: TranformationMapping.overlayText)) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (overlayTextColor.length != 6 || !Pattern.matches("[A-Fa-f0-9]+", overlayTextColor)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
         }
         
         transformationMap[TranformationMapping.overlayTextColor] = overlayTextColor.uppercased()
         transformationList.append(
             String(format:
                 "%s-%s",
-                TranformationMapping.overlayTextColor,
-                overlayTextColor.uppercased()
+                   TranformationMapping.overlayTextColor,
+                   overlayTextColor.uppercased()
             )
         )
         return self
@@ -506,11 +507,11 @@ public class ImagekitUrlConstructor {
      */
     func overlayTextFont(overlayTextFont: OverlayTextFont) throws -> ImagekitUrlConstructor {
         if (!transformationMap.contains(where: TranformationMapping.overlayText)) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         }
         
         transformationMap[TranformationMapping.overlayTextFont] = overlayTextFont
-        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayFocus, overlayTextFont.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayFocus, overlayTextFont.rawValue))
         return self
     }
     
@@ -521,7 +522,7 @@ public class ImagekitUrlConstructor {
      */
     func overlayTextSize(overlayTextSize: Int)  throws -> ImagekitUrlConstructor {
         if (!transformationMap.contains(where: TranformationMapping.overlayText)) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         }
         
         transformationMap[TranformationMapping.overlayTextSize] = overlayTextSize
@@ -540,15 +541,15 @@ public class ImagekitUrlConstructor {
      */
     func overlayTextTypography(overlayTextTypography: OverlayTextTypography) throws -> ImagekitUrlConstructor {
         if (!transformationMap.contains(where: TranformationMapping.overlayText)) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         }
         
         transformationMap[TranformationMapping.overlayTextTypography] = overlayTextTypography
         transformationList.append(
             String(format:
                 "%s-%s",
-                TranformationMapping.overlayTextTypography,
-                overlayTextTypography.value
+                   TranformationMapping.overlayTextTypography,
+                   overlayTextTypography.rawValue
             )
         )
         return self
@@ -562,15 +563,15 @@ public class ImagekitUrlConstructor {
      */
     func overlayBackgroundColor(overlayBackgroundColor: String)  throws -> ImagekitUrlConstructor {
         if (overlayBackgroundColor.length != 6 || !Pattern.matches("[A-Fa-f0-9]+", overlayBackgroundColor)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
         }
         
         transformationMap[TranformationMapping.overlayBackground] = overlayBackgroundColor.uppercased()
         transformationList.append(
             String(format:
                 "%s-%s",
-                TranformationMapping.overlayBackground,
-                overlayBackgroundColor.uppercased()
+                   TranformationMapping.overlayBackground,
+                   overlayBackgroundColor.uppercased()
             )
         )
         return self
@@ -587,9 +588,9 @@ public class ImagekitUrlConstructor {
         if (!transformationMap.contains(where: TranformationMapping.overlayText)
             || !transformationMap.contains(where: TranformationMapping.overlayBackground)
             ) {
-        throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
+            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
         } else if (overlayTransparency !in 1..9) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
         }
         
         transformationMap[TranformationMapping.overlayTransparency] = overlayTransparency
@@ -636,7 +637,7 @@ public class ImagekitUrlConstructor {
      */
     func rotate(rotation: Rotation) -> ImagekitUrlConstructor {
         transformationMap[TranformationMapping.rotate] = rotation
-        transformationList.append(String(format: "%s-%s", TranformationMapping.rotate, rotation.value))
+        transformationList.append(String(format: "%s-%s", TranformationMapping.rotate, rotation.rawValue))
         return self
     }
     
@@ -649,7 +650,7 @@ public class ImagekitUrlConstructor {
      */
     func radius(radius: Int) throws -> ImagekitUrlConstructor {
         if (transformationMap.contains(where: TranformationMapping.radius)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         }
         
         transformationMap[TranformationMapping.radius] = radius
@@ -665,7 +666,7 @@ public class ImagekitUrlConstructor {
      */
     func round() throws -> ImagekitUrlConstructor {
         if (transformationMap.contains(where: TranformationMapping.radius)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
         }
         
         transformationMap[TranformationMapping.radius] = "max"
@@ -681,15 +682,15 @@ public class ImagekitUrlConstructor {
      */
     func backgroundHexColor(backgroundHexColor: String) throws -> ImagekitUrlConstructor {
         if (backgroundHexColor.length != 6 || !Pattern.matches("[A-Fa-f0-9]+", backgroundHexColor)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
         }
         
         transformationMap[TranformationMapping.backgroundColor] = backgroundHexColor.uppercased()
         transformationList.append(
             String(format:
                 "%s-%s",
-                TranformationMapping.backgroundColor,
-                backgroundHexColor.uppercased()
+                   TranformationMapping.backgroundColor,
+                   backgroundHexColor.uppercased()
             )
         )
         return self
@@ -706,15 +707,15 @@ public class ImagekitUrlConstructor {
      */
     func backgroundRGBAColor(backgroundRGBAColor: String) throws -> ImagekitUrlConstructor {
         if (backgroundRGBAColor.length != 8 || !Pattern.matches("[A-Fa-f0-9]{6}[0-9]{2}+", backgroundRGBAColor)) {
-        throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
         }
         
         transformationMap[TranformationMapping.backgroundColor] = backgroundRGBAColor.uppercased()
         transformationList.append(
             String(format:
                 "%s-%s",
-                TranformationMapping.backgroundColor,
-                backgroundRGBAColor.uppercased()
+                   TranformationMapping.backgroundColor,
+                   backgroundRGBAColor.uppercased()
             )
         )
         return self
