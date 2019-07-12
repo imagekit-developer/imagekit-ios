@@ -29,8 +29,8 @@
 
 /* Begin PBXFileReference section */
 		2A767B9F16C5B7D7A5E5DD3D /* Pods-imagekit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imagekit_Example.debug.xcconfig"; path = "Target Support Files/Pods-imagekit_Example/Pods-imagekit_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		4D5121AD075D7A1805B7ECB5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		5538DCB9BC3FC5591277347F /* imagekit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = imagekit.podspec; path = ../imagekit.podspec; sourceTree = "<group>"; };
+		4D5121AD075D7A1805B7ECB5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		5538DCB9BC3FC5591277347F /* imagekit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = imagekit.podspec; path = ../imagekit.podspec; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* imagekit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imagekit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -46,7 +46,7 @@
 		9D030C519E5A9319CB58F6DB /* Pods-imagekit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imagekit_Tests.release.xcconfig"; path = "Target Support Files/Pods-imagekit_Tests/Pods-imagekit_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		D706AB1BB869D2706F122BF6 /* Pods-imagekit_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imagekit_Tests.debug.xcconfig"; path = "Target Support Files/Pods-imagekit_Tests/Pods-imagekit_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		EB867AC4021F1AB20750E221 /* Pods-imagekit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imagekit_Example.release.xcconfig"; path = "Target Support Files/Pods-imagekit_Example/Pods-imagekit_Example.release.xcconfig"; sourceTree = "<group>"; };
-		EE41D37A56BCBEBAF5EC21B2 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		EE41D37A56BCBEBAF5EC21B2 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +77,6 @@
 				D706AB1BB869D2706F122BF6 /* Pods-imagekit_Tests.debug.xcconfig */,
 				9D030C519E5A9319CB58F6DB /* Pods-imagekit_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -208,7 +207,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
@@ -392,12 +391,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -445,12 +446,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
