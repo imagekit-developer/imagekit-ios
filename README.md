@@ -15,6 +15,13 @@ Initialise the ImageKit SDK with the by applying for the ImageKit ID & Key from 
 ImageKit(clientPublicKey: "<publicKey>", imageKitId: "<kitID>")
 ```
 
+### Uploading Image
+
+
+### Upload File
+
+
+### Generating URL
 
 
 ### Installation
