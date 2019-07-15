@@ -5,25 +5,33 @@
 [![License](https://img.shields.io/cocoapods/l/imagekit.svg?style=flat)](https://cocoapods.org/pods/imagekit)
 [![Platform](https://img.shields.io/cocoapods/p/imagekit.svg?style=flat)](https://cocoapods.org/pods/imagekit)
 
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
 ## Requirements
 
-## Installation
+##Installation
 
-imagekit is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+CocoaPods
+
+You can use CocoaPods to install ImageKit by adding it to your Podfile:
 
 ```ruby
+use_frameworks!
+platform :ios, '8.0'
+
+target 'target_name' do
 pod 'imagekit'
+end
+```
+
+To use the ImageKit library in your app, import ImageKit into the file(s) where you want to use it.
+
+```ruby
+import imagekit
 ```
 
 ## Author
 
-rungtaakki, akshit@bowstringstudio.in
+[ImageKit](https://imagekit.io)
 
 ## License
 
-imagekit is available under the MIT license. See the LICENSE file for more info.
+ImageKit is available under the MIT license. See the LICENSE file for more info.
