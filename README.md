@@ -7,7 +7,17 @@
 
 ## Requirements
 
-##Installation
+### Setup
+
+Initialise the ImageKit SDK with the by applying for the ImageKit ID & Key from ....
+
+```swift
+ImageKit(clientPublicKey: "<publicKey>", imageKitId: "<kitID>")
+```
+
+
+
+### Installation
 
 CocoaPods
 
@@ -18,19 +28,19 @@ use_frameworks!
 platform :ios, '8.0'
 
 target 'target_name' do
-pod 'imagekit'
+    pod 'imagekit'
 end
 ```
 
 To use the ImageKit library in your app, import ImageKit into the file(s) where you want to use it.
 
-```ruby
+```swift
 import imagekit
 ```
 
 ## Author
 
-[ImageKit](https://imagekit.io)
+[ImageKit.io](https://imagekit.io)
 
 ## License
 
