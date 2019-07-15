@@ -31,19 +31,29 @@ Uploading an image to ImageKit.
 - completionHandler --> Callback to communicate the result of the upload operation
 
 ```swift
-uploadImage(_ image: Data, fileName: String, signature: String, timestamp: Date, useUniqueFilename: Bool = true, tags: Array<String>?, folder: String?, completionHandler: @escaping (_ data: UploadResponse?, _ isSuccessful: Bool, _ error: UploadError?) -> Void)
+public func uploadImage(_ image: Data, fileName: String, signature: String, timestamp: Date, useUniqueFilename: Bool = true, tags: Array<String>?, folder: String?, completionHandler: @escaping (_ data: UploadResponse?, _ isSuccessful: Bool, _ error: UploadError?) -> Void)
 ```
 
 ### Upload File
 
+Uploading an image to ImageKit.
+- file --> The file that is to be uploaded. Supported formats: PDF, JS, CSS and TXT
+- fileName --> The name with which the file has to be uploaded
+- signature --> HMAC-SHA1 signature generated for the file upload. See [https://docs.imagekit.io/#server-side-image-upload](https://docs.imagekit.io/#server-side-image-upload) for more information.
+- timestamp --> UTC timestamp in seconds. The request will be valid for 30 minutes from this timestamp.
+- useUniqueFilename --> “true” or “false”. If set to true, ImageKit will add a unique code to the filename parameter to get a unique filename. If false, the image is uploaded with the filename parameter as name. If an image exists with the same name, this new image will override it. Default is “true”
+- tags --> Array of tags e.g tag1,tag2,tag3. The maximum length of all characters should not exceed 500. % is not allowed. If this field is not specified and the file is overwritten then tags will be removed.
+- folder --> The folder path (eg- /images/folder/) in which the image has to be uploaded. Default is “/”
+- completionHandler --> Callback to communicate the result of the upload operation
+
 ```swift
-ImageKit(clientPublicKey: "<publicKey>", imageKitId: "<kitID>")
+public func uploadFile(_ file: URL, fileName: String, signature: String, timestamp: Date, useUniqueFilename: Bool = true, tags: Array<String>?, folder: String?, completionHandler: @escaping (_ data: UploadResponse?, _ isSuccessful: Bool, _ error: UploadError?) -> Void)
 ```
 
 ### Generating URL
 
 ```swift
-ImageKit(clientPublicKey: "<publicKey>", imageKitId: "<kitID>")
+
 ```
 
 ### Installation
