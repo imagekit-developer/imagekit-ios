@@ -6,7 +6,32 @@
 [![Platform](https://img.shields.io/cocoapods/p/imagekit.svg?style=flat)](https://cocoapods.org/pods/imagekit)
 
 
-Description about ImageKit and what this Library does
+Swift package that wraps [ImageKit.io](https://imagekit.io) upload APIs and URL builder logic with easy to use interfaces.
+
+ImageKit.io provides ready-to-use image optimisation servers along with dedicated image storage, global CDN, on-the-fly image transformation like resize, crop, rotate directly from the URL and image uploads.
+
+By using ImageKit, you can experience about 30% improvement in page load time thanks to the tons of image optimizations that work out of the box without you putting in any effort. Migrating to ImageKit is super simple and takes just a few minutes with our Plug-and-Play technology. Images are delivered across the globe using a CDN ensuring lightning fast experience for your users.
+
+## Installation
+
+### CocoaPods
+
+You can use CocoaPods to install ImageKit by adding it to your Podfile:
+
+```ruby
+use_frameworks!
+platform :ios, '8.0'
+
+target 'target_name' do
+pod 'imagekit'
+end
+```
+
+To use the ImageKit library in your app, import ImageKit into the file(s) where you want to use it.
+
+```swift
+import imagekit
+```
 
 ## Requirements
 
@@ -15,10 +40,15 @@ Description about ImageKit and what this Library does
 Initialise the ImageKit SDK with the by applying for the ImageKit ID & Key from ....
 
 ```swift
-ImageKit(clientPublicKey: "<publicKey>", imageKitId: "<kitID>")
+var ImageKit = ImageKit(clientPublicKey: "<publicKey>", imageKitId: "<kitID>")
 ```
 
-### Uploading Image
+### Uploading Images using base64
+
+Images can be uploaded to your ImageKit Media Library using the uploadImage() function. 
+<!--The uploadImage() function accepts two arguments - the image to be uploaded and an additional object with different upload options.-->
+
+The image to be uploaded should be passed as a base64 encoded string.
 
 Uploading an image to ImageKit.
 - image --> The image data that is to be uploaded
@@ -54,27 +84,6 @@ public func uploadFile(_ file: URL, fileName: String, signature: String, timesta
 
 ```swift
 
-```
-
-### Installation
-
-CocoaPods
-
-You can use CocoaPods to install ImageKit by adding it to your Podfile:
-
-```ruby
-use_frameworks!
-platform :ios, '8.0'
-
-target 'target_name' do
-    pod 'imagekit'
-end
-```
-
-To use the ImageKit library in your app, import ImageKit into the file(s) where you want to use it.
-
-```swift
-import imagekit
 ```
 
 ## Author
