@@ -31,7 +31,7 @@
 /* Begin PBXFileReference section */
 		2A767B9F16C5B7D7A5E5DD3D /* Pods-imagekit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imagekit_Example.debug.xcconfig"; path = "Target Support Files/Pods-imagekit_Example/Pods-imagekit_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		4D5121AD075D7A1805B7ECB5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		5538DCB9BC3FC5591277347F /* imagekit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = imagekit.podspec; path = ../imagekit.podspec; sourceTree = "<group>"; };
+		5538DCB9BC3FC5591277347F /* imagekit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = imagekit.podspec; path = ../imagekit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		593DA49122D88299007DCE7F /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* imagekit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imagekit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };

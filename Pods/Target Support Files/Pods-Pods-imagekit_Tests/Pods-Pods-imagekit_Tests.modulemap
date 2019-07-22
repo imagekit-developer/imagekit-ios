@@ -1,0 +1,6 @@
+framework module Pods_Pods_imagekit_Tests {
+  umbrella header "Pods-Pods-imagekit_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

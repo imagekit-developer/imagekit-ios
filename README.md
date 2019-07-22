@@ -82,9 +82,47 @@ public func uploadFile(_ file: URL, fileName: String, signature: String, timesta
 
 ### Generating URL
 
+An image instance has to be created before it can be subject to transforms or turned into a URL or HTML. The image instance is made up of the image name that has to be fetched and other optional parameters.
+
 ```swift
 
+var img = ImagekitUrlConstructor(endpoint: String, imagePath: String)
+
 ```
+
+#### Optional parameters for image instance
+
+The URL pattern which has to be used to fetch the image. URL patterns help identify the original sources of the image. You can read more about patterns and sources in [ImageKit Documentation](https://docs.imagekit.io)
+
+#### Transforms in image URL
+
+All transforms that are available in ImageKit can be added by using the transform function. The transform function works on an image instance.
+
+Input to transform function is a key-value map with the transformation name as the key against the transformation value. Transformation name is passed in capital letters.
+
+
+```swift
+
+var img = ImagekitUrlConstructor(endpoint: String, imagePath: String).width(width: Float)
+
+```
+
+#### Output
+
+The image instance or its transform can be used to generate the image URL
+
+URL
+
+```swift
+
+var img = ImagekitUrlConstructor(endpoint: String, imagePath: String).width(width: Float)
+
+//generates an image URL.
+var img = ImagekitUrlConstructor(endpoint: String, imagePath: String).width(width: Float).create()
+
+```
+
+
 
 ## Author
 

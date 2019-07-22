@@ -48,6 +48,7 @@
 		59CD858122D85EB6001559DA /* UploadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CD857D22D85DD0001559DA /* UploadError.swift */; };
 		59CD858222D866DE001559DA /* ImageKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97F71EE39BC076FD6F6F80679F5F7B7 /* ImageKit.swift */; };
 		59CD858422D866F7001559DA /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28FEB2569DE23054EE7887C372287C1 /* Repository.swift */; };
+		59D2A18B22E587D900653C41 /* ImageKitURLConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5941389E22CCE4BB00A1BEE7 /* ImageKitURLConstructor.swift */; };
 		64744C911253C3E01461FAD7C935C8D7 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24681178495C8B586248EBF1D48AC770 /* Result.swift */; };
 		6A5F1BD38BC878A9C7A43E2581CFB9CB /* HexColorTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C9771356CEC16BDC9155A5447287FE /* HexColorTransform.swift */; };
 		7664FD4F59A0C00866CBAE60B0A3AD64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09E341ACB852643F054CAF8690AFAC4 /* Foundation.framework */; };
@@ -887,6 +888,7 @@
 				D11F7C57547C7D5216B57B84E22FCF7B /* imagekit-dummy.m in Sources */,
 				59CD858122D85EB6001559DA /* UploadError.swift in Sources */,
 				59CD858422D866F7001559DA /* Repository.swift in Sources */,
+				59D2A18B22E587D900653C41 /* ImageKitURLConstructor.swift in Sources */,
 				54494A4BC2745B4910B6E3A333CC8DFC /* ImageKit.swift in Sources */,
 				59CD858022D85EAE001559DA /* UploadResponse.swift in Sources */,
 			);
