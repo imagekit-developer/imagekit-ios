@@ -8,8 +8,8 @@
 
 import UIKit
 import imagekit
-import Alamofire
-import ObjectMapper
+//import Alamofire
+//import ObjectMapper
 
 class ViewController: UIViewController {
     
@@ -46,8 +46,8 @@ extension ViewController : ImagePickerDelegate {
         print("ImagePicked")
         DispatchQueue.main.async {
             
-            selectedImage = image
-            uploadImageToImageKit()
+            self.selectedImage = image
+            self.uploadImageToImageKit()
         }
     }
     

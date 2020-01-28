@@ -20,16 +20,5 @@
     "ios": "8.0"
   },
   "source_files": "imagekit/Classes/**/*",
-  "dependencies": {
-    "Alamofire": [
-      "~> 4.0"
-    ],
-    "AlamofireObjectMapper": [
-      "5.0"
-    ],
-    "ObjectMapper": [
-      "3.3"
-    ]
-  },
   "swift_version": "4.0"
 }

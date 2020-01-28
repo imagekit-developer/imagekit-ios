@@ -76,7 +76,7 @@ extension ImagePicker: UIImagePickerControllerDelegate, UINavigationControllerDe
             let imageName = uploadFileURL.lastPathComponent
             localPath = (documentDirectory as NSString).appendingPathComponent(imageName!)
         } else {
-            localPath = (documentDirectory as NSString).appendingPathComponent("\(DataStoreProvider.getUserDataStore().getUserData().userId)")
+//            localPath = (documentDirectory as NSString).appendingPathComponent("\(DataStoreProvider.getUserDataStore().getUserData().userId)")
         }
         
         if let pickedImage = info[UIImagePickerControllerEditedImage] as? UIImage {
