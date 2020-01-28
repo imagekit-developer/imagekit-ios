@@ -18,6 +18,7 @@
 		34A2EF561FABA69A2EFAEB13C6E008C9 /* FocusType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CC1FBE2496FB456E6782B27B16291 /* FocusType.swift */; };
 		3DD1F9985D5C15DC4E34E677C1D989CD /* ErrorMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8950C7188D88372CF6B987589CB4FA11 /* ErrorMessages.swift */; };
 		5913E76E23E0582B00B3D2D1 /* TransformationPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5913E76D23E0582B00B3D2D1 /* TransformationPosition.swift */; };
+		5913E77023E05E6700B3D2D1 /* ImagekitUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5913E76F23E05E6700B3D2D1 /* ImagekitUploader.swift */; };
 		665BB87236D55A8F31421DCA087FC3AC /* CropType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6025AA898E0FAA2109AF4F45C0726880 /* CropType.swift */; };
 		67D8D9BF237A94779D022EED3A898668 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9F692972A5132CAA9C034012F6793F /* Format.swift */; };
 		6B6C992235D4FA5E4C29BC3F1C683C6C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
@@ -70,6 +71,7 @@
 		472BC5C88F867360602CF4683AA6F200 /* Pods-imagekit_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-imagekit_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		50E01665C8ACAA038F793A5BEE8482D6 /* Pods-imagekit_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-imagekit_Tests-Info.plist"; sourceTree = "<group>"; };
 		5913E76D23E0582B00B3D2D1 /* TransformationPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformationPosition.swift; sourceTree = "<group>"; };
+		5913E76F23E05E6700B3D2D1 /* ImagekitUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagekitUploader.swift; sourceTree = "<group>"; };
 		5920883F6A6C1A0C5770D7687CCD52F4 /* imagekit-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "imagekit-prefix.pch"; sourceTree = "<group>"; };
 		59F5E6560268DA8CDF6CD48D240EC521 /* imagekit.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = imagekit.modulemap; sourceTree = "<group>"; };
 		6025AA898E0FAA2109AF4F45C0726880 /* CropType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CropType.swift; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 			children = (
 				F2A02064EF021429DA26B64BE500484F /* ImageKit.swift */,
 				A814E25827D16EA5EE5F7AAEA78D7209 /* ImageKitURLConstructor.swift */,
+				5913E76F23E05E6700B3D2D1 /* ImagekitUploader.swift */,
 				1A9A3E0CAF859D26EE42E4FBB8DE0FF7 /* Data */,
 				55C23015C59A6E93C1837C7231204686 /* Entity */,
 				53330766BF83E01452586930DF6CD3CF /* Pod */,
@@ -447,6 +450,7 @@
 				1F75157F14CED2C268BC883C31A8ECDE /* imagekit-dummy.m in Sources */,
 				081DD3A3AC62707375941C01FBB9938F /* ImageKit.swift in Sources */,
 				BA21451CC02044C69DFEE3A169F41875 /* ImagekitException.swift in Sources */,
+				5913E77023E05E6700B3D2D1 /* ImagekitUploader.swift in Sources */,
 				20309ACD7AA157DB11C3A415D62BF281 /* ImageKitURLConstructor.swift in Sources */,
 				5913E76E23E0582B00B3D2D1 /* TransformationPosition.swift in Sources */,
 				237E819E079DE2595D54639EE416665C /* OverlayFocusType.swift in Sources */,
