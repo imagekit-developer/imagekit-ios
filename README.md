@@ -18,7 +18,7 @@ The library requires Swift 4.0 or above.
 
 You can use CocoaPods to install ImageKit by adding it to your Podfile:
 
-```ruby
+```swift
 use_frameworks!
 platform :ios, '8.0'
 
@@ -34,7 +34,7 @@ You need to initialize the sdk by providing the application context, `publicKey`
 
 _Note: Do not include your Private Key in any client side code, including this SDK or its initialization._
 
-```ruby
+```swift
 ImageKit.init(
             context = applicationContext,
             publicKey = "your_public_api_key",
@@ -63,7 +63,7 @@ ImageKit.getInstance()
 ```
 
 #### Using full image URL
-```ruby
+```swift
 // https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20
 ImageKit.getInstance()
         .url(
@@ -77,7 +77,7 @@ ImageKit.getInstance()
 ```
 
 #### Using a custom parameter
-```ruby
+```swift
 // https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=w-400,ot-Hand with a green plant,otc-264120,ots-30,ox-10,oy-10
 ImageKit.getInstance()
         .url(src = "https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20")
@@ -140,7 +140,7 @@ The SDK provides a simple interface using the `ImageKit.getInstance().uploader()
 The SDK invokes the endpoint speicified by `authenticationEndpoint` parameter at time of SDK initialization to get `token`, `expiry` and `signature`. You can implement this endpoint on your server-side using the utility function provided in all [server-side SDKs](https://docs.imagekit.io/api-reference/api-introduction/sdk#server-side-sdks).
 
 #### Upload file from bitmap
-``` ruby
+``` swift
 val filename = "file-name.jpg"
 val timestamp = System.currentTimeMillis()
 ImageKit.getInstance().uploadImage(
@@ -154,7 +154,7 @@ ImageKit.getInstance().uploadImage(
 ```
 
 #### Upload file from a remote URL
-``` ruby
+``` swift
 val filename = "file-name.jpg"
 val timestamp = System.currentTimeMillis()
 ImageKit.getInstance().uploader().upload(
@@ -168,7 +168,7 @@ ImageKit.getInstance().uploader().upload(
 ```
 
 #### Upload file using binary
-```ruby
+```swift
 ImageKit.getInstance().uploader().upload(
     file = file!!
     , fileName = file!!.name
