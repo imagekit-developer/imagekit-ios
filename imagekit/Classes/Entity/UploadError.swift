@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import ObjectMapper
 
-public class UploadError: Mappable {
+public class UploadError {
     
     var exception = false
     var statusNumber: Int = 1500
@@ -18,16 +17,16 @@ public class UploadError: Mappable {
     init() {
     }
     
-    required init?(map: Map) {
-        
-    }
+//    required init?(map: Map) {
+//        
+//    }
     
-    func mapping(map: Map) {
-        exception <- map["exception"]
-        statusNumber <- map["status_number"]
-        statusCode <- map["status_code"]
-        message <- map["message"]
-    }
+//    func mapping(map: Map) {
+//        exception <- map["exception"]
+//        statusNumber <- map["status_number"]
+//        statusCode <- map["status_code"]
+//        message <- map["message"]
+//    }
 }
 
 

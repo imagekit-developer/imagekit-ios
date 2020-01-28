@@ -76,6 +76,6 @@ open class ImageKit: NSObject {
      */
     public func uploadFile(_ file: URL, fileName: String, signature: String, timestamp: Date, useUniqueFilename: Bool = true, tags: Array<String>?, folder: String?, completionHandler: @escaping (_ data: UploadResponse?, _ isSuccessful: Bool, _ error: UploadError?) -> Void) {
         let mRepository = Repository.init()
-        mRepository.uploadImage(file, fileName: fileName, signature: signature, timestamp: timestamp, tags: tags, folder: folder, completionHandler: completionHandler)
+//        mRepository.uploadImage(file, fileName: fileName, signature: signature, timestamp: timestamp, tags: tags, folder: folder, completionHandler: completionHandler)
     }
 }

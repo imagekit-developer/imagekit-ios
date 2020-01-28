@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import ObjectMapper
 
-public class UploadResponse: Mappable {
+public class UploadResponse {
     
     var name: String!
     var imagePath: String!
@@ -20,17 +19,17 @@ public class UploadResponse: Mappable {
     init() {
     }
     
-    required init?(map: Map) {
-        
-    }
-    
-    func mapping(map: Map) {
-        name <- map["name"]
-        imagePath <- map["image_path"]
-        
-        size <- map["size"]
-        height <- map["height"]
-        width <- map["width"]
-        url <- map["url"]
-    }
+//    required init?(map: Map) {
+//        
+//    }
+//    
+//    func mapping(map: Map) {
+//        name <- map["name"]
+//        imagePath <- map["image_path"]
+//        
+//        size <- map["size"]
+//        height <- map["height"]
+//        width <- map["width"]
+//        url <- map["url"]
+//    }
 }
