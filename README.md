@@ -5,28 +5,26 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/imagekitio?label=Follow&style=social)](https://twitter.com/ApacheAirflow)
 
-Android SDK for [ImageKit.io](https://imagekit.io) which implements client-side upload and URL generation for use inside an Android application.
+iOS Pod for [ImageKit.io](https://imagekit.io) which implements client-side upload and URL generation for use inside an iOS application.
 
 ImageKit is a complete image optimization and transformation solution that comes with an [image CDN](https://imagekit.io/features/imagekit-infrastructure) and media storage. It can be integrated with your existing infrastructure - storages like AWS S3, web servers, your CDN and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
-Android client for Imagekit Integration
+
+Swift client for Imagekit Integration
 
 ## Requirements
-The library requires Android version 5.0.0 (API level 21 - Lollipop) or above.
+The library requires Swift 4.0 or above.
 
-## Installation
-In your root build.gradle file, add:
-```xml
-allprojects {
-    repositories {
-       ...
-        maven { url "https://jitpack.io" }
-    }
-}
-```
+### CocoaPods
 
-In the module build.gradle file, add:
-```xml 
-implementation 'com.github.imagekit-developer:imagekit-android:<VERSION>'
+You can use CocoaPods to install ImageKit by adding it to your Podfile:
+
+```ruby
+use_frameworks!
+platform :ios, '8.0'
+
+target 'target_name' do
+pod 'imagekit'
+end
 ```
 
 ## Initialization
@@ -36,10 +34,7 @@ You need to initialize the sdk by providing the application context, `publicKey`
 
 _Note: Do not include your Private Key in any client side code, including this SDK or its initialization._
 
-```kotlin
-// In kotlin
-import com.imagekit.android.ImageKit;
-
+```ruby
 ImageKit.init(
             context = applicationContext,
             publicKey = "your_public_api_key",
@@ -49,26 +44,13 @@ ImageKit.init(
         )
 ```
 
-```java
-// In Java
-import com.imagekit.android.ImageKit;
-
-ImageKit.Companion.init(
-        getApplicationContext(),
-        "your_public_api_key",
-        "path",
-        "https://ik.imagekit.io/your_imagekit_id",
-        "http://www.yourserver.com/auth"
-    );
-```
-
 ## Sample application
 This project has a sample application under `sample` folder. The sample application demonstrates the use of this SDK.
 
 ## Usage
 ### URL construction
 #### Using image path
-```kotlin
+```ruby
 // https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,ar-3-2
 ImageKit.getInstance()
         .url(
@@ -81,7 +63,7 @@ ImageKit.getInstance()
 ```
 
 #### Using full image URL
-```kotlin
+```ruby
 // https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20
 ImageKit.getInstance()
         .url(
@@ -95,7 +77,7 @@ ImageKit.getInstance()
 ```
 
 #### Using a custom parameter
-```kotlin
+```ruby
 // https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=w-400,ot-Hand with a green plant,otc-264120,ots-30,ox-10,oy-10
 ImageKit.getInstance()
         .url(src = "https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20")
@@ -158,7 +140,7 @@ The SDK provides a simple interface using the `ImageKit.getInstance().uploader()
 The SDK invokes the endpoint speicified by `authenticationEndpoint` parameter at time of SDK initialization to get `token`, `expiry` and `signature`. You can implement this endpoint on your server-side using the utility function provided in all [server-side SDKs](https://docs.imagekit.io/api-reference/api-introduction/sdk#server-side-sdks).
 
 #### Upload file from bitmap
-``` kotlin
+``` ruby
 val filename = "file-name.jpg"
 val timestamp = System.currentTimeMillis()
 ImageKit.getInstance().uploadImage(
@@ -172,7 +154,7 @@ ImageKit.getInstance().uploadImage(
 ```
 
 #### Upload file from a remote URL
-``` kotlin
+``` ruby
 val filename = "file-name.jpg"
 val timestamp = System.currentTimeMillis()
 ImageKit.getInstance().uploader().upload(
@@ -186,7 +168,7 @@ ImageKit.getInstance().uploader().upload(
 ```
 
 #### Upload file using binary
-```kotlin
+```ruby
 ImageKit.getInstance().uploader().upload(
     file = file!!
     , fileName = file!!.name
@@ -208,8 +190,3 @@ For any feedback or to report any issues or general implementation support pleas
 ## License
 
 Released under the MIT license.
-
-
-
-
-MIT license. See the LICENSE file for more info.
