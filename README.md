@@ -18,7 +18,7 @@ The library requires Swift 4.0 or above.
 
 You can use CocoaPods to install ImageKit by adding it to your Podfile:
 
-```swift
+```ruby
 use_frameworks!
 platform :ios, '8.0'
 
