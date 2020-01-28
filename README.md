@@ -50,8 +50,8 @@ This project has a sample application under `sample` folder. The sample applicat
 ## Usage
 ### URL construction
 #### Using image path
-```ruby
-// https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,ar-3-2
+```swift
+//https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,ar-3-2
 ImageKit.getInstance()
         .url(
             path = "default-image.jpg",
