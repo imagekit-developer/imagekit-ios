@@ -28,7 +28,7 @@ end
 ```
 
 ## Initialization
-You need to initialize the sdk by providing the application context, `publicKey` and the `urlEndpoint`. You can do this either in your application or launcher activity. This needs to be called before any other function in the SDK or else an exception would be thrown.
+You need to initialize the sdk by providing the  `publicKey` and the `urlEndpoint`. You can do this either in your application or launcher activity. This needs to be called before any other function in the SDK or else an exception would be thrown.
 
 `authenticationEndpoint` is only required if you want to use the upload functionality.
 
@@ -36,7 +36,6 @@ _Note: Do not include your Private Key in any client side code, including this S
 
 ```swift
 ImageKit.init(
-            context = applicationContext,
             publicKey = "your_public_api_key",
             urlEndpoint = "https://ik.imagekit.io/your_imagekit_id",
             transformationPosition = "path",
