@@ -1,28 +1,71 @@
-import XCTest
-import imagekit
+// https://github.com/Quick/Quick
 
-class Tests: XCTestCase {
+import Quick
+import Nimble
+import ImageKit
+
+class ImageKitSpec: QuickSpec {
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure() {
-            // Put the code you want to measure the time of here.
+    override func spec() {
+        let apiVersion: String = API_VERSION!
+        beforeSuite {
+            ImageKit.init(clientPublicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path")
+        }
+        describe("URL Generation") {
+            describe("Image Path with Transformations height: 300, width: 300 and rotate: 90"){
+                it("Path Transformations") {
+                    let actual = ImageKit.shared
+                        .url(urlEndpoint: "https://ik.imagekit.io/demo", path: "medium_cafe_B1iTdD0C.jpg")
+                        .height(height: 300)
+                        .width(width: 300)
+                        .chainTransformation()
+                        .rotation(rotation: Rotation.VALUE_90)
+                        .create()
+                    expect(actual).to(equal(String(format:"https://ik.imagekit.io/demo/tr:h-300.00,w-300.00:rt-90/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                }
+                it("Query Transformations") {
+                    let actual = ImageKit.shared
+                        .url(urlEndpoint: "https://ik.imagekit.io/demo", path: "medium_cafe_B1iTdD0C.jpg", transformationPosition: "query")
+                        .height(height: 300)
+                        .width(width: 300)
+                        .chainTransformation()
+                        .rotation(rotation: Rotation.VALUE_90)
+                        .create()
+                    expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300.00,w-300.00:rt-90&ik-sdk-version=ios-%@", apiVersion)))
+                }
+            }
+            describe("Src with Transformations height: 300, width: 300 and rotate: 90"){
+                it("Without Transforms") {
+                    let actual = ImageKit.shared
+                        .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
+                        .height(height: 300)
+                        .width(width: 300)
+                        .chainTransformation()
+                        .rotation(rotation: Rotation.VALUE_90)
+                        .create()
+                    expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300.00,w-300.00:rt-90&ik-sdk-version=ios-%@", apiVersion)))
+                }
+                it("With Path Transforms") {
+                    let actual = ImageKit.shared
+                        .url(src: "https://ik.imagekit.io/demo/tr:h-300.00,w-300.00:rt-90/medium_cafe_B1iTdD0C.jpg")
+                        .height(height: 300)
+                        .width(width: 300)
+                        .chainTransformation()
+                        .rotation(rotation: Rotation.VALUE_90)
+                        .create()
+                    expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300.00,w-300.00:rt-90&ik-sdk-version=ios-%@", apiVersion)))
+                }
+                it("With Query Transforms") {
+                    let actual = ImageKit.shared
+                        .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300.00,w-300.00:rt-90")
+                        .height(height: 300)
+                        .width(width: 300)
+                        .chainTransformation()
+                        .rotation(rotation: Rotation.VALUE_90)
+                        .create()
+                    expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300.00,w-300.00:rt-90&ik-sdk-version=ios-%@", apiVersion)))
+                }
+            }
         }
     }
-    
 }

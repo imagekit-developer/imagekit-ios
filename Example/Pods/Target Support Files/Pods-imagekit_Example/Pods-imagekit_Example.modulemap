@@ -1,5 +1,5 @@
-framework module Pods_imagekit_Example {
-  umbrella header "Pods-imagekit_Example-umbrella.h"
+framework module Pods_ImageKit_Example {
+  umbrella header "Pods-ImageKit_Example-umbrella.h"
 
   export *
   module * { export * }

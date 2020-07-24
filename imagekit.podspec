@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint imagekit.podspec' to ensure this is a
+# Be sure to run `pod lib lint ImageKit.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -7,9 +7,9 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'imagekit'
+  s.name             = 'ImageKit'
   s.version          = '0.1.0'
-  s.summary          = 'iOS client for ImageKit Integration'
+  s.summary          = 'iOS SDK for ImageKit.io'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -17,24 +17,25 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = 'This is the iOS client for ImageKit Integration.'
+  s.description      = <<-DESC
+TODO: Add long description of the pod here.
+                       DESC
 
-  s.homepage         = 'https://github.com/imagekit-developer/imagekit-ios'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://imagekit.io/'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'rungtaakki' => 'akshit@bowstringstudio.in' }
+  s.author           = { 'ahnv' => 'abhinav@imagekit.io' }
   s.source           = { :git => 'https://github.com/imagekit-developer/imagekit-ios.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-    s.swift_version    = '4.0'
 
+  s.swift_version    = '4.0'
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'imagekit/Classes/**/*'
+  s.source_files = 'ImageKit/Classes/**/*'
   
   # s.resource_bundles = {
-  #   'imagekit' => ['imagekit/Assets/*.png']
+  #   'ImageKit' => ['ImageKit/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
+  # s.dependency 'AFNetworking', '~> 2.3'
 end

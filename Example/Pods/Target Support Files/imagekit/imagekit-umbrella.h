@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double imagekitVersionNumber;
-FOUNDATION_EXPORT const unsigned char imagekitVersionString[];
+FOUNDATION_EXPORT double ImageKitVersionNumber;
+FOUNDATION_EXPORT const unsigned char ImageKitVersionString[];
 

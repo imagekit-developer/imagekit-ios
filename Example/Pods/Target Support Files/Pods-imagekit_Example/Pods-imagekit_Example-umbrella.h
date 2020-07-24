@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_imagekit_ExampleVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_imagekit_ExampleVersionString[];
+FOUNDATION_EXPORT double Pods_ImageKit_ExampleVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_ImageKit_ExampleVersionString[];
 

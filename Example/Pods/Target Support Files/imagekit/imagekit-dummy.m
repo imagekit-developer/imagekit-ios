@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-@interface PodsDummy_imagekit : NSObject
+@interface PodsDummy_ImageKit : NSObject
 @end
-@implementation PodsDummy_imagekit
+@implementation PodsDummy_ImageKit
 @end

@@ -1,5 +1,5 @@
-framework module imagekit {
-  umbrella header "imagekit-umbrella.h"
+framework module ImageKit {
+  umbrella header "ImageKit-umbrella.h"
 
   export *
   module * { export * }

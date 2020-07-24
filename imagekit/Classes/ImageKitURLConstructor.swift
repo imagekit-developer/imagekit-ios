@@ -1,286 +1,272 @@
 //
-//  ImageKitURLConstructor.swift
-//  Alamofire
+//  ImagekitUrlConstructor.swift
+//  ImageKit
 //
-//  Created by Akshit New on 03/07/19.
+//  Created by Abhinav Dhiman on 16/07/20.
 //
-
 import Foundation
 
 public class ImagekitUrlConstructor {
     
     private var endpoint: String!
     private var imagePath: String!
+    private var transformationPosition: TransformationPosition!
+    
+    private var isSource: Bool = false
+    private var source: String!
     
     private var transformationList = [String]()
     private var transformationMap = [String : Any]()
     
-    init(endpoint: String, imagePath: String) {
+    init(endpoint: String, imagePath: String, transformationPosition: TransformationPosition) {
         self.endpoint = endpoint
         self.imagePath = imagePath
+        self.transformationPosition = transformationPosition
     }
     
+    init(src: String, transformationPosition: TransformationPosition) {
+        self.source = src
+        self.transformationPosition = transformationPosition
+        self.isSource = true
+    }
+
     /**
-     * Method to specify the width of the output image.
-     * @param width Accepts integer value greater than 1 and if a value between 0 and 1 is specified, then it acts as a percentage width.
-     * For eg, 0.1 means 10% of the original width, 0.2 means 20% of the original width.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func width(width: Float) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.width] = width
-        transformationList.append(String(format: "%s-%.2f", TranformationMapping.width, width))
+    * Method to specify the width of the output image.
+    * @param width Accepts integer value greater than 1 and if a value between 0 and 1 is specified, then it acts as a percentage width.
+    * For eg, 0.1 means 10% of the original width, 0.2 means 20% of the original width.
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func width(width: Float) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.width] = width
+        transformationList.append(String(format: "%@-%.2f", TransformationMapping.width, width))
         return self
     }
-    
+
     /**
-     * Method to specify the height of the output image.
-     * @param height Accepts integer value greater than 1 and if a value between 0 and 1 is specified, then it acts as a percentage height.
-     * For eg, 0.1 means 10% of the original height, 0.2 means 20% of the original height.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func height(height: Float) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.height] = height
-        transformationList.append(String(format: "%s-%.2f", TranformationMapping.height, height))
+    * Method to specify the height of the output image.
+    * @param height Accepts integer value greater than 1 and if a value between 0 and 1 is specified, then it acts as a percentage height.
+    * For eg, 0.1 means 10% of the original height, 0.2 means 20% of the original height.
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func height(height: Float) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.height] = height
+        transformationList.append(String(format: "%@-%.2f", TransformationMapping.height, height))
         return self
     }
-    
+
     /**
-     * Method to specify the aspect ratio of the output image or the ratio of width to height of the output image.
-     * This transform must be used along with either the height or the width transform.
-     * @param width Accepts integer value greater than equal to 1
-     * @param height Accepts integer value greater than equal to 1
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if both width and height are not provided.
-     */
-    func aspectRatio(width: Int, height: Int) throws -> ImagekitUrlConstructor {
-        
-        if (!transformationMap.keys.contains(TranformationMapping.width) &&
-            !transformationMap.keys.contains(TranformationMapping.height)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        }
-        
-        let s = String(format: "%s-%d-%d", TranformationMapping.aspectRatio, width, height)
-        transformationMap[TranformationMapping.aspectRatio] = s
+    * Method to specify the aspect ratio of the output image or the ratio of width to height of the output image.
+    * This transform must be used along with either the height or the width transform.
+    * @param width Accepts integer value greater than equal to 1
+    * @param height Accepts integer value greater than equal to 1
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func aspectRatio(width: Int, height: Int) -> ImagekitUrlConstructor {
+        let s = String(format: "%@-%d-%d", TransformationMapping.aspectRatio, width, height)
+        transformationMap[TransformationMapping.aspectRatio] = s
         transformationList.append(s)
         return self
     }
-    
+
     /**
-     * Method to decide the final value of height and width of the output image based on the aspect ratio of the input
-     * image and the requested transform.
-     * @param cropType Accepts value of type CropType. Possible values include maintain_ratio, force, at_least and at_max.
-     * Default value - maintain_ratio
-     * @see CropType
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func crop(cropType: CropType) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.crop] = cropType
-        transformationList.append(String(format: "%s-%s", TranformationMapping.crop, cropType.rawValue))
+    * Method to decide the final value of height and width of the output image based on the aspect ratio of the input
+    * image and the requested transform.
+    * @param cropType Accepts value of type CropType. Possible values include maintain_ratio, force, at_least and at_max.
+    * Default value - maintain_ratio
+    * @see CropType
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func crop(cropType: CropType) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.crop] = cropType
+        transformationList.append(String(format: "%@-%@", TransformationMapping.crop, cropType.rawValue))
         return self
     }
-    
+
     /**
-     * Method used to specify the strategy of how the input image is used for cropping to get the output image.
-     * @param cropMode Accepts value of type CropMode. Possible values include resize, extract, pad_extract and pad_resize.
-     * Default value - resize
-     * @see CropMode
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func cropMode(cropMode: CropMode) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.cropMode] = cropMode
-        transformationList.append(String(format: "%s-%s", TranformationMapping.cropMode, cropMode.rawValue))
+    * Method used to specify the strategy of how the input image is used for cropping to get the output image.
+    * @param cropMode Accepts value of type CropMode. Possible values include resize, extract, pad_extract and pad_resize.
+    * Default value - resize
+    * @see CropMode
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func cropMode(cropMode: CropMode) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.cropMode] = cropMode
+        transformationList.append(String(format: "%@-%@", TransformationMapping.cropMode, cropMode.rawValue))
         return self
     }
-    
+
     /**
-     * Method used to specify the focus which is coupled with the extract type of crop mode (crop mode is not needed
-     * if you are using auto focus) to get the area of the input image that should be focussed on to get the output image.
-     * @param focusType Accepts value of type FocusType. Possible values include center, top, left, bottom, right,
-     * top_left, top_right, bottom_left, bottom_right and auto.
-     * Default value - center
-     * @see FocusType
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func focus(focusType: FocusType) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.focus] = focusType
-        transformationList.append(String(format: "%s-%s", TranformationMapping.focus, focusType.rawValue))
+    * Method used to specify the focus which is coupled with the extract type of crop mode (crop mode is not needed
+    * if you are using auto focus) to get the area of the input image that should be focussed on to get the output image.
+    * @param focusType Accepts value of type FocusType. Possible values include center, top, left, bottom, right,
+    * top_left, top_right, bottom_left, bottom_right and auto.
+    * Default value - center
+    * @see FocusType
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func focus(focusType: FocusType) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.focus] = focusType
+        transformationList.append(String(format: "%@-%@", TransformationMapping.focus, focusType.rawValue))
         return self
     }
-    
+
     /**
-     * Method to specify the output quality of the lossy formats like JPG and WebP. A higher quality number means a
-     * larger size of the output image with high quality. A smaller number means low quality image at a smaller size.
-     * @param quality Accepts integer value between 1 and 100.
-     * Default value is picked from the dashboard settings. It is set to 80.
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if quality is outside the 1 to 100 range.
-     */
-    func quality(quality: Int) throws -> ImagekitUrlConstructor {
-        if (quality < 1 || quality > 100) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+    * Method to specify the output quality of the lossy formats like JPG and WebP. A higher quality number means a
+    * larger size of the output image with high quality. A smaller number means low quality image at a smaller size.
+    * @param quality Accepts integer value between 1 and 100.
+    * Default value is picked from the dashboard settings. It is set to 80.
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func quality(quality: Int) -> ImagekitUrlConstructor {
+        if quality < 1 || quality > 100{
+            fatalError("Transform value is out of range!")
         }
-        
-        transformationMap[TranformationMapping.quality] = quality
-        transformationList.append(String(format: "%s-%d", TranformationMapping.quality, quality))
+        transformationMap[TransformationMapping.quality] = quality
+        transformationList.append(String(format: "%@-%d", TransformationMapping.quality, quality))
         return self
     }
-    
+
     /**
-     * Method used to specify the format of the output image. If no output format is specified and
-     * the “Dynamic image format selection” option is selected in your dashboard settings, then the output format is
-     * decided on the basis of the user’s device capabilities and input image format. If dynamic image format selction
-     * is switched off, and no output format is specified then the format of the output image is same as that of the input image.
-     * @param format Accepts value of type FocusType. Possible values include auto, webp, jpg, jpeg and pnt.
-     * Default value - auto
-     * @see Format
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func format(format: Format) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.format] = format
-        transformationList.append(String(format: "%s-%s", TranformationMapping.format, format.rawValue))
+    * Method used to specify the format of the output image. If no output format is specified and
+    * the “Dynamic image format selection” option is selected in your dashboard settings, then the output format is
+    * decided on the basis of the user’s device capabilities and input image format. If dynamic image format selction
+    * is switched off, and no output format is specified then the format of the output image is same as that of the input image.
+    * @param format Accepts value of type FocusType. Possible values include auto, webp, jpg, jpeg and pnt.
+    * Default value - auto
+    * @see Format
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func format(format: Format) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.format] = format
+        transformationList.append(String(format: "%@-%@", TransformationMapping.format, format.rawValue))
         return self
     }
-    
+
     /**
-     * Method to specify the Gaussian blur that has to be applied to the image. The value of blur decides the radius of
-     * the Gaussian blur that is applied. Higher the value, higher is the radius of Gaussian blur.
-     * @param blur Accepts integer value between 1 and 100.
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if quality is outside the 1 to 100 range.
-     */
-    func blur(blur: Int) throws -> ImagekitUrlConstructor {
-        if (blur < 1 || blur > 100) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+    * Method to specify the Gaussian blur that has to be applied to the image. The value of blur decides the radius of
+    * the Gaussian blur that is applied. Higher the value, higher is the radius of Gaussian blur.
+    * @param blur Accepts integer value between 1 and 100.
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func blur(blur: Int) -> ImagekitUrlConstructor {
+        if blur < 1 || blur > 100{
+            fatalError("Transform value is out of range!")
         }
-        
-        transformationMap[TranformationMapping.blur] = blur
-        transformationList.append(String(format: "%s-%d", TranformationMapping.blur, blur))
+        transformationMap[TransformationMapping.blur] = blur
+        transformationList.append(String(format: "%@", TransformationMapping.blur))
         return self
     }
-    
+
     /**
-     * Method to turn an image into its grayscale version.
-     * @param flag Accepts Bool value of either true or false. Default value is false.
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if quality is outside the 1 to 100 range.
-     */
-    func showInGrayscale(flag: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.eGrayscale] = flag
-        
-        if (flag) {
-            transformationList.append(String(format: "%s", TranformationMapping.eGrayscale))
+    * Method to turn an image into its grayscale version.
+    * @param flag Accepts boolean value of either true or false. Default value is false.
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func effectGray(flag: Bool) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.eGrayscale] = flag
+        if (flag){
+            transformationList.append(String(format: "%@", TransformationMapping.eGrayscale))
         }
-        
         return self
     }
-    
+
     /**
-     * Method to specify the device pixel ratio to be used to calculate the dimension of the output image. It is useful
-     * when creating image transformations for devices with high density screens (DPR greater than 1) like the iPhone.
-     * The DPR option works only when either the height or the width or both are specified for resizing the image
-     * If the resulting height or width after considering the specified DPR value is less than 1px or more than 5000px
-     * then the value of DPR is not considered and the normal height or width specified in the transformation string is used.
-     * @param dpr Possible values: 0.1 to 5.0
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if quality is outside the 0.1 to 5.0 range.
-     */
-    func devicePixelRatio(dpr: Float) throws -> ImagekitUrlConstructor {
-        if (dpr < 0.1 || dpr > 5) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+    * Method to specify the device pixel ratio to be used to calculate the dimension of the output image. It is useful
+    * when creating image transformations for devices with high density screens (DPR greater than 1) like the iPhone.
+    * The DPR option works only when either the height or the width or both are specified for resizing the image
+    * If the resulting height or width after considering the specified DPR value is less than 1px or more than 5000px
+    * then the value of DPR is not considered and the normal height or width specified in the transformation string is used.
+    * @param dpr Possible values: 0.1 to 5.0
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func dpr(dpr: Float) -> ImagekitUrlConstructor {
+        if (dpr < 0.1 || dpr > 5){
+            fatalError("Transform value is out of range!")
         }
-        
-        transformationMap[TranformationMapping.dpr] = dpr
-        transformationList.append(String(format: "%s-%f", TranformationMapping.dpr, dpr))
+        transformationMap[TransformationMapping.dpr] = dpr
+        transformationList.append(String(format: "%s-%f", TransformationMapping.dpr, dpr))
         return self
     }
-    
+
     /**
-     * Method to specify the Named transformations which is an alias for the entire transformation string.
-     * E.g we can create a named transform media_library_thumbnail for transformation string tr:w-150,h-150,f-center,c-at_max
-     * @param namedTransformation
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func namedTransformation(namedTransformation: String) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.namedTransformation] = namedTransformation
-        transformationList.append(String(format: "%s-%s", TranformationMapping.namedTransformation, namedTransformation))
+    * Method to specify the Named transformations which is an alias for the entire transformation string.
+    * E.g we can create a named transform media_library_thumbnail for transformation string tr:w-150,h-150,f-center,c-at_max
+    * @param namedTransformation
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func named(namedTransformation: String) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.namedTransformation] = namedTransformation
+        transformationList.append(String(format: "%@-%@", TransformationMapping.namedTransformation, namedTransformation))
         return self
     }
-    
+
     /**
-     * Method to specify the default image which is delivered in case the image that is requested using ImageKit does not exist.
-     * @param defaultImage
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func defaultImage(defaultImage: String) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.defaultImage] = defaultImage
-        transformationList.append(String(format: "%s-%s", TranformationMapping.defaultImage, defaultImage))
+    * Method to specify the default image which is delivered in case the image that is requested using ImageKit does not exist.
+    * @param defaultImage
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func defaultImage(defaultImage: String) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.defaultImage] = defaultImage
+        transformationList.append(String(format: "%@-%@", TransformationMapping.defaultImage, defaultImage))
         return self
     }
-    
+
     /**
-     * Method to specify if the output JPEG image should be rendered progressively. In progressive rendering,
-     * the client instead of downloading the image row-wise (baseline loading), renders a low-quality pixelated
-     * full image and then gradually keeps on adding more pixels and information to the image. It gives faster-perceived load times.
-     * @param flag Possible values include true and false. Default value - false
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func isProgressiveJPEG(flag: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.progressiveJPEG] = flag
-        transformationList.append(String(format: "%s-%b", TranformationMapping.progressiveJPEG, flag))
+    * Method to specify if the output JPEG image should be rendered progressively. In progressive rendering,
+    * the client instead of downloading the image row-wise (baseline loading), renders a low-quality pixelated
+    * full image and then gradually keeps on adding more pixels and information to the image. It gives faster-perceived load times.
+    * @param flag Possible values include true and false. Default value - false
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func progressive(flag: Bool) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.progressiveJPEG] = flag
+        transformationList.append(String(format: "%@-%b", TransformationMapping.progressiveJPEG, flag))
         return self
     }
-    
+
     /**
-     * Method to specify if the output image (if in PNG or WebP format) should be compressed losslessly.
-     * In lossless compression, the output file size would be larger than the regular lossy compression but at the same time,
-     * the perceived quality can be better in certain cases, especially for computer generated graphics.
-     * Using lossless compression is not recommended for photographs.
-     * @param flag Possible values include true and false. Default value - false
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func isLossless(flag: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.lossless] = flag
-        transformationList.append(String(format: "%s-%b", TranformationMapping.lossless, flag))
+    * Method to specify if the output image (if in PNG or WebP format) should be compressed losslessly.
+    * In lossless compression, the output file size would be larger than the regular lossy compression but at the same time,
+    * the perceived quality can be better in certain cases, especially for computer generated graphics.
+    * Using lossless compression is not recommended for photographs.
+    * @param flag Possible values include true and false. Default value - false
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func lossless(flag: Bool) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.lossless] = flag
+        transformationList.append(String(format: "%@-%b", TransformationMapping.lossless, flag))
         return self
     }
-    
+
     /**
-     * Method to specify if the redundant pixels of the original image need to be removed. It uses a default logic
-     * to identify the redundant surrounding region and removes it. This transformation is useful for images that have
-     * a solid / nearly-solid background and the object in the center. This transformation will trim
-     * the background from the edges, leaving only the central object in the picture.
-     * @param flag Possible values include true and false.
-     * @return the current ImagekitUrlConstructor object.
-     * @see trimEdges
-     */
-    func trimEdges(flag: Bool) throws -> ImagekitUrlConstructor {
-        if (transformationMap.keys.contains(TranformationMapping.trimEdges)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
+    * Method to specify if the redundant pixels of the original image need to be removed. It uses a default logic
+    * to identify the redundant surrounding region and removes it. This transformation is useful for images that have
+    * a solid / nearly-solid background and the object in the center. This transformation will trim
+    * the background from the edges, leaving only the central object in the picture.
+    * @param flag Possible values include true and false.
+    * @return the current ImagekitUrlConstructor object.
+    * @see trim
+    */
+    public func trim(flag: Bool) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.trimEdges] = flag
+        transformationList.append(String(format: "%@-%b", TransformationMapping.trimEdges, flag))
+        return self
+    }
+
+    /**
+    * Method to specify the number of redundant pixels of the original image that need to be removed.
+    * This transformation is useful for images that have a solid / nearly-solid background and the object in the center.
+    * This transformation will trim the background from the edges, leaving only the central object in the picture.
+    * @param value Number of pixels from the edge that need to be removed across all four sides.
+    * @return the current ImagekitUrlConstructor object.
+    * @see trim
+    */
+    public func trim(value: Int) -> ImagekitUrlConstructor {
+        if (value < 1 || value > 99){
+            fatalError("Transform value is out of range!")
         }
-        
-        transformationMap[TranformationMapping.trimEdges] = flag
-        transformationList.append(String(format: "%s-%b", TranformationMapping.trimEdges, flag))
-        return self
-    }
-    
-    /**
-     * Method to specify the number of redundant pixels of the original image that need to be removed.
-     * This transformation is useful for images that have a solid / nearly-solid background and the object in the center.
-     * This transformation will trim the background from the edges, leaving only the central object in the picture.
-     * @param value Number of pixels from the edge that need to be removed across all four sides.
-     * @return the current ImagekitUrlConstructor object.
-     * @see trimEdges
-     */
-    func trimEdges(value: Int) throws -> ImagekitUrlConstructor {
-        if (transformationMap.keys.contains(TranformationMapping.trimEdges)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        } else if (value < 1 || value > 99) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
-        }
-        
-        transformationMap[TranformationMapping.trimEdges] = value
-        transformationList.append(String(format: "%s-%d", TranformationMapping.trimEdges, value))
+        transformationMap[TransformationMapping.trimEdges] = value
+        transformationList.append(String(format: "%@-%d", TransformationMapping.trimEdges, value))
         return self
     }
     
@@ -289,9 +275,10 @@ public class ImagekitUrlConstructor {
      * @param overlayImage
      * @return the current ImagekitUrlConstructor object.
      */
-    func overlayImage(overlayImage: String) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.overlayImage] = overlayImage
-        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayImage, overlayImage))
+    public func overlayImage(overlayImage: String) -> ImagekitUrlConstructor {
+        let formattedOverlayImage = overlayImage.replacingOccurrences(of: "/", with: "@@")
+        transformationMap[TransformationMapping.overlayImage] = formattedOverlayImage
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayImage, formattedOverlayImage))
         return self
     }
     
@@ -301,134 +288,44 @@ public class ImagekitUrlConstructor {
      * Default value - center
      * @see OverlayFocusType
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if not a single overlay is specified or the overlay coordinates have already been applied
      * using either overlayPosX() or overlayPosY()
      */
-    func overlayFocus(overlayFocus: OverlayFocusType) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayImage)
-            || !transformationMap.keys.contains(TranformationMapping.overlayText)
-            || !transformationMap.keys.contains(TranformationMapping.overlayBackground)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if (transformationMap.keys.contains(TranformationMapping.overlayX)
-            || transformationMap.keys.contains(TranformationMapping.overlayY)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        }
-        
-        transformationMap[TranformationMapping.overlayFocus] = overlayFocus
-        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayFocus, overlayFocus.rawValue))
+    public func overlayFocus(overlayFocus: OverlayFocusType) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.overlayFocus] = overlayFocus
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayFocus, overlayFocus.rawValue))
         return self
     }
-    
+
     /**
      * Method used to provide more granular control over the positioning of the overlay image on the input image.
      * The top left corner of the input image is considered as (0,0) and the bottom right corner is considered as (w, h)
      * where w is the width and h is the height of the input image.
-     * @param overlayPosX Possible values include zero and positive integers.
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if not a single overlay is specified
-     * or the overlay focus has already been applied
-     * or overlayPosX is less than 0.
-     */
-    func overlayPosX(overlayPosX: Int) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayImage)
-            || !transformationMap.keys.contains(TranformationMapping.overlayText)
-            || !transformationMap.keys.contains(TranformationMapping.overlayBackground)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if (transformationMap.keys.contains(TranformationMapping.overlayFocus)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        } else if (overlayPosX < 0) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
-        }
-        
-        transformationMap[TranformationMapping.overlayX] = overlayPosX
-        transformationList.append(String(format: "%s-%d", TranformationMapping.overlayX, overlayPosX))
-        return self
-    }
-    
-    /**
-     * Method used to provide more granular control over the positioning of the overlay image on the input image.
-     * The top left corner of the input image is considered as (0,0) and the bottom right corner is considered as (w, h)
-     * where w is the width and h is the height of the input image.
-     * @param overlayPosY Possible values include zero and positive integers.
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if not a single overlay is specified
-     * or the overlay focus has already been applied
-     * or overlayPosY is less than 0.
-     */
-    func overlayPosY(overlayPosY: Int)  throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayImage)
-            || !transformationMap.keys.contains(TranformationMapping.overlayText)
-            || !transformationMap.keys.contains(TranformationMapping.overlayBackground)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if (transformationMap.keys.contains(TranformationMapping.overlayFocus)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        } else if (overlayPosY < 0) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
-        }
-        
-        transformationMap[TranformationMapping.overlayY] = overlayPosY
-        transformationList.append(String(format: "%s-%d", TranformationMapping.overlayY, overlayPosY))
-        return self
-    }
-    
-    /**
-     * Method used to provide more granular control over the positioning of the overlay image on the input image.
      * Negative values are supported with a leading capital N in front of the value provided. The value provided
      * is subtracted from the original dimension of the image & positioned accordingly.
-     * @param overlayNegX Possible values include integers less than zero.
+     * @param overlayX Possible values include all integers.
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if not a single overlay is specified
      * or the overlay focus has already been applied
-     * or overlayPosY is not a negative integer.
-     * @see overlayPosX
      */
-    func overlayNegX(overlayNegX: Int) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayImage)
-            || !transformationMap.keys.contains(TranformationMapping.overlayText)
-            || !transformationMap.keys.contains(TranformationMapping.overlayBackground)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if (transformationMap.keys.contains(TranformationMapping.overlayFocus)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        } else if (overlayNegX >= 0) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
-        }
-        
-        let s = String(format: "%s-N%s", TranformationMapping.overlayX, overlayNegX)
-        transformationMap[TranformationMapping.overlayX] = s
+    public func overlayX(overlayX: Int) -> ImagekitUrlConstructor {
+        let s = String(format: "%@-%d", TransformationMapping.overlayX, abs(overlayX))
+        transformationMap[TransformationMapping.overlayX] = s
         transformationList.append(s)
         return self
     }
     
     /**
      * Method used to provide more granular control over the positioning of the overlay image on the input image.
+     * The top left corner of the input image is considered as (0,0) and the bottom right corner is considered as (w, h)
+     * where w is the width and h is the height of the input image.
      * Negative values are supported with a leading capital N in front of the value provided. The value provided
      * is subtracted from the original dimension of the image & positioned accordingly.
-     * @param overlayNegY Possible values include integers less than zero.
+     * @param overlayY Possible values include all integers.
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if not a single overlay is specified
      * or the overlay focus has already been applied
-     * or overlayPosY is not a negative integer.
-     * @see overlayPosY
      */
-    func overlayNegY(overlayNegY: Int) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayImage)
-            || !transformationMap.keys.contains(TranformationMapping.overlayText)
-            || !transformationMap.keys.contains(TranformationMapping.overlayBackground)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if (transformationMap.keys.contains(TranformationMapping.overlayFocus)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        } else if (overlayNegY >= 0) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
-        }
-        
-        let s = String(format: "%s-N%s", TranformationMapping.overlayY, overlayNegY)
-        transformationMap[TranformationMapping.overlayY] = s
+    public func overlayY(overlayY: Int) -> ImagekitUrlConstructor {
+        let s = String(format: "%@-%d", TransformationMapping.overlayY, abs(overlayY))
+        transformationMap[TransformationMapping.overlayY] = s
         transformationList.append(s)
         return self
     }
@@ -438,9 +335,9 @@ public class ImagekitUrlConstructor {
      * @param overlayWidth
      * @return the current ImagekitUrlConstructor object.
      */
-    func overlayWidth(overlayWidth: Float) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.overlayWidth] = overlayWidth
-        transformationList.append(String(format: "%s-%f", TranformationMapping.overlayWidth, overlayWidth))
+    public func overlayWidth(overlayWidth: Int) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.overlayWidth] = overlayWidth
+        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayWidth, overlayWidth))
         return self
     }
     
@@ -449,25 +346,23 @@ public class ImagekitUrlConstructor {
      * @param overlayHeight
      * @return the current ImagekitUrlConstructor object.
      */
-    func overlayHeight(overlayHeight: Float) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.overlayHeight] = overlayHeight
-        transformationList.append(String(format: "%s-%f", TranformationMapping.overlayHeight, overlayHeight))
+    public func overlayHeight(overlayHeight: Int) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.overlayHeight] = overlayHeight
+        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayHeight, overlayHeight))
         return self
     }
-    
+
     /**
      * Method used to overlay text over an image. Our current support is limited to alphanumberic & special characters _ & - only.
      * @param overlayText
      * @return the current ImagekitUrlConstructor object.
      */
-    func overlayText(overlayText: String) throws -> ImagekitUrlConstructor {
-        let regex = "[\\w\\s-]+"
-        if !overlayText.matches(regex) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+    public func overlayText(overlayText: String) -> ImagekitUrlConstructor{
+        if !overlayText.matches("[\\w\\s-]+") {
+            fatalError("Invalid transform value specified!")
         }
-        
-        transformationMap[TranformationMapping.overlayText] = overlayText
-        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayText, overlayText))
+        transformationMap[TransformationMapping.overlayText] = overlayText
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayText, overlayText))
         return self
     }
     
@@ -476,53 +371,35 @@ public class ImagekitUrlConstructor {
      * @param overlayTextColor Possible value is a valid valid RGB Hex Code
      * @return the current ImagekitUrlConstructor object.
      */
-    func overlayTextColor(overlayTextColor: String)  throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayText)) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if (overlayTextColor.count != 6 || !overlayTextColor.matches("[A-Fa-f0-9]+")) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+    public func overlayTextColor(overlayTextColor: String) -> ImagekitUrlConstructor{
+        if (overlayTextColor.count != 6 && overlayTextColor.matches("[A-Fa-f0-9]{6}")){
+            fatalError("Invalid transform value specified!")
         }
-        
-        transformationMap[TranformationMapping.overlayTextColor] = overlayTextColor.uppercased()
-        transformationList.append(
-            String(format:
-                "%s-%s",
-                   TranformationMapping.overlayTextColor,
-                   overlayTextColor.uppercased()
-            )
-        )
+        transformationMap[TransformationMapping.overlayTextColor] = overlayTextColor.uppercased()
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextColor, overlayTextColor.uppercased()))
         return self
     }
     
     /**
      * Method used to specify the font family for the overlaid text.
-     * @param overlayTextFont
+     * @param overlayTextFontFamily
      * @return the current ImagekitUrlConstructor object.
-     * @see <a href="https://docs.imagekit.io/#server-side-image-upload">Supported fonts</a>.
-     * @see OverlayTextFont
+     * @see overlayTextFontFamily
      */
-    func overlayTextFont(overlayTextFont: OverlayTextFont) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayText)) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        }
-        
-        transformationMap[TranformationMapping.overlayTextFont] = overlayTextFont
-        transformationList.append(String(format: "%s-%s", TranformationMapping.overlayFocus, overlayTextFont.rawValue))
+    public func overlayTextFontFamily(overlayTextFontFamily: OverlayTextFont) -> ImagekitUrlConstructor{
+        transformationMap[TransformationMapping.overlayTextFont] = overlayTextFontFamily
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextFont, overlayTextFontFamily.rawValue))
         return self
     }
     
     /**
      * Method used to specify the size of the overlaid text.
-     * @param overlayTextSize Possible values include any integer. Default value - 14px
+     * @param overlayTextFontSize Possible values include any integer. Default value - 14px
      * @return the current ImagekitUrlConstructor object.
      */
-    func overlayTextSize(overlayTextSize: Int)  throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayText)) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        }
-        
-        transformationMap[TranformationMapping.overlayTextSize] = overlayTextSize
-        transformationList.append(String(format: "%s-%d", TranformationMapping.overlayTextSize, overlayTextSize))
+    public func overlayTextFontSize(overlayTextSize: Int) -> ImagekitUrlConstructor{
+        transformationMap[TransformationMapping.overlayTextSize] = overlayTextSize
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextSize, overlayTextSize))
         return self
     }
     
@@ -530,67 +407,42 @@ public class ImagekitUrlConstructor {
      * Method used to specify the typography of the font family used for the overlaid text. Possible values include bold b and italics i.
      * Note Bold & Italics are not supported for all provided fonts.
      * @param overlayTextTypography
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if overlay text has not been specified
-     * @see <a href="https://docs.imagekit.io/#server-side-image-upload">Supported fonts</a>.
+     * @return the current ImagekitUrlConstructor object
      * @see OverlayTextTypography
      */
-    func overlayTextTypography(overlayTextTypography: OverlayTextTypography) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayText)) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        }
-        
-        transformationMap[TranformationMapping.overlayTextTypography] = overlayTextTypography
-        transformationList.append(
-            String(format:
-                "%s-%s",
-                   TranformationMapping.overlayTextTypography,
-                   overlayTextTypography.rawValue
-            )
-        )
+    public func overlayTextTypography(overlayTextTypography: OverlayTextTypography) -> ImagekitUrlConstructor{
+        transformationMap[TransformationMapping.overlayTextTypography] = overlayTextTypography
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextTypography, overlayTextTypography.rawValue))
         return self
     }
     
     /**
      * Method used to specify the colour of background canvas to be overlaid. Possible values include a valid RGB Hex code.
-     * @param overlayBackgroundColor
+     * @param overlayBackground
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if color is not a valid RGB Hex code.
      */
-    func overlayBackgroundColor(overlayBackgroundColor: String)  throws -> ImagekitUrlConstructor {
-        if (overlayBackgroundColor.count != 6 || !overlayBackgroundColor.matches("[A-Fa-f0-9]+")) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+    public func overlayBackground(overlayBackground: String) -> ImagekitUrlConstructor {
+        if (overlayBackground.count != 6 && overlayBackground.matches("[A-Fa-f0-9]{6}")){
+            fatalError("Invalid transform value specified!")
         }
-        
-        transformationMap[TranformationMapping.overlayBackground] = overlayBackgroundColor.uppercased()
-        transformationList.append(
-            String(format:
-                "%s-%s",
-                   TranformationMapping.overlayBackground,
-                   overlayBackgroundColor.uppercased()
-            )
-        )
+        transformationMap[TransformationMapping.overlayBackground] = overlayBackground.uppercased()
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayBackground, overlayBackground.uppercased()))
         return self
     }
     
     /**
      * Method used to specify the transparency level for the overlaid image.
      * Note Overlay transparency is currently supported for overlay texts & backgrounds only.
-     * @param overlayTransparency Possible values include integer from 1 to 9.
+     * @param overlayAlpha Possible values include integer from 1 to 9.
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if neither an overlay text nor background is specified
      */
-    func overlayTransparency(overlayTransparency: Int) throws -> ImagekitUrlConstructor {
-        if (!transformationMap.keys.contains(TranformationMapping.overlayText)
-            || !transformationMap.keys.contains(TranformationMapping.overlayBackground)
-            ) {
-            throw ImagekitException.message(ErrorMessages.error_required_transform_value_not_specified)
-        } else if !((1...9).contains(overlayTransparency)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_out_of_range)
+    public func overlayAlpha(overlayAlpha: Int) -> ImagekitUrlConstructor {
+        if overlayAlpha < 0 || overlayAlpha > 10 {
+            fatalError("Transform value is out of range!")
         }
         
-        transformationMap[TranformationMapping.overlayTransparency] = overlayTransparency
-        transformationList.append(String(format: "%s-%d", TranformationMapping.overlayTransparency, overlayTransparency))
+        transformationMap[TransformationMapping.overlayTransparency] = overlayAlpha
+        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTransparency, overlayAlpha))
         return self
     }
     
@@ -602,11 +454,11 @@ public class ImagekitUrlConstructor {
      * @param flag Default value - false
      * @return the current ImagekitUrlConstructor object.
      */
-    func includeColorProfile(flag: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.colorProfile] = flag
-        transformationList.append(String(format: "%s-%b", TranformationMapping.colorProfile, flag))
-        return self
-    }
+     public func colorProfile(flag: Bool) -> ImagekitUrlConstructor {
+         transformationMap[TransformationMapping.colorProfile] = flag
+         transformationList.append(String(format: "%@-%b", TransformationMapping.colorProfile, flag))
+         return self
+     }
     
     /**
      * Method used to specify if the output image should contain all the metadata that is initially available from
@@ -617,9 +469,9 @@ public class ImagekitUrlConstructor {
      * @param flag Default value - false
      * @return the current ImagekitUrlConstructor object.
      */
-    func includeImageMetadata(flag: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.imageMetadata] = flag
-        transformationList.append(String(format: "%s-%b", TranformationMapping.imageMetadata, flag))
+    public func metadata(flag: Bool) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.imageMetadata] = flag
+        transformationList.append(String(format: "%@-%b", TransformationMapping.imageMetadata, flag))
         return self
     }
     
@@ -631,26 +483,22 @@ public class ImagekitUrlConstructor {
      * @see Rotation
      * @return the current ImagekitUrlConstructor object.
      */
-    func rotate(rotation: Rotation) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.rotate] = rotation
-        transformationList.append(String(format: "%s-%s", TranformationMapping.rotate, rotation.rawValue))
-        return self
-    }
+     public func rotation(rotation: Rotation) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.rotate] = rotation
+        transformationList.append(String(format: "%@-%@", TransformationMapping.rotate, rotation.rawValue))
+         return self
+     }
+    
     
     /**
      * Method used to specify the radius to be used to get a rounded corner image.
      * This option is applied after resizing of the image, if any.
      * @param radius Possible values include positive integer.
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if radius has already been specified
      */
-    func radius(radius: Int) throws -> ImagekitUrlConstructor {
-        if (transformationMap.keys.contains(TranformationMapping.radius)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        }
-        
-        transformationMap[TranformationMapping.radius] = radius
-        transformationList.append(String(format: "%s-%d", TranformationMapping.radius, radius))
+    public func radius(radius: Int) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.radius] = radius
+        transformationList.append(String(format: "%@-%d", TransformationMapping.radius, radius))
         return self
     }
     
@@ -658,81 +506,44 @@ public class ImagekitUrlConstructor {
      * Method used to get a perfectly rounded image.
      * This option is applied after resizing of the image, if any.
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if radius has already been specified
      */
-    func round() throws -> ImagekitUrlConstructor {
-        if (transformationMap.keys.contains(TranformationMapping.radius)) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_already_exists)
-        }
-        
-        transformationMap[TranformationMapping.radius] = "max"
-        transformationList.append(String(format: "%s-%s", TranformationMapping.radius, "max"))
+    public func round() -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.radius] = "max"
+        transformationList.append(String(format: "%@-%@", TransformationMapping.radius, "max"))
         return self
     }
     
     /**
-     * Method used to specify the background color as RGB hex code (e.g. FF0000) to be used for the image.
-     * @param backgroundHexColor Default value - Black 000000
+     * Method used to specify the background color as RGB hex code (e.g. FF0000) or an RGBA code (e.g. FFAABB50)
+     * to be used for the image.
+     * @param backgroundColor Default value - Black 000000
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if color is not a valid RGB Hex code.
      */
-    func backgroundHexColor(backgroundHexColor: String) throws -> ImagekitUrlConstructor {
-        if (backgroundHexColor.count != 6 || !backgroundHexColor.matches("[A-Fa-f0-9]+")) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+    public func background(backgroundColor: String) -> ImagekitUrlConstructor {
+        if (backgroundColor.count != 6 && backgroundColor.matches("[A-Fa-f0-9]{6}[0-9]{2}+")){
+            fatalError("Invalid transform value specified!")
         }
         
-        transformationMap[TranformationMapping.backgroundColor] = backgroundHexColor.uppercased()
-        transformationList.append(
-            String(format:
-                "%s-%s",
-                   TranformationMapping.backgroundColor,
-                   backgroundHexColor.uppercased()
-            )
-        )
-        return self
-    }
-    
-    /**
-     * Method used to specify the background color as an RGBA code (e.g. FFAABB50) to be used for the image.
-     * @param backgroundRGBAColor If you specify an 8-character background, the last two characters should be numbers from
-     * 00 to 99 which indicate the opacity level of the background. 00 corresponds to an opacity of 0.00,
-     * 01 corresponds to an opacity of 0.01 and so on.
-     * Default value - Black 000000
-     * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if color is not a valid RGBA code.
-     */
-    func backgroundRGBAColor(backgroundRGBAColor: String) throws -> ImagekitUrlConstructor {
-        if (backgroundRGBAColor.count != 8 || !backgroundRGBAColor.matches("[A-Fa-f0-9]{6}[0-9]{2}+")) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
-        }
-        
-        transformationMap[TranformationMapping.backgroundColor] = backgroundRGBAColor.uppercased()
-        transformationList.append(
-            String(format:
-                "%s-%s",
-                   TranformationMapping.backgroundColor,
-                   backgroundRGBAColor.uppercased()
-            )
-        )
+        transformationMap[TransformationMapping.backgroundColor] = backgroundColor.uppercased()
+        transformationList.append(String(format: "%@-%@", TransformationMapping.backgroundColor, backgroundColor.uppercased()))
         return self
     }
     
     /**
      * Method used to specify the width and color of the border that is added around the image.
      * The width is a positive integer that specifies the border width in pixels.
-     * The border color is specified as a standard RGB hex code e.g b-<width>_<color>
+     * The border color is specified as a standard RGB hex code e.g b-{width}_{color}
      * @param borderWidth width of the border
      * @param borderColor color of the border as RGB hex code
      * @return the current ImagekitUrlConstructor object.
-     * @throws ImagekitException if color is not a valid RGB hex code.
      */
-    func border(borderWidth: Int, borderColor: String) throws -> ImagekitUrlConstructor {
-        if (borderColor.count != 6 || !borderColor.matches("[A-Fa-f0-9]+")) {
-            throw ImagekitException.message(ErrorMessages.error_transform_value_invalid)
+    public func border(borderWidth: Int, borderColor: String) -> ImagekitUrlConstructor {
+        if (borderColor.count != 6 || !borderColor.matches("[A-Fa-f0-9]+")){
+            fatalError("Invalid transform value specified!")
         }
         
-        let s = String(format: "%s-%d_%s", TranformationMapping.border, borderWidth, borderColor.uppercased())
-        transformationMap[TranformationMapping.border] = s
+        let s = String(format: "%@-%d_%@", TransformationMapping.border, borderWidth, borderColor.uppercased())
+        transformationMap[TransformationMapping.border] = s
         transformationList.append(s)
         return self
     }
@@ -744,13 +555,11 @@ public class ImagekitUrlConstructor {
      * @param flag
      * @return the current ImagekitUrlConstructor object.
      */
-    func stretchContrast(flag: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.contrastStretch] = flag
-        
-        if (flag) {
-            transformationList.append(String(format: "%s", TranformationMapping.contrastStretch))
+    public func effectContrast(flag: Bool) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.contrastStretch] = flag
+        if flag{
+            transformationList.append(String(format: "%@", TransformationMapping.contrastStretch))
         }
-        
         return self
     }
     
@@ -762,11 +571,12 @@ public class ImagekitUrlConstructor {
      * @param value
      * @return the current ImagekitUrlConstructor object.
      */
-    func sharpen(value: Int = 0) -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.sharpen] = value
-        transformationList.append(String(format: "%s-%d", TranformationMapping.sharpen, value))
+    public func effectSharpen(value: Int = 0) -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.sharpen] = value
+        transformationList.append(String(format: "%@-%d", TransformationMapping.sharpen, value))
         return self
     }
+
     
     /**
      * Unsharp masking (USM) is an image sharpening technique.
@@ -779,61 +589,81 @@ public class ImagekitUrlConstructor {
      * @param threshold Possible values include positive floating point values.
      * @return the current ImagekitUrlConstructor object.
      */
-    func applyUnsharpMask(radius: Float, sigma: Float, amount: Float, threshold: Float) -> ImagekitUrlConstructor {
-        let s = String(format: "%s-%f-%f-%f-%f", TranformationMapping.unsharpMask, radius, sigma, amount, threshold)
-        transformationMap[TranformationMapping.unsharpMask] = s
+    public func effectUSM(radius: Float, sigma: Float, amount: Float, threshold: Float) -> ImagekitUrlConstructor {
+        let s = String(format: "%@-%f-%f-%f-%f", TransformationMapping.unsharpMask, radius, sigma, amount, threshold)
+        transformationMap[TransformationMapping.unsharpMask] = s
         transformationList.append(s)
         return self
     }
-    
+
     /**
-     * Some transformations are dependent on the sequence in which they are carried out.
-     * Method used to add sequence dependent steps in a transform chain to obtain predictable results.
-     * @see <a href="https://docs.imagekit.io/#chained-transformations">Chained Transformations</a>.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    func addTransformationStep() -> ImagekitUrlConstructor {
-        transformationMap[TranformationMapping.transformationStep] = ":"
+    * Some transformations are dependent on the sequence in which they are carried out.
+    * Method used to add sequence dependent steps in a transform chain to obtain predictable results.
+    * @see https://docs.imagekit.io/#chained-transformations
+    * @return the current ImagekitUrlConstructor object.
+    */
+    public func chainTransformation() -> ImagekitUrlConstructor {
+        transformationMap[TransformationMapping.transformationStep] = ":"
         transformationList.append(":")
-        
         return self
     }
     
     /**
-     * Used to create the url using the transformations specified before invoking this method.
-     * @return the Url used to fetch an image after applying the specified transformations.
+     * Method allows adding custom transformations to the image.
+     * @return the current ImagekitUrlConstructor object.
      */
-    func create() -> String {
-        var url = endpoint
+    public func addCustomTransformation(key: String, value: String) -> ImagekitUrlConstructor {
+        transformationMap[key] = value
+        transformationList.append(String(format: "%@-%@", key, value))
+        return self
+    }
+
+    /**
+    * Used to create the url using the transformations specified before invoking this method.
+    * @return the Url used to fetch an image after applying the specified transformations.
+    */
+    public func create() -> String {
+        var url = self.endpoint
+        let apiVersion: String = API_VERSION!
         
         if !transformationList.isEmpty {
-            url = String(format: "%s/tr:", url!)
-            for t in 0...transformationList.count {
-//                url = when {
-//                    transformationList[t].contentEquals(":") -> String(format: "%s%s", url, transformationList[t])
-//                    url.endsWith(":") -> String(format: "%s%s", url, transformationList[t])
-//                    else -> String(format: "%s,%s", url, transformationList[t])
-//                }
+            let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
+            if (self.isSource){
+                url = self.source
+                if self.source.contains("?tr="){
+                    let endRange = url!.range(of: "?tr=")?.lowerBound
+                    url!.removeSubrange(endRange!..<url!.endIndex)
+                }
+                if self.source.contains("/tr:"){
+                    let urlComponents = url!.components(separatedBy: "/tr:")
+                    var path = urlComponents[1]
+                    let index = path.range(of: "/")?.upperBound
+                    path.removeSubrange(path.startIndex..<index!)
+                    url = String(format: "%@/%@", urlComponents[0], path)
+                }
+                url = String(format: "%@?tr=%@&ik-sdk-version=ios-%@", url!, transforms, apiVersion)
+            } else {
+                switch self.transformationPosition {
+                    case .PATH:
+                        url = String(format: "%@/tr:%@/%@?ik-sdk-version=ios-%@", url!, transforms, self.imagePath, apiVersion)
+                        break
+                    case .QUERY:
+                        url = String(format: "%@/%@?tr=%@&ik-sdk-version=ios-%@", url!, self.imagePath, transforms, apiVersion)
+                        break
+                    default: break
+                }
             }
         }
-        
-        url = String(format: "%s/%s", url!, imagePath)
         return url!
     }
-    
-    
-    
+
 }
-
-
 /*
- * Regular Expression matching function for Strings
- */
-
+* Regular Expression matching function for Strings
+*/
 extension String {
-    
     func matches(_ regex: String) -> Bool {
         return self.range(of: regex, options: .regularExpression, range: nil, locale: nil) != nil
     }
-    
+
 }

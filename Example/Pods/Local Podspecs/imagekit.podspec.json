@@ -1,24 +1,22 @@
 {
-  "name": "imagekit",
+  "name": "ImageKit",
   "version": "0.1.0",
-  "summary": "iOS client for ImageKit Integration",
-  "description": "This is the iOS client for ImageKit Integration.",
-  "homepage": "https://github.com/imagekit-developer/imagekit-ios",
+  "summary": "A short description of ImageKit.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ahnv/ImageKit",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "rungtaakki": "akshit@bowstringstudio.in"
+    "ahnv": "abhinavdhiman@Abhinavs-MacBook-Pro.local"
   },
   "source": {
-    "git": "https://github.com/imagekit-developer/imagekit-ios.git",
+    "git": "https://github.com/ahnv/ImageKit.git",
     "tag": "0.1.0"
   },
-  "swift_versions": "4.0",
   "platforms": {
     "ios": "8.0"
   },
-  "source_files": "imagekit/Classes/**/*",
-  "swift_version": "4.0"
+  "source_files": "ImageKit/Classes/**/*"
 }

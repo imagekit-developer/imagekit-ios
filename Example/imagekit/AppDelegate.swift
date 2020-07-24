@@ -1,24 +1,22 @@
 //
 //  AppDelegate.swift
-//  imagekit
+//  ImageKit
 //
-//  Created by rungtaakki on 07/03/2019.
-//  Copyright (c) 2019 rungtaakki. All rights reserved.
+//  Created by ahnv on 07/16/2020.
+//  Copyright (c) 2020 ahnv. All rights reserved.
 //
 
 import UIKit
-import imagekit
+import ImageKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
-//        ImageKit.configure(clientPublicKey: "Something", imageKitId: "Something")
-        
+        // Override point for customization after application launch.
+//        ImageKit.init(clientPublicKey: "amJ0i84qqCLLbOl25vqSozezhuc", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path")
         return true
     }
 
