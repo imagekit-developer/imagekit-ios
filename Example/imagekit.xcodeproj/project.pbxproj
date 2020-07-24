@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		53AD5F8224C76DEE00AFF777 /* ImageKit.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53AD5F8124C76DEE00AFF777 /* ImageKit.plist */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -33,7 +32,6 @@
 		2993B9223C061718918257E1 /* Pods_ImageKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ImageKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C4EB67F419AD50C7FD84005 /* Pods_ImageKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ImageKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50632C7AD33454F612F33C6F /* Pods-ImageKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageKit_Tests.release.xcconfig"; path = "Target Support Files/Pods-ImageKit_Tests/Pods-ImageKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		53AD5F8124C76DEE00AFF777 /* ImageKit.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ImageKit.plist; sourceTree = "<group>"; };
 		5911D987B2F9EB9869AF8981 /* ImageKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ImageKit.podspec; path = ../ImageKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		607FACD01AFB9204008FA782 /* ImageKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -121,7 +119,6 @@
 			isa = PBXGroup;
 			children = (
 				607FACD41AFB9204008FA782 /* Info.plist */,
-				53AD5F8124C76DEE00AFF777 /* ImageKit.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -252,7 +249,6 @@
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
-				53AD5F8224C76DEE00AFF777 /* ImageKit.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
