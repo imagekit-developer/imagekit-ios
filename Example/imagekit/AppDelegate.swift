@@ -15,8 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-//        ImageKit.init(clientPublicKey: "amJ0i84qqCLLbOl25vqSozezhuc", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path")
+        ImageKit.init(clientPublicKey: "amJ0i84qqCLLbOl25vqSozezhuc", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path")
         return true
     }
 
@@ -45,3 +44,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension UIImageView {
+    func load(url: URL) {
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.image = image
+                    }
+                }
+            }
+        }
+    }
+}

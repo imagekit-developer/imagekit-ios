@@ -361,8 +361,10 @@ public class ImagekitUrlConstructor {
         if !overlayText.matches("[\\w\\s-]+") {
             fatalError("Invalid transform value specified!")
         }
+        var allowedQueryParamAndKey = NSCharacterSet.urlQueryAllowed
+        allowedQueryParamAndKey.remove(charactersIn: ";/?:@&=+$, ")
         transformationMap[TransformationMapping.overlayText] = overlayText
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayText, overlayText))
+        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayText, overlayText.addingPercentEncoding(withAllowedCharacters: allowedQueryParamAndKey)!))
         return self
     }
     
@@ -399,7 +401,7 @@ public class ImagekitUrlConstructor {
      */
     public func overlayTextFontSize(overlayTextSize: Int) -> ImagekitUrlConstructor{
         transformationMap[TransformationMapping.overlayTextSize] = overlayTextSize
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextSize, overlayTextSize))
+        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTextSize, overlayTextSize))
         return self
     }
     
@@ -623,8 +625,12 @@ public class ImagekitUrlConstructor {
     * @return the Url used to fetch an image after applying the specified transformations.
     */
     public func create() -> String {
-        var url = self.endpoint
+        var url = self.source
         let apiVersion: String = API_VERSION!
+        
+        if self.source == nil{
+            url = String(format: "%@/%@?ik-sdk-version=ios-%@", self.endpoint!, self.imagePath!, apiVersion)
+        }
         
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
