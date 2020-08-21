@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5365B93724CD5CD800E75971 /* UploadFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365B93624CD5CD800E75971 /* UploadFileViewController.swift */; };
+		5365B93924CD5CE500E75971 /* UploadImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365B93824CD5CE500E75971 /* UploadImageViewController.swift */; };
 		53AD5F9F24CB751D00AFF777 /* FetchImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AD5F9E24CB751D00AFF777 /* FetchImageViewController.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -33,6 +35,8 @@
 		2993B9223C061718918257E1 /* Pods_ImageKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ImageKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C4EB67F419AD50C7FD84005 /* Pods_ImageKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ImageKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50632C7AD33454F612F33C6F /* Pods-ImageKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageKit_Tests.release.xcconfig"; path = "Target Support Files/Pods-ImageKit_Tests/Pods-ImageKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		5365B93624CD5CD800E75971 /* UploadFileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileViewController.swift; sourceTree = "<group>"; };
+		5365B93824CD5CE500E75971 /* UploadImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageViewController.swift; sourceTree = "<group>"; };
 		53AD5F9E24CB751D00AFF777 /* FetchImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchImageViewController.swift; sourceTree = "<group>"; };
 		5911D987B2F9EB9869AF8981 /* ImageKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ImageKit.podspec; path = ../ImageKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		607FACD01AFB9204008FA782 /* ImageKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,6 +117,8 @@
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
+				5365B93624CD5CD800E75971 /* UploadFileViewController.swift */,
+				5365B93824CD5CE500E75971 /* UploadImageViewController.swift */,
 			);
 			name = "Example for ImageKit";
 			path = ImageKit;
@@ -318,10 +324,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ImageKit_Example/Pods-ImageKit_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/ImageKit/ImageKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImageKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,6 +367,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				53AD5F9F24CB751D00AFF777 /* FetchImageViewController.swift in Sources */,
+				5365B93724CD5CD800E75971 /* UploadFileViewController.swift in Sources */,
+				5365B93924CD5CE500E75971 /* UploadImageViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
@@ -450,7 +460,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -499,7 +509,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

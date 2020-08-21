@@ -75,6 +75,8 @@ open class ImageKit: NSObject{
         return ImagekitUrlConstructor(src: src, transformationPosition: TransformationPosition.getEnum(string: transformationPosition))
     }
     
-    // TODO: Uploader
+    public func uploader() -> ImageKitUploader {
+        return ImageKitUploader()
+    }
     
 }

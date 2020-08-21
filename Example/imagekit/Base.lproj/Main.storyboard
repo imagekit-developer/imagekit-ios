@@ -33,6 +33,11 @@
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Upload Image"/>
+                                <connections>
+                                    <segue destination="F9e-pY-r0E" kind="popoverPresentation" popoverAnchorView="iaE-rf-N3j" id="Qhd-ID-d17">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XpH-NE-RjM">
                                 <rect key="frame" x="36" y="198.5" width="303" height="48"/>
@@ -42,6 +47,11 @@
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Upload File"/>
+                                <connections>
+                                    <segue destination="G5y-bn-3UV" kind="popoverPresentation" popoverAnchorView="XpH-NE-RjM" id="wkX-sV-E8m">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ZR-zJ-e0e">
                                 <rect key="frame" x="36" y="262.5" width="303" height="48"/>
@@ -223,7 +233,108 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iBu-Id-YpG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="813.60000000000002" y="109.29535232383809"/>
+            <point key="canvasLocation" x="1238" y="874"/>
+        </scene>
+        <!--Upload File View Controller-->
+        <scene sceneID="Ae4-BX-DUe">
+            <objects>
+                <viewController id="G5y-bn-3UV" customClass="UploadFileViewController" customModule="ImageKit_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RIg-CC-iGO"/>
+                        <viewControllerLayoutGuide type="bottom" id="Rr5-G4-S0T"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Zfk-Fg-TzT">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bfs-45-w1o">
+                                <rect key="frame" x="32" y="32" width="311" height="48"/>
+                                <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="971-tB-yvY"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Upload File"/>
+                                <connections>
+                                    <action selector="OnClickUpload:" destination="G5y-bn-3UV" eventType="touchUpInside" id="9wZ-OV-Uv3"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="bfs-45-w1o" firstAttribute="leading" secondItem="Zfk-Fg-TzT" secondAttribute="leadingMargin" constant="16" id="8Bu-zk-hVD"/>
+                            <constraint firstItem="bfs-45-w1o" firstAttribute="top" secondItem="RIg-CC-iGO" secondAttribute="bottom" constant="32" id="J3y-5x-ITM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="bfs-45-w1o" secondAttribute="trailing" constant="16" id="K07-KR-VUh"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dSU-LG-Oe0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1238" y="110"/>
+        </scene>
+        <!--Upload Image View Controller-->
+        <scene sceneID="Cja-fe-frq">
+            <objects>
+                <viewController id="F9e-pY-r0E" customClass="UploadImageViewController" customModule="ImageKit_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9cU-mD-76v"/>
+                        <viewControllerLayoutGuide type="bottom" id="8u6-x2-JNk"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0ph-Io-vCg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cfC-9e-3km">
+                                <rect key="frame" x="32" y="96" width="311" height="455"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HFb-cx-LS5">
+                                <rect key="frame" x="32" y="32" width="311" height="48"/>
+                                <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="imE-KY-8VT"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Select Image"/>
+                                <connections>
+                                    <action selector="OnClickSelect:" destination="F9e-pY-r0E" eventType="touchUpInside" id="vXI-N0-yar"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qkd-On-LMQ">
+                                <rect key="frame" x="32" y="567" width="311" height="48"/>
+                                <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="G0u-Cq-lnv"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Upload Image"/>
+                                <connections>
+                                    <action selector="OnClickUpload:" destination="F9e-pY-r0E" eventType="touchUpInside" id="7Ja-RA-kfj"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="HFb-cx-LS5" firstAttribute="top" secondItem="9cU-mD-76v" secondAttribute="bottom" constant="32" id="ACO-OQ-AN7"/>
+                            <constraint firstItem="8u6-x2-JNk" firstAttribute="top" secondItem="qkd-On-LMQ" secondAttribute="bottom" constant="32" id="Gvk-sZ-7rf"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="cfC-9e-3km" secondAttribute="trailing" constant="16" id="HGo-4w-wdU"/>
+                            <constraint firstItem="cfC-9e-3km" firstAttribute="top" secondItem="HFb-cx-LS5" secondAttribute="bottom" constant="16" id="Kq1-Q5-72m"/>
+                            <constraint firstItem="qkd-On-LMQ" firstAttribute="leading" secondItem="0ph-Io-vCg" secondAttribute="leadingMargin" constant="16" id="YgO-FN-Mb3"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="qkd-On-LMQ" secondAttribute="trailing" constant="16" id="aXB-0H-hkE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HFb-cx-LS5" secondAttribute="trailing" constant="16" id="dST-ZL-B0r"/>
+                            <constraint firstItem="HFb-cx-LS5" firstAttribute="leading" secondItem="0ph-Io-vCg" secondAttribute="leadingMargin" constant="16" id="eH1-Ng-aYc"/>
+                            <constraint firstItem="qkd-On-LMQ" firstAttribute="top" secondItem="cfC-9e-3km" secondAttribute="bottom" constant="16" id="uOe-Do-Qyl"/>
+                            <constraint firstItem="cfC-9e-3km" firstAttribute="leading" secondItem="0ph-Io-vCg" secondAttribute="leadingMargin" constant="16" id="vBt-3L-HQk"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="cfC-9e-3km" id="aFC-K7-VUH"/>
+                        <outlet property="selectImage" destination="HFb-cx-LS5" id="A2M-XB-K1O"/>
+                        <outlet property="uploadImage" destination="qkd-On-LMQ" id="YtL-gk-BDd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3At-rT-nx7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1237.5999999999999" y="-594.15292353823088"/>
         </scene>
     </scenes>
 </document>
