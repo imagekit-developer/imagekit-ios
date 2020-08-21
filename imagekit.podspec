@@ -28,6 +28,7 @@ TODO: Add long description of the pod here.
 
   s.swift_version    = '4.0'
   s.ios.deployment_target = '8.0'
+  s.dependency 'Alamofire', '~> 4.8.2'
 
   s.source_files = 'ImageKit/Classes/**/*'
   

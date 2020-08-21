@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        ImageKit.init(clientPublicKey: "amJ0i84qqCLLbOl25vqSozezhuc", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path")
+        ImageKit.init(clientPublicKey: "public_K0hLzl8KvshMKkSvKsEGxMSf5SI=", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path", authenticationEndpoint: "https://dev6.imagekit.io/temp/client-side-upload-signature")
         return true
     }
 
