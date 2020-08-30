@@ -7,28 +7,71 @@
 //
 
 import UIKit
+import ImageKit
 
 class UploadFileViewController: UIViewController {
 
+    
+    var fileUrlToBeUploaded: URL? = nil;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
-    @IBAction func OnClickUpload(_ sender: UIButton) {
+    @IBOutlet weak var filePreview: UIImageView!
+    @IBOutlet weak var uploadFile: UIButton!
+    
+    @IBAction func OnClickSelect(_ sender: UIButton) {
         let document = UIDocumentPickerViewController(documentTypes: ["public.item"], in: .open)
         document.delegate = self
         document.modalPresentationStyle = .formSheet
         self.present(document, animated: true, completion: nil)
     }
+    
+    @IBAction func OnClickUpload(_ sender: Any) {
+        do{
+            let filename = self.fileUrlToBeUploaded!.lastPathComponent
+            let file = try NSData(contentsOf: self.fileUrlToBeUploaded!) as Data
+            ImageKit.shared.uploader().upload(
+                file: file,
+                fileName: filename,
+                useUniqueFilename: true,
+                tags: ["demo","file"],
+                folder: "/",
+                signatureHeaders: ["x-test-header":"Test"],
+                completion: { result in
+                    switch result{
+                        case .success(let uploadAPIResponse):
+                            print(uploadAPIResponse)
+                        case .failure(let error):
+                            print(error)
+                    }
+            })
+        } catch {
+          print(error)
+        }
+        
+    }
+    
 }
 
 extension UploadFileViewController: UINavigationControllerDelegate, UIDocumentPickerDelegate{
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        dismiss(animated: true)
     }
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        dismiss(animated: true, completion: nil)
+        if let file = urls.first {
+            self.filePreview.image = UIImage.icon(forFileURL: file)
+            self.uploadFile.isHidden = false
+            self.fileUrlToBeUploaded = file
+        }
+    }
+}
+
+
+extension UIImage {
+    public class func icon(forFileURL fileURL: URL) -> UIImage {
+        return UIDocumentInteractionController(url: fileURL).icons.last!
     }
 }

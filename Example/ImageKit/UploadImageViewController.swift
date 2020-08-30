@@ -63,10 +63,8 @@ extension UploadImageViewController:UINavigationControllerDelegate, UIImagePicke
             self.imageView.image = image
             self.uploadImage.isHidden = false
         }
-        dismiss(animated: true)
     }
 
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
     }
 }

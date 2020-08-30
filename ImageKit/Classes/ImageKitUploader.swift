@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import Alamofire
 
 public class ImageKitUploader{
     
@@ -21,7 +21,7 @@ public class ImageKitUploader{
         responseFields: String? = "",
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
-        completion: @escaping (Result<UploadAPIResponse, Error>)-> Void) {
+        completion: @escaping (Result<UploadAPIResponse>)-> Void) {
         if let publicKey = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY), let _ = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT) {
             let expire = String(format: "%.0f", NSDate().timeIntervalSince1970 * 1000)
             SignatureAPI.getSignature(expire: expire, headerMap: signatureHeaders, completion: { result in
@@ -38,7 +38,7 @@ public class ImageKitUploader{
                             isPrivateFile: isPrivateFile!,
                             progressClosure: progress,
                             completion: { uploadResult in
-                                completion(Result.success(uploadResult.value!))
+                                completion(uploadResult)
                         })
                     case .failure(let error):
                         completion(Result.failure(error))
@@ -61,7 +61,7 @@ public class ImageKitUploader{
         responseFields: String? = "",
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
-        completion: @escaping (Result<UploadAPIResponse, Error>)-> Void) {
+        completion: @escaping (Result<UploadAPIResponse>)-> Void) {
         let image = UIImagePNGRepresentation(file)!
         self.upload(file: image, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, completion: completion)
     }
@@ -77,7 +77,7 @@ public class ImageKitUploader{
         responseFields: String? = "",
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
-        completion: @escaping (Result<UploadAPIResponse, Error>)-> Void) {
+        completion: @escaping (Result<UploadAPIResponse>)-> Void) {
         self.upload(file: file.data(using: .utf8)!, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, completion: completion)
     }
 }

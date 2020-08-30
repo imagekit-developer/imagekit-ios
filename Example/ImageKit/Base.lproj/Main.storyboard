@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -254,23 +254,49 @@
                                     <constraint firstAttribute="height" constant="48" id="971-tB-yvY"/>
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Select File"/>
+                                <connections>
+                                    <action selector="OnClickSelect:" destination="G5y-bn-3UV" eventType="touchUpInside" id="s62-UT-adI"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wYj-WA-vbX">
+                                <rect key="frame" x="32" y="96" width="311" height="467"/>
+                            </imageView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZyX-wS-3S7">
+                                <rect key="frame" x="32" y="579" width="311" height="48"/>
+                                <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="j1b-aI-QGh"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Upload File"/>
                                 <connections>
-                                    <action selector="OnClickUpload:" destination="G5y-bn-3UV" eventType="touchUpInside" id="9wZ-OV-Uv3"/>
+                                    <action selector="OnClickUpload:" destination="G5y-bn-3UV" eventType="touchUpInside" id="XVc-db-gkm"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="ZyX-wS-3S7" firstAttribute="top" secondItem="wYj-WA-vbX" secondAttribute="bottom" constant="16" id="3yC-vZ-sRv"/>
                             <constraint firstItem="bfs-45-w1o" firstAttribute="leading" secondItem="Zfk-Fg-TzT" secondAttribute="leadingMargin" constant="16" id="8Bu-zk-hVD"/>
+                            <constraint firstItem="wYj-WA-vbX" firstAttribute="top" secondItem="bfs-45-w1o" secondAttribute="bottom" constant="16" id="Bq6-Jd-tZt"/>
                             <constraint firstItem="bfs-45-w1o" firstAttribute="top" secondItem="RIg-CC-iGO" secondAttribute="bottom" constant="32" id="J3y-5x-ITM"/>
                             <constraint firstAttribute="trailingMargin" secondItem="bfs-45-w1o" secondAttribute="trailing" constant="16" id="K07-KR-VUh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ZyX-wS-3S7" secondAttribute="trailing" constant="16" id="Z0V-ri-YsG"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="wYj-WA-vbX" secondAttribute="trailing" constant="16" id="csM-vz-JFb"/>
+                            <constraint firstItem="ZyX-wS-3S7" firstAttribute="leading" secondItem="Zfk-Fg-TzT" secondAttribute="leadingMargin" constant="16" id="pSy-0V-ESG"/>
+                            <constraint firstItem="Rr5-G4-S0T" firstAttribute="top" secondItem="ZyX-wS-3S7" secondAttribute="bottom" constant="20" id="rE4-dC-8gl"/>
+                            <constraint firstItem="wYj-WA-vbX" firstAttribute="leading" secondItem="Zfk-Fg-TzT" secondAttribute="leadingMargin" constant="16" id="tDp-GM-Hrf"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="filePreview" destination="wYj-WA-vbX" id="2zx-Zy-0Gr"/>
+                        <outlet property="uploadFile" destination="ZyX-wS-3S7" id="FoZ-Rc-Zhx"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dSU-LG-Oe0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1238" y="110"/>
+            <point key="canvasLocation" x="1237.5999999999999" y="109.29535232383809"/>
         </scene>
         <!--Upload Image View Controller-->
         <scene sceneID="Cja-fe-frq">

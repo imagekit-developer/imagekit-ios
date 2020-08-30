@@ -24,9 +24,10 @@ class UploadAPI {
         completion: @escaping (Result<UploadAPIResponse>) -> ()){
         
         let endpoint = "https://upload.imagekit.io/api/v1/files/upload"
+        let mimeType = MimeDetector.mimeType(data: file)?.mime ?? "image/png"
         
         Alamofire.upload(multipartFormData: { multipartFormData in
-            multipartFormData.append(file as! Data, withName: "file", fileName: fileName, mimeType: "image/png")
+            multipartFormData.append(file, withName: "file", fileName: fileName, mimeType: mimeType)
             multipartFormData.append(publicKey.data(using: String.Encoding.utf8)!, withName: "publicKey")
             multipartFormData.append(signature.signature.data(using: String.Encoding.utf8)!, withName: "signature")
             multipartFormData.append(String(signature.expire).data(using: String.Encoding.utf8)!, withName: "expire")
@@ -45,7 +46,7 @@ class UploadAPI {
                         upload.uploadProgress(closure: progressClosure!)
                     }
                     upload.responseUploadAPIResponse{ uploadApiResponse in
-                        completion(Result.success(uploadApiResponse.result.value!))
+                        completion(uploadApiResponse.result)
                     }
                 case .failure(let encodingError):
                     completion(Result.failure(encodingError))
