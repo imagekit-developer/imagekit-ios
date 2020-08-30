@@ -1,4 +1,4 @@
-# [WIP] ImageKit SDK for iOS
+# [Beta] ImageKit.io iOS SDK
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/imagekitio?label=Follow&style=social)](https://twitter.com/ImagekitIo)
@@ -18,10 +18,10 @@ You can use CocoaPods to install ImageKit by adding it to your Podfile:
 
 ```ruby
 use_frameworks!
-platform :ios, '8.0'
 
 target 'target_name' do
-pod 'imagekit'
+    pod 'ImageKit', :path => '../'
+    pod 'Alamofire', '~> 4.8.2'
 end
 ```
 
@@ -33,57 +33,56 @@ You need to initialize the sdk by providing the  `publicKey` and the `urlEndpoin
 _Note: Do not include your Private Key in any client side code, including this SDK or its initialization._
 
 ```swift
+// AppDelegate.swift
+
 ImageKit.init(
-            publicKey = "your_public_api_key",
-            urlEndpoint = "https://ik.imagekit.io/your_imagekit_id",
-            transformationPosition = "path",
-            authenticationEndpoint = "http://www.yourserver.com/auth"
-        )
+    clientPublicKey: "your_public_api_key=", 
+    imageKitEndpoint: "https://ik.imagekit.io/your_imagekit_id", transformationPosition: "path", 
+    authenticationEndpoint: "http://www.yourserver.com/auth")
 ```
 
 ## Sample application
-This project has a sample application under `sample` folder. The sample application demonstrates the use of this SDK.
+This project has a sample application under `Example` folder. The sample application demonstrates the use of this SDK.
 
 ## Usage
 ### URL construction
 #### Using image path
 ```swift
 //https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,ar-3-2
-ImageKit.getInstance()
-        .url(
-            path = "default-image.jpg",
-            transformationPosition = TransformationPosition.QUERY
+ImageKit.shared.url(
+            path: "default-image.jpg",
+            transformationPosition: "query"
         )
-        .height(400f)
-        .aspectRatio(3, 2)
+        .height(height: 400)
+        .aspectRatio(width: 3, height: 2)
         .create()
 ```
 
 #### Using full image URL
 ```swift
 // https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20
-ImageKit.getInstance()
-        .url(
-            src = https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg",
-            transformationPosition = TransformationPosition.PATH
+ImageKit.shared.url(
+            src: "https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg",
+            transformationPosition: "path"
         )
         .overlayImage("logo-white_SJwqB4Nfe.png")
-        .overlayPosX(10)
-        .overlayPosY(20)
+        .overlayX(10)
+        .overlayY(20)
         .create()
 ```
 
 #### Using a custom parameter
 ```swift
 // https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=w-400,ot-Hand with a green plant,otc-264120,ots-30,ox-10,oy-10
-ImageKit.getInstance()
-        .url(src = "https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20")
+ImageKit.shared.url(
+    src : "https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20"
+    )
         .addCustomTransformation("w", "400")
         .overlayText("Hand with a green plant")
         .overlayTextColor("264120")
         .overlayTextSize(30)
-        .overlayPosX(10)
-        .overlayPosY(10)
+        .overlayX(10)
+        .overlayY(10)
         .create()
 ```
 
@@ -132,49 +131,64 @@ The complete list of transformations supported and their usage in ImageKit can b
 | effectGray                    | e-grayscale             |
 
 ### File Upload
-The SDK provides a simple interface using the `ImageKit.getInstance().uploader().upload` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
+The SDK provides a simple interface using the `ImageKit.shared.uploader().upload` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
 
 Make sure that you have specified `authenticationEndpoint` during SDK initialization. The SDK makes an HTTP GET request to this endpoint and expects a JSON response with three fields i.e. `signature`, `token` and `expire`.  
 
 [Learn how to implement authenticationEndpoint](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) on your server.
 
-#### Upload file from bitmap
+#### Upload file from UIImage
 ``` swift
-val filename = "file-name.jpg"
-val timestamp = System.currentTimeMillis()
-ImageKit.getInstance().uploadImage(
-    file = bitmap!!
-    , fileName = filename
-    , useUniqueFilename = false
-    , tags = arrayOf("nice", "copy", "books")
-    , folder = "/dummy/folder/"
-    , imageKitCallback = this
+let filename = "file-name.jpg"
+let timestamp = System.currentTimeMillis()
+ImageKit.shared.uploader().upload(
+    file: UIImage,
+    fileName: String,
+    useUniqueFilename: Bool = true,
+    tags: [String] = [],
+    folder: String? = "/",
+    isPrivateFile: Bool? = false,
+    customCoordinates: String? = "",
+    responseFields: String? = "",
+    signatureHeaders: [String: String]? = [String: String](),
+    progress: ((Progress) -> Void)? = nil,
+    completion: @escaping (Result<UploadAPIResponse>)-> Void
 )
 ```
 
 #### Upload file from a remote URL
 ``` swift
-val filename = "file-name.jpg"
-val timestamp = System.currentTimeMillis()
-ImageKit.getInstance().uploader().upload(
-    file = "https://ik.imagekit.io/demo/img/default-image.jpg"
-    , fileName = filename
-    , useUniqueFilename = false
-    , tags = arrayOf("nice", "copy", "books")
-    , folder = "/dummy/folder/"
-    , imageKitCallback = this
+let filename = "file-name.jpg"
+let timestamp = System.currentTimeMillis()
+ImageKit.shared.uploader().upload(
+    file: String,
+    fileName: String,
+    useUniqueFilename: Bool = true,
+    tags: [String] = [],
+    folder: String? = "/",
+    isPrivateFile: Bool? = false,
+    customCoordinates: String? = "",
+    responseFields: String? = "",
+    signatureHeaders: [String: String]? = [String: String](),
+    progress: ((Progress) -> Void)? = nil,
+    completion: @escaping (Result<UploadAPIResponse>)-> Void
 )
 ```
 
-#### Upload file using binary
+#### Upload file using Data
 ```swift
-ImageKit.getInstance().uploader().upload(
-    file = file!!
-    , fileName = file!!.name
-    , useUniqueFilename = true
-    , tags = arrayOf("nice", "copy", "books")
-    , folder = "/dummy/folder/"
-    , imageKitCallback = this
+ImageKit.shared.uploader().upload(
+    file: Data,
+    fileName: String,
+    useUniqueFilename: Bool = true,
+    tags: [String] = [],
+    folder: String? = "/",
+    isPrivateFile: Bool? = false,
+    customCoordinates: String? = "",
+    responseFields: String? = "",
+    signatureHeaders: [String: String]? = [String: String](),
+    progress: ((Progress) -> Void)? = nil,
+    completion: @escaping (Result<UploadAPIResponse>)-> Void
 )
 ```
 
