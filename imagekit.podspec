@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '8.0'
   s.dependency 'Alamofire', '~> 4.8.2'
 
-  s.source_files = 'ImageKit/Classes/**/*'
+  s.source_files = 'ImageKit/**/*'
   
   # s.resource_bundles = {
   #   'ImageKit' => ['ImageKit/Assets/*.png']
