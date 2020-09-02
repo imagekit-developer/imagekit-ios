@@ -45,6 +45,12 @@ ImageKit.init(
 ## Sample application
 This project has a sample application under `Example` folder. The sample application demonstrates the use of this SDK.
 
+To run the `Example` application, run `Server` by running 
+```bash
+npm install
+node index.js
+```
+
 ## Usage
 ### URL construction
 #### Using image path

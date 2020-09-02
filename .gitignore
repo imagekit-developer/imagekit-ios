@@ -36,3 +36,5 @@ Carthage/Build
 #
 Pods/*
 Example/Pods/*
+Server/node_modules
+Server/*.lock
