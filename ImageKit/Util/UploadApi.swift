@@ -45,8 +45,14 @@ class UploadAPI {
                     if progressClosure != nil{
                         upload.uploadProgress(closure: progressClosure!)
                     }
-                    upload.responseUploadAPIResponse{ uploadApiResponse in
-                        completion(uploadApiResponse.result)
+                    upload.responseData{ dataResponse in
+                        if (200...299).contains(dataResponse.response!.statusCode) {
+                            upload.responseUploadAPIResponse{ uploadApiResponse in completion(uploadApiResponse.result) }
+                            return
+                        }
+                        upload.responseUploadAPIError{ uploadApiError in
+                            completion(Result.failure(uploadApiError.result.value!))
+                        }
                     }
                 case .failure(let encodingError):
                     completion(Result.failure(encodingError))

@@ -626,11 +626,8 @@ public class ImagekitUrlConstructor {
     */
     public func create() -> String {
         var url = self.source
-        let apiVersion: String = API_VERSION!
+        let apiVersion: String = API_VERSION
         
-        if self.source == nil{
-            url = String(format: "%@/%@?ik-sdk-version=ios-%@", self.endpoint!, self.imagePath!, apiVersion)
-        }
         
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
@@ -647,20 +644,34 @@ public class ImagekitUrlConstructor {
                     path.removeSubrange(path.startIndex..<index!)
                     url = String(format: "%@/%@", urlComponents[0], path)
                 }
-                url = String(format: "%@?tr=%@&ik-sdk-version=ios-%@", url!, transforms, apiVersion)
+                url = String(format: "%@?tr=%@", url!, transforms)
             } else {
+                url = self.endpoint!
                 switch self.transformationPosition {
                     case .PATH:
-                        url = String(format: "%@/tr:%@/%@?ik-sdk-version=ios-%@", url!, transforms, self.imagePath, apiVersion)
+                        url = String(format: "%@/tr:%@/%@", url!, transforms, self.imagePath)
                         break
                     case .QUERY:
-                        url = String(format: "%@/%@?tr=%@&ik-sdk-version=ios-%@", url!, self.imagePath, transforms, apiVersion)
+                        url = String(format: "%@/%@?tr=%@", url!, self.imagePath, transforms)
                         break
                     default: break
                 }
             }
+        } else {
+            if !self.isSource {
+                url = String(format: "%@/%@", self.endpoint!, self.imagePath!)
+            }
         }
-        return url!
+        
+        if url != nil{
+            if url!.contains("?"){
+                url = String(format: "%@&ik-sdk-version=ios-%@", url!, apiVersion)
+            } else {
+                url = String(format: "%@?ik-sdk-version=ios-%@", url!, apiVersion)
+            }
+        }
+        
+        return url ?? ""
     }
 
 }

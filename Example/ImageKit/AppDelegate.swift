@@ -57,3 +57,30 @@ extension UIImageView {
         }
     }
 }
+
+extension UIViewController{
+
+    func showToast(title: String, message : String){
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.backgroundColor = .black
+        alert.view.alpha = 0.5
+        alert.view.layer.cornerRadius = 15
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true)
+    }
+    
+    func showProgressToast(title: String, message: String) -> UIAlertController {
+        let alertView = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertView.view.backgroundColor = .black
+        alertView.view.alpha = 0.5
+        alertView.view.layer.cornerRadius = 15
+        self.present(alertView, animated: true, completion: {
+            let margin:CGFloat = 8
+            let rect = CGRect(x: margin, y: 72.0, width: alertView.view.frame.width - margin * 2.0 , height: 2.0)
+            let progressToastView = UIProgressView(frame: rect)
+            progressToastView.tintColor = self.view.tintColor
+            alertView.view.addSubview(progressToastView)
+        })
+        return alertView
+    }
+}

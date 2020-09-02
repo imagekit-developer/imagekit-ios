@@ -1,24 +1,12 @@
-#
-# Be sure to run `pod lib lint ImageKit.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
-  s.name             = 'ImageKit'
+  s.name             = 'imagekit'
   s.version          = '0.1.0'
   s.summary          = 'iOS SDK for ImageKit.io'
 
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+iOS Pod for ImageKit.io which implements client-side upload and URL generation for use inside an iOS application.
+ImageKit is a complete image optimization and transformation solution that comes with an image CDN and media storage. It can be integrated with your existing infrastructure - storages like AWS S3, web servers, your CDN and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
                        DESC
 
   s.homepage         = 'https://imagekit.io/'
@@ -31,12 +19,4 @@ TODO: Add long description of the pod here.
   s.dependency 'Alamofire', '~> 4.8.2'
 
   s.source_files = 'ImageKit/**/*'
-  
-  # s.resource_bundles = {
-  #   'ImageKit' => ['ImageKit/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end

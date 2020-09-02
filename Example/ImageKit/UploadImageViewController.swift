@@ -16,6 +16,9 @@ class UploadImageViewController: UIViewController{
     @IBOutlet weak var selectImage: UIButton!
     @IBOutlet weak var uploadImage: UIButton!
     
+    var progressToastView: UIProgressView!
+    var alertView: UIAlertController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -36,6 +39,7 @@ class UploadImageViewController: UIViewController{
     @IBAction func OnClickUpload(_ sender: UIButton) {
         let image: UIImage = self.imageView.image!
         let imageName = image.accessibilityIdentifier!
+        let progressAlert = showProgressToast(title: "Uploading", message: "Please Wait")
         ImageKit.shared.uploader().upload(
             file: image,
             fileName: imageName,
@@ -43,12 +47,19 @@ class UploadImageViewController: UIViewController{
             tags: ["demo","image"],
             folder: "/",
             signatureHeaders: ["x-test-header":"Test"],
+            progress: { progress in
+                let progressBar: UIProgressView = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as! UIProgressView
+                progressBar.progress = Float(progress.fractionCompleted)
+            },
             completion: { result in
+                self.dismiss(animated: true)
                 switch result{
                     case .success(let uploadAPIResponse):
-                        print(uploadAPIResponse)
+                        self.showToast(title: "Upload Complete", message: "The uploaded image can be accessed using url: " + uploadAPIResponse.url)
+                    case .failure(let error as UploadAPIError):
+                        self.showToast(title: "Upload Failed", message: "Error: " + error.message)
                     case .failure(let error):
-                        print(error)
+                        self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
                 }
         })
     }
@@ -63,8 +74,10 @@ extension UploadImageViewController:UINavigationControllerDelegate, UIImagePicke
             self.imageView.image = image
             self.uploadImage.isHidden = false
         }
+        dismiss(animated: true)
     }
 
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
 }

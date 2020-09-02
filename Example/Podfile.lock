@@ -5,7 +5,7 @@ PODS:
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - ImageKit (0.1.0):
+  - imagekit (0.1.0):
     - Alamofire (~> 4.8.2)
   - Nimble (7.3.4)
   - Nimble-Snapshots (6.3.0):
@@ -18,7 +18,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.8.2)
   - FBSnapshotTestCase (~> 2.1.4)
-  - ImageKit (from `../`)
+  - imagekit (from `../`)
   - Nimble (~> 7.0)
   - Nimble-Snapshots (~> 6.3.0)
   - Quick (~> 1.2.0)
@@ -32,17 +32,17 @@ SPEC REPOS:
     - Quick
 
 EXTERNAL SOURCES:
-  ImageKit:
+  imagekit:
     :path: "../"
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  ImageKit: dd33253fbfe27e25e7e2260c9e23780281bef491
+  imagekit: e631f54ed190a54986cebb95258c90853ebd8798
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
 
-PODFILE CHECKSUM: a4773118d562977636661a15de7463723e52adf2
+PODFILE CHECKSUM: 8bf58d0feaa4c78865ccbe31d0c8e522d945225b
 
 COCOAPODS: 1.9.1

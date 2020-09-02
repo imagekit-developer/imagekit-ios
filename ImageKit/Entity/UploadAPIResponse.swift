@@ -9,12 +9,12 @@ import Foundation
 
 // MARK: - UploadAPIResponse
 public struct UploadAPIResponse: Codable {
-    let fileId, name, url, filePath, fileType: String
-    let height, width: Int?
-    let size: Int
-    let tags: [String]?
-    let isPrivateFile: Bool?
-    let customCoordinates, metadata, thumbnailUrl: String?
+    public let fileId, name, url, filePath, fileType: String
+    public let height, width: Int?
+    public let size: Int
+    public let tags: [String]?
+    public let isPrivateFile: Bool?
+    public let customCoordinates, metadata, thumbnailUrl: String?
 
     enum CodingKeys: String, CodingKey {
         case fileId

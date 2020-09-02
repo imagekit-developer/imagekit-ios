@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public let API_VERSION: String? = Bundle(identifier: "org.cocoapods.ImageKit")?.infoDictionary!["CFBundleShortVersionString"] as! String
+public let API_VERSION: String = Bundle(identifier: "org.cocoapods.ImageKit")?.infoDictionary!["CFBundleShortVersionString"] as? String ?? "Unknown"
 
 public struct UserDefaultKeys{
     public static let KEY_CLIENT_PUBLIC_KEY = "IKClientKey"

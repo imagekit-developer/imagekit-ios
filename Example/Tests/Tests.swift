@@ -7,7 +7,7 @@ import ImageKit
 class URLGenerationSpec: QuickSpec {
     
     override func spec() {
-        let apiVersion: String = API_VERSION!
+        let apiVersion: String = API_VERSION
         beforeSuite {
             ImageKit.init(clientPublicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: "path")
         }

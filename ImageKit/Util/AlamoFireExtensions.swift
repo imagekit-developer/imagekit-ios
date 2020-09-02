@@ -56,4 +56,9 @@ extension DataRequest {
     func responseUploadAPIResponse(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<UploadAPIResponse>) -> Void) -> Self {
         return responseDecodable(queue: queue, completionHandler: completionHandler)
     }
+    
+    @discardableResult
+    func responseUploadAPIError(queue: DispatchQueue? = nil, completionHandler: @escaping (DataResponse<UploadAPIError>) -> Void) -> Self {
+        return responseDecodable(queue: queue, completionHandler: completionHandler)
+    }
 }

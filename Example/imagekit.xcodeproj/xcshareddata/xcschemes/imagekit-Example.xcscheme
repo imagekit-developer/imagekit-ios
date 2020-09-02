@@ -17,7 +17,7 @@
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
                BuildableName = "ImageKit_Example.app"
                BlueprintName = "ImageKit_Example"
-               ReferencedContainer = "container:ImageKit.xcodeproj">
+               ReferencedContainer = "container:imagekit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,7 +31,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "ImageKit_Tests.xctest"
                BlueprintName = "ImageKit_Tests"
-               ReferencedContainer = "container:ImageKit.xcodeproj">
+               ReferencedContainer = "container:imagekit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,7 +48,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "ImageKit_Example.app"
             BlueprintName = "ImageKit_Example"
-            ReferencedContainer = "container:ImageKit.xcodeproj">
+            ReferencedContainer = "container:imagekit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -59,7 +59,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "ImageKit_Tests.xctest"
                BlueprintName = "ImageKit_Tests"
-               ReferencedContainer = "container:ImageKit.xcodeproj">
+               ReferencedContainer = "container:imagekit.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -81,7 +81,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "ImageKit_Example.app"
             BlueprintName = "ImageKit_Example"
-            ReferencedContainer = "container:ImageKit.xcodeproj">
+            ReferencedContainer = "container:imagekit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -98,7 +98,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "ImageKit_Example.app"
             BlueprintName = "ImageKit_Example"
-            ReferencedContainer = "container:ImageKit.xcodeproj">
+            ReferencedContainer = "container:imagekit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

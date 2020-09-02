@@ -34,6 +34,7 @@ class UploadFileViewController: UIViewController {
         do{
             let filename = self.fileUrlToBeUploaded!.lastPathComponent
             let file = try NSData(contentsOf: self.fileUrlToBeUploaded!) as Data
+            let progressAlert = showProgressToast(title: "Uploading", message: "Please Wait")
             ImageKit.shared.uploader().upload(
                 file: file,
                 fileName: filename,
@@ -41,12 +42,19 @@ class UploadFileViewController: UIViewController {
                 tags: ["demo","file"],
                 folder: "/",
                 signatureHeaders: ["x-test-header":"Test"],
+                progress: { progress in
+                    let progressBar: UIProgressView = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as! UIProgressView
+                    progressBar.progress = Float(progress.fractionCompleted)
+                },
                 completion: { result in
+                    self.dismiss(animated: true)
                     switch result{
                         case .success(let uploadAPIResponse):
-                            print(uploadAPIResponse)
+                            self.showToast(title: "Upload Complete", message: "The uploaded file can be accessed using url: " + uploadAPIResponse.url)
+                        case .failure(let error as UploadAPIError):
+                            self.showToast(title: "Upload Failed", message: "Error: " + error.message)
                         case .failure(let error):
-                            print(error)
+                            self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
                     }
             })
         } catch {
