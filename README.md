@@ -1,5 +1,6 @@
 # [Beta] ImageKit.io iOS SDK
 
+![Swift CI](https://github.com/imagekit-developer/imagekit-ios/workflows/Swift%20CI/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/imagekitio?label=Follow&style=social)](https://twitter.com/ImagekitIo)
 
