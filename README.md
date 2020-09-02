@@ -45,7 +45,7 @@ ImageKit.init(
 ## Sample application
 This project has a sample application under `Example` folder. The sample application demonstrates the use of this SDK.
 
-To run the `Example` application, run `Server` by running 
+To run the `Example` application, add Public Key to `Example/ImageKit/AppDelegate.swift` and add Private Key to `Server/.env` 
 ```bash
 npm install
 node index.js
