@@ -25,4 +25,6 @@ jobs:
           pod install --repo-update
         
       - name: Build Example Project
-        run: xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 11' clean build
+        run: |
+          cd Example
+          xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 11' clean build
