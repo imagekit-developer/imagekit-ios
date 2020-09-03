@@ -891,4 +891,170 @@ class UnitTestSpec : QuickSpec{
     }
 }
 
+class MimeDetectorSpec : QuickSpec{
+    override func spec(){
+        describe(".readBytes()") {
+          context("when we want to read 4 bytes of string data") {
+            let str = "hello"
+            let data = str.data(using: .utf8)!
+            let mimeDetector = MimeDetector(data: data)
+            let bytes = mimeDetector.readBytes(count: 4)
 
+            it("should return 4 bytes") {
+              expect(bytes.count) == 4
+            }
+
+            it("should return correct bytes") {
+              let endIndex = str.index(str.startIndex, offsetBy: 4)
+              let substr = str[..<endIndex]
+              let expectation = [UInt8](substr.utf8)
+
+              expect(bytes) == expectation
+            }
+          }
+        }
+
+        describe("MimeDetector.mimeType(data:)") {
+          let extensions = [
+            "7z",
+            "amr",
+            "ar",
+            "avi",
+            "bmp",
+            "bz2",
+            "cab",
+            "cr2",
+            "crx",
+            "deb",
+            "dmg",
+            "eot",
+            "epub",
+            "exe",
+            "flac",
+            "flif",
+            "flv",
+            "gif",
+            "ico",
+            "jpg",
+            "jxr",
+            "m4a",
+            "m4v",
+            "mid",
+            "mkv",
+            "mov",
+            "mp3",
+            "mp4",
+            "mpg",
+            "msi",
+            "mxf",
+            "nes",
+            "ogg",
+            "opus",
+            "otf",
+            "pdf",
+            "png",
+            "ps",
+            "psd",
+            "rar",
+            "rpm",
+            "rtf",
+            "sqlite",
+            "swf",
+            "tar",
+            "tar.Z",
+            "tar.gz",
+            "tar.lz",
+            "tar.xz",
+            "ttf",
+            "wav",
+            "webm",
+            "webp",
+            "wmv",
+            "woff",
+            "woff2",
+            "xpi",
+            "zip"
+          ]
+
+          let mimeTypeByExtension = [
+            "tar.Z": "application/x-compress",
+            "tar.gz": "application/gzip",
+            "tar.lz": "application/x-lzip",
+            "tar.xz": "application/x-xz"
+          ]
+
+          for ext in extensions {
+            context("when extension is \(ext)") {
+              it("shoud guess the correct mime type") {
+                let data = loadFileData(path: "/Tests/fixtures/fixture.\(ext)")
+                let mimeType = MimeDetector.mimeType(data: data)
+
+                if let mime = mimeTypeByExtension[ext] {
+                  expect(mimeType?.mime) == mime
+                } else {
+                  expect(mimeType?.ext) == ext
+                }
+              }
+            }
+          }
+        }
+
+        describe("MimeDetector.mimeType(bytes:)") {
+          context("when given jpeg bytes") {
+            it("should return image/jpeg mime type") {
+              let bytes: [UInt8] = [255, 216, 255]
+              let mimeType = MimeDetector.mimeType(bytes: bytes)
+
+              expect(mimeType?.mime) == "image/jpeg"
+            }
+          }
+
+          context("when given 7z bytes") {
+            it("should return application/x-7z-compressed") {
+              let bytes: [UInt8] = [55, 122, 188, 175, 39, 28]
+              let mimeType = MimeDetector.mimeType(bytes: bytes)
+
+              expect(mimeType?.mime) == "application/x-7z-compressed"
+            }
+          }
+        }
+
+        describe("MimeDetector.mimeType(bytes:).type") {
+          context("when file type is image/jpeg") {
+            it("should return true") {
+              let data: Data = loadFileData(path: "/Tests/fixtures/fixture.jpg")
+              let mimeType = MimeDetector.mimeType(data: data)
+
+              expect(mimeType?.type) == .jpg
+            }
+          }
+
+          context("when file type is application/pdf") {
+            it("should return true") {
+              let data: Data = loadFileData(path: "/Tests/fixtures/fixture.pdf")
+              let mimeType = MimeDetector.mimeType(data: data)
+
+              expect(mimeType?.type) == .pdf
+            }
+          }
+
+          context("when file type is not image/jpeg") {
+            it("should return true") {
+              let data: Data = loadFileData(path: "/Tests/fixtures/fixture.png")
+              let mimeType = MimeDetector.mimeType(data: data)
+
+              expect(mimeType?.type) != .jpg
+            }
+          }
+        }
+    }
+}
+
+func loadFileData(path: String) -> Data {
+    let projectDir = URL(fileURLWithPath: #file).pathComponents.prefix(while: { $0 != "Tests" }).joined(separator: "/").dropFirst()
+    print(projectDir)
+    let absolutePath = "\(projectDir)\(path)"
+    print(absolutePath)
+    let url = URL(fileURLWithPath: absolutePath, isDirectory: false)
+    return try! Data(contentsOf: url)
+}
