@@ -12,5 +12,5 @@ public enum Format: String{
     case WEBP = "webp"
     case JPG = "jpg"
     case JPEG = "jpeg"
-    case PNT = "pnt"
+    case PNG = "png"
 }

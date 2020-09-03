@@ -53,7 +53,7 @@ public struct MimeDetector {
   ///  - parameter count: Number of bytes to be read
   ///
   ///  - returns: Bytes represented with `[UInt8]`
-  internal func readBytes(count: Int) -> [UInt8] {
+  public func readBytes(count: Int) -> [UInt8] {
     var bytes = [UInt8](repeating: 0, count: count)
 
     data.copyBytes(to: &bytes, count: count)

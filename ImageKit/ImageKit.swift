@@ -34,27 +34,25 @@ open class ImageKit: NSObject{
         
         let clientPublicKey: String = self.userDefaults.string(forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)!
         let imageKitEndpoint: String = self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)!
-        let transformationPosition: String = self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!
+        let transformationPosition: TransformationPosition = TransformationPosition(rawValue: self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!)!
         let authenticationEndpoint: String = self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)!
         
         self.clientPublicKey = clientPublicKey
         self.imageKitEndpoint = imageKitEndpoint
-        self.transformationPosition = TransformationPosition.getEnum(string: transformationPosition)
+        self.transformationPosition = transformationPosition
         self.authenticationEndpoint = authenticationEndpoint
         
     }
     
-    public init(clientPublicKey: String, imageKitEndpoint: String, transformationPosition: String? = "path", authenticationEndpoint: String? = ""){
+    public init(clientPublicKey: String, imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, authenticationEndpoint: String? = ""){
         
         if imageKitEndpoint.isEmpty || clientPublicKey.isEmpty {
             fatalError("Missing publicKey/urlEndpoint during initialization")
         }
         
-        _ = TransformationPosition.getEnum(string: transformationPosition!)
-        
         UserDefaults.standard.set(clientPublicKey, forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
         UserDefaults.standard.set(imageKitEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)
-        UserDefaults.standard.set(transformationPosition, forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)
+        UserDefaults.standard.set(transformationPosition.rawValue, forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)
         UserDefaults.standard.set(authenticationEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)
         
         UserDefaults.standard.synchronize()
@@ -63,16 +61,16 @@ open class ImageKit: NSObject{
     public func url(
         urlEndpoint: String = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)!,
         path: String,
-        transformationPosition: String = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!
+        transformationPosition: TransformationPosition = TransformationPosition(rawValue: UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!)!
         ) -> ImagekitUrlConstructor{
-        return ImagekitUrlConstructor(endpoint: urlEndpoint, imagePath: path, transformationPosition: TransformationPosition.getEnum(string: transformationPosition));
+        return ImagekitUrlConstructor(endpoint: urlEndpoint, imagePath: path, transformationPosition: transformationPosition);
     }
     
     public func url(
         src: String,
-        transformationPosition: String = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!
+        transformationPosition: TransformationPosition = TransformationPosition(rawValue: UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!)!
         ) -> ImagekitUrlConstructor{
-        return ImagekitUrlConstructor(src: src, transformationPosition: TransformationPosition.getEnum(string: transformationPosition))
+        return ImagekitUrlConstructor(src: src, transformationPosition: transformationPosition)
     }
     
     public func uploader() -> ImageKitUploader {

@@ -153,7 +153,7 @@ public class ImagekitUrlConstructor {
             fatalError("Transform value is out of range!")
         }
         transformationMap[TransformationMapping.blur] = blur
-        transformationList.append(String(format: "%@", TransformationMapping.blur))
+        transformationList.append(String(format: "%@-%d", TransformationMapping.blur, blur))
         return self
     }
 
@@ -184,7 +184,7 @@ public class ImagekitUrlConstructor {
             fatalError("Transform value is out of range!")
         }
         transformationMap[TransformationMapping.dpr] = dpr
-        transformationList.append(String(format: "%s-%f", TransformationMapping.dpr, dpr))
+        transformationList.append(String(format: "%@-%.2f", TransformationMapping.dpr, dpr))
         return self
     }
 
@@ -220,7 +220,7 @@ public class ImagekitUrlConstructor {
     */
     public func progressive(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.progressiveJPEG] = flag
-        transformationList.append(String(format: "%@-%b", TransformationMapping.progressiveJPEG, flag))
+        transformationList.append(String(format: "%@-%@", TransformationMapping.progressiveJPEG, String(flag)))
         return self
     }
 
@@ -234,7 +234,7 @@ public class ImagekitUrlConstructor {
     */
     public func lossless(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.lossless] = flag
-        transformationList.append(String(format: "%@-%b", TransformationMapping.lossless, flag))
+        transformationList.append(String(format: "%@-%@", TransformationMapping.lossless, String(flag)))
         return self
     }
 
@@ -249,7 +249,7 @@ public class ImagekitUrlConstructor {
     */
     public func trim(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.trimEdges] = flag
-        transformationList.append(String(format: "%@-%b", TransformationMapping.trimEdges, flag))
+        transformationList.append(String(format: "%@-%@", TransformationMapping.trimEdges, String(flag)))
         return self
     }
 
@@ -374,7 +374,7 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func overlayTextColor(overlayTextColor: String) -> ImagekitUrlConstructor{
-        if (overlayTextColor.count != 6 && overlayTextColor.matches("[A-Fa-f0-9]{6}")){
+        if ((overlayTextColor.count != 6 && !overlayTextColor.matches("[A-Fa-f0-9]{6}")) && overlayTextColor.count != 8 && !overlayTextColor.matches("[A-Fa-f0-9]{8}")){
             fatalError("Invalid transform value specified!")
         }
         transformationMap[TransformationMapping.overlayTextColor] = overlayTextColor.uppercased()
@@ -424,7 +424,7 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func overlayBackground(overlayBackground: String) -> ImagekitUrlConstructor {
-        if (overlayBackground.count != 6 && overlayBackground.matches("[A-Fa-f0-9]{6}")){
+        if ((overlayBackground.count != 6 && !overlayBackground.matches("[A-Fa-f0-9]{6}")) && (overlayBackground.count != 8 && !overlayBackground.matches("[A-Fa-f0-9]{8}"))){
             fatalError("Invalid transform value specified!")
         }
         transformationMap[TransformationMapping.overlayBackground] = overlayBackground.uppercased()
@@ -458,7 +458,7 @@ public class ImagekitUrlConstructor {
      */
      public func colorProfile(flag: Bool) -> ImagekitUrlConstructor {
          transformationMap[TransformationMapping.colorProfile] = flag
-         transformationList.append(String(format: "%@-%b", TransformationMapping.colorProfile, flag))
+         transformationList.append(String(format: "%@-%@", TransformationMapping.colorProfile, String(flag)))
          return self
      }
     
@@ -473,7 +473,7 @@ public class ImagekitUrlConstructor {
      */
     public func metadata(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.imageMetadata] = flag
-        transformationList.append(String(format: "%@-%b", TransformationMapping.imageMetadata, flag))
+        transformationList.append(String(format: "%@-%@", TransformationMapping.imageMetadata, String(flag)))
         return self
     }
     
@@ -522,7 +522,7 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func background(backgroundColor: String) -> ImagekitUrlConstructor {
-        if (backgroundColor.count != 6 && backgroundColor.matches("[A-Fa-f0-9]{6}[0-9]{2}+")){
+        if ((backgroundColor.count != 6 && !backgroundColor.matches("[A-Fa-f0-9]{6}")) && (backgroundColor.count != 8 && !backgroundColor.matches("[A-Fa-f0-9]{8}"))){
             fatalError("Invalid transform value specified!")
         }
         
@@ -540,7 +540,7 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func border(borderWidth: Int, borderColor: String) -> ImagekitUrlConstructor {
-        if (borderColor.count != 6 || !borderColor.matches("[A-Fa-f0-9]+")){
+        if ((borderColor.count != 6 || !borderColor.matches("[A-Fa-f0-9]{6}")) && (borderColor.count != 8 || !borderColor.matches("[A-Fa-f0-9]{8}"))){
             fatalError("Invalid transform value specified!")
         }
         
@@ -592,7 +592,7 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func effectUSM(radius: Float, sigma: Float, amount: Float, threshold: Float) -> ImagekitUrlConstructor {
-        let s = String(format: "%@-%f-%f-%f-%f", TransformationMapping.unsharpMask, radius, sigma, amount, threshold)
+        let s = String(format: "%@-%.2f-%.2f-%.2f-%.2f", TransformationMapping.unsharpMask, radius, sigma, amount, threshold)
         transformationMap[TransformationMapping.unsharpMask] = s
         transformationList.append(s)
         return self
@@ -682,5 +682,4 @@ extension String {
     func matches(_ regex: String) -> Bool {
         return self.range(of: regex, options: .regularExpression, range: nil, locale: nil) != nil
     }
-
 }

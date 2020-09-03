@@ -31,7 +31,7 @@ class FetchImageViewController: UIViewController {
     }
     
     @IBAction func OnClickTransformation2(_ sender: Any) {
-        let url = ImageKit.shared.url(path: "default-image.jpg", transformationPosition: "query")
+        let url = ImageKit.shared.url(path: "default-image.jpg", transformationPosition: TransformationPosition.QUERY)
             .height(height: 400)
             .aspectRatio(width: 3, height: 2)
             .create()
@@ -39,7 +39,7 @@ class FetchImageViewController: UIViewController {
     }
     
     @IBAction func OnClickTransformation3(_ sender: Any) {
-        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg", transformationPosition: "path")
+        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg", transformationPosition: TransformationPosition.PATH)
             .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
             .overlayX(overlayX: 10)
             .overlayY(overlayY: 20)
