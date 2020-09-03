@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ImageKit
+import ImageKitIO
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ImageKit
+import ImageKitIO
 
 class ViewController: UIViewController {
 

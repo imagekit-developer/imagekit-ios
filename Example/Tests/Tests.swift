@@ -2,7 +2,7 @@
 
 import Quick
 import Nimble
-import ImageKit
+import ImageKitIO
 
 class URLGenerationSpec: QuickSpec {
     

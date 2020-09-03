@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ImageKit
+import ImageKitIO
 import Photos
 
 class UploadImageViewController: UIViewController{

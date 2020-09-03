@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
-  s.name             = 'ImageKit'
-  s.version          = '0.1.0'
+  s.name             = 'ImageKitIO'
+  s.version          = '1.0.0'
   s.summary          = 'iOS SDK for ImageKit.io'
 
 

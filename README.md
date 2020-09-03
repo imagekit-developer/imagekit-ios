@@ -21,7 +21,7 @@ You can use CocoaPods to install ImageKit by adding it to your Podfile:
 use_frameworks!
 
 target 'target_name' do
-    pod 'imagekit', :path => '../'
+    pod 'ImageKitIO', :path => '../'
     pod 'Alamofire', '~> 4.8.2'
 end
 ```
