@@ -24,7 +24,7 @@ jobs:
       - name: Lint Cocoa Pod
         run: pod lib lint --skip-tests --verbose
 
-  test-example:
+  test-pod:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
