@@ -1,15 +1,6 @@
 use_frameworks!
 
 target 'ImageKit_Example' do
-  pod 'ImageKitIO', :path => '../'
+  pod 'ImageKitIO', :path => '../', :testspecs => ['Tests']
   pod 'Alamofire', '~> 4.8.2'
-
-  target 'ImageKit_Tests' do
-    inherit! :search_paths
-
-    pod 'Quick', '~> 1.2.0'
-    pod 'Nimble', '~> 7.0'
-    pod 'FBSnapshotTestCase' , '~> 2.1.4'
-    pod 'Nimble-Snapshots' , '~> 6.3.0'
-  end
 end

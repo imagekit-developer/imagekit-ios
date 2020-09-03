@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public let API_VERSION: String = Bundle(identifier: "org.cocoapods.ImageKit")?.infoDictionary!["CFBundleShortVersionString"] as? String ?? "Unknown"
+public let API_VERSION: String = Bundle(identifier: "org.cocoapods.ImageKitIO")?.infoDictionary!["CFBundleShortVersionString"] as? String ?? "Unknown"
 
 public struct UserDefaultKeys{
     public static let KEY_CLIENT_PUBLIC_KEY = "IKClientKey"
@@ -49,6 +49,7 @@ open class ImageKit: NSObject{
         if imageKitEndpoint.isEmpty || clientPublicKey.isEmpty {
             fatalError("Missing publicKey/urlEndpoint during initialization")
         }
+        
         
         UserDefaults.standard.set(clientPublicKey, forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
         UserDefaults.standard.set(imageKitEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)

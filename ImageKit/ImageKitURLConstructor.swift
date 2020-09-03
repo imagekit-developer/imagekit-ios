@@ -11,6 +11,7 @@ public class ImagekitUrlConstructor {
     private var endpoint: String!
     private var imagePath: String!
     private var transformationPosition: TransformationPosition!
+    private var queryParams: [String: String] = [:]
     
     private var isSource: Bool = false
     private var source: String!
@@ -18,16 +19,18 @@ public class ImagekitUrlConstructor {
     private var transformationList = [String]()
     private var transformationMap = [String : Any]()
     
-    init(endpoint: String, imagePath: String, transformationPosition: TransformationPosition) {
-        self.endpoint = endpoint
-        self.imagePath = imagePath
+    init(endpoint: String, imagePath: String, transformationPosition: TransformationPosition, queryParams: [String: String] = [:]) {
+        self.endpoint = endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        self.imagePath = imagePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.transformationPosition = transformationPosition
+        self.queryParams = queryParams
     }
     
-    init(src: String, transformationPosition: TransformationPosition) {
+    init(src: String, transformationPosition: TransformationPosition, queryParams: [String: String] = [:]) {
         self.source = src
         self.transformationPosition = transformationPosition
         self.isSource = true
+        self.queryParams = queryParams
     }
 
     /**
@@ -36,9 +39,9 @@ public class ImagekitUrlConstructor {
     * For eg, 0.1 means 10% of the original width, 0.2 means 20% of the original width.
     * @return the current ImagekitUrlConstructor object.
     */
-    public func width(width: Float) -> ImagekitUrlConstructor {
+    public func width(width: Int) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.width] = width
-        transformationList.append(String(format: "%@-%.2f", TransformationMapping.width, width))
+        transformationList.append(String(format: "%@-%d", TransformationMapping.width, width))
         return self
     }
 
@@ -48,9 +51,9 @@ public class ImagekitUrlConstructor {
     * For eg, 0.1 means 10% of the original height, 0.2 means 20% of the original height.
     * @return the current ImagekitUrlConstructor object.
     */
-    public func height(height: Float) -> ImagekitUrlConstructor {
+    public func height(height: Int) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.height] = height
-        transformationList.append(String(format: "%@-%.2f", TransformationMapping.height, height))
+        transformationList.append(String(format: "%@-%d", TransformationMapping.height, height))
         return self
     }
 
@@ -118,9 +121,6 @@ public class ImagekitUrlConstructor {
     * @return the current ImagekitUrlConstructor object.
     */
     public func quality(quality: Int) -> ImagekitUrlConstructor {
-        if quality < 1 || quality > 100{
-            fatalError("Transform value is out of range!")
-        }
         transformationMap[TransformationMapping.quality] = quality
         transformationList.append(String(format: "%@-%d", TransformationMapping.quality, quality))
         return self
@@ -149,9 +149,6 @@ public class ImagekitUrlConstructor {
     * @return the current ImagekitUrlConstructor object.
     */
     public func blur(blur: Int) -> ImagekitUrlConstructor {
-        if blur < 1 || blur > 100{
-            fatalError("Transform value is out of range!")
-        }
         transformationMap[TransformationMapping.blur] = blur
         transformationList.append(String(format: "%@-%d", TransformationMapping.blur, blur))
         return self
@@ -180,9 +177,6 @@ public class ImagekitUrlConstructor {
     * @return the current ImagekitUrlConstructor object.
     */
     public func dpr(dpr: Float) -> ImagekitUrlConstructor {
-        if (dpr < 0.1 || dpr > 5){
-            fatalError("Transform value is out of range!")
-        }
         transformationMap[TransformationMapping.dpr] = dpr
         transformationList.append(String(format: "%@-%.2f", TransformationMapping.dpr, dpr))
         return self
@@ -262,9 +256,6 @@ public class ImagekitUrlConstructor {
     * @see trim
     */
     public func trim(value: Int) -> ImagekitUrlConstructor {
-        if (value < 1 || value > 99){
-            fatalError("Transform value is out of range!")
-        }
         transformationMap[TransformationMapping.trimEdges] = value
         transformationList.append(String(format: "%@-%d", TransformationMapping.trimEdges, value))
         return self
@@ -358,9 +349,6 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func overlayText(overlayText: String) -> ImagekitUrlConstructor{
-        if !overlayText.matches("[\\w\\s-]+") {
-            fatalError("Invalid transform value specified!")
-        }
         var allowedQueryParamAndKey = NSCharacterSet.urlQueryAllowed
         allowedQueryParamAndKey.remove(charactersIn: ";/?:@&=+$, ")
         transformationMap[TransformationMapping.overlayText] = overlayText
@@ -374,9 +362,6 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func overlayTextColor(overlayTextColor: String) -> ImagekitUrlConstructor{
-        if ((overlayTextColor.count != 6 && !overlayTextColor.matches("[A-Fa-f0-9]{6}")) && overlayTextColor.count != 8 && !overlayTextColor.matches("[A-Fa-f0-9]{8}")){
-            fatalError("Invalid transform value specified!")
-        }
         transformationMap[TransformationMapping.overlayTextColor] = overlayTextColor.uppercased()
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextColor, overlayTextColor.uppercased()))
         return self
@@ -424,9 +409,6 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func overlayBackground(overlayBackground: String) -> ImagekitUrlConstructor {
-        if ((overlayBackground.count != 6 && !overlayBackground.matches("[A-Fa-f0-9]{6}")) && (overlayBackground.count != 8 && !overlayBackground.matches("[A-Fa-f0-9]{8}"))){
-            fatalError("Invalid transform value specified!")
-        }
         transformationMap[TransformationMapping.overlayBackground] = overlayBackground.uppercased()
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayBackground, overlayBackground.uppercased()))
         return self
@@ -439,10 +421,6 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func overlayAlpha(overlayAlpha: Int) -> ImagekitUrlConstructor {
-        if overlayAlpha < 0 || overlayAlpha > 10 {
-            fatalError("Transform value is out of range!")
-        }
-        
         transformationMap[TransformationMapping.overlayTransparency] = overlayAlpha
         transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTransparency, overlayAlpha))
         return self
@@ -522,10 +500,6 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func background(backgroundColor: String) -> ImagekitUrlConstructor {
-        if ((backgroundColor.count != 6 && !backgroundColor.matches("[A-Fa-f0-9]{6}")) && (backgroundColor.count != 8 && !backgroundColor.matches("[A-Fa-f0-9]{8}"))){
-            fatalError("Invalid transform value specified!")
-        }
-        
         transformationMap[TransformationMapping.backgroundColor] = backgroundColor.uppercased()
         transformationList.append(String(format: "%@-%@", TransformationMapping.backgroundColor, backgroundColor.uppercased()))
         return self
@@ -540,10 +514,6 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func border(borderWidth: Int, borderColor: String) -> ImagekitUrlConstructor {
-        if ((borderColor.count != 6 || !borderColor.matches("[A-Fa-f0-9]{6}")) && (borderColor.count != 8 || !borderColor.matches("[A-Fa-f0-9]{8}"))){
-            fatalError("Invalid transform value specified!")
-        }
-        
         let s = String(format: "%@-%d_%@", TransformationMapping.border, borderWidth, borderColor.uppercased())
         transformationMap[TransformationMapping.border] = s
         transformationList.append(s)
@@ -619,6 +589,24 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", key, value))
         return self
     }
+    
+    /**
+     * Method allows adding custom Query Parameter to the image.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func addCustomQueryParameter(key: String, value: String) -> ImagekitUrlConstructor {
+        queryParams[key] = value
+        return self
+    }
+    
+    /**
+     * Method allows adding custom Query Parameters to the image.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func addCustomQueryParameters(params : [String: String]) -> ImagekitUrlConstructor {
+        queryParams.merge(params){ (current, _) in current }
+        return self
+    }
 
     /**
     * Used to create the url using the transformations specified before invoking this method.
@@ -627,7 +615,6 @@ public class ImagekitUrlConstructor {
     public func create() -> String {
         var url = self.source
         let apiVersion: String = API_VERSION
-        
         
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
@@ -663,15 +650,19 @@ public class ImagekitUrlConstructor {
             }
         }
         
-        if url != nil{
-            if url!.contains("?"){
-                url = String(format: "%@&ik-sdk-version=ios-%@", url!, apiVersion)
-            } else {
-                url = String(format: "%@?ik-sdk-version=ios-%@", url!, apiVersion)
-            }
+        guard url != nil else {
+            return ""
         }
         
-        return url ?? ""
+        self.queryParams["ik-sdk-version"] = String(format: "ios-%@", apiVersion)
+        var urlComponents = URLComponents.init(string: url!)!
+        urlComponents.queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
+        let urlParams = urlComponents.queryItems!
+        urlComponents.queryItems = urlParams.sorted(by: { first, second in
+            return first.name < second.name
+        })
+    
+        return urlComponents.string!
     }
 
 }

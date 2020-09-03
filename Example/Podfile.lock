@@ -1,34 +1,23 @@
 PODS:
   - Alamofire (4.8.2)
-  - FBSnapshotTestCase (2.1.4):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
-  - FBSnapshotTestCase/Core (2.1.4)
-  - FBSnapshotTestCase/SwiftSupport (2.1.4):
-    - FBSnapshotTestCase/Core
   - ImageKitIO (1.0.0):
     - Alamofire (~> 4.8.2)
-  - Nimble (7.3.4)
-  - Nimble-Snapshots (6.3.0):
-    - Nimble-Snapshots/Core (= 6.3.0)
-  - Nimble-Snapshots/Core (6.3.0):
-    - FBSnapshotTestCase (~> 2.0)
+  - ImageKitIO/Tests (1.0.0):
+    - Alamofire (~> 4.8.2)
     - Nimble (~> 7.0)
+    - Quick (~> 1.2.0)
+  - Nimble (7.3.4)
   - Quick (1.2.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.8.2)
-  - FBSnapshotTestCase (~> 2.1.4)
   - ImageKitIO (from `../`)
-  - Nimble (~> 7.0)
-  - Nimble-Snapshots (~> 6.3.0)
-  - Quick (~> 1.2.0)
+  - ImageKitIO/Tests (from `../`)
 
 SPEC REPOS:
   trunk:
     - Alamofire
-    - FBSnapshotTestCase
     - Nimble
-    - Nimble-Snapshots
     - Quick
 
 EXTERNAL SOURCES:
@@ -37,12 +26,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
-  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  ImageKitIO: 1b2162e504a54ac92e248edac7de37da73ebebd7
+  ImageKitIO: c5cb9ccdaf4bd9a1556612f211f3ceb06aea0164
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
-  Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
 
-PODFILE CHECKSUM: 2f957fddbdeec98c352b1f7d553cdb6a46b134df
+PODFILE CHECKSUM: b609f39968b02438f4bd465b695fbaad9d6afb86
 
 COCOAPODS: 1.9.1

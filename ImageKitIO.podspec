@@ -19,4 +19,10 @@ ImageKit is a complete image optimization and transformation solution that comes
   s.dependency 'Alamofire', '~> 4.8.2'
 
   s.source_files = 'ImageKit/**/*'
+
+  s.test_spec 'Tests' do |test_spec|
+    test_spec.source_files = 'Tests/**/*'
+    test_spec.dependency 'Quick', '~> 1.2.0'
+    test_spec.dependency 'Nimble', '~> 7.0'
+  end
 end

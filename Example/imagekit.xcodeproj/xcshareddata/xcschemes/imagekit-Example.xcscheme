@@ -56,10 +56,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "ImageKit_Tests.xctest"
-               BlueprintName = "ImageKit_Tests"
-               ReferencedContainer = "container:imagekit.xcodeproj">
+               BlueprintIdentifier = "20B5401A5E794EF503BE9387D9882795"
+               BuildableName = "ImageKitIO-Unit-Tests.xctest"
+               BlueprintName = "ImageKitIO-Unit-Tests"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
