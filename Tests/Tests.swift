@@ -3,7 +3,6 @@
 import Quick
 import Nimble
 import ImageKitIO
-import Mocker
 import Alamofire
 
 let apiVersion: String = API_VERSION;
