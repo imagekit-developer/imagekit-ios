@@ -6,7 +6,7 @@
 
 iOS Pod for [ImageKit.io](https://imagekit.io) which implements client-side upload and URL generation for use inside an iOS application.
 
-ImageKit is a complete image optimization and transformation solution that comes with an [image CDN](https://imagekit.io/features/imagekit-infrastructure) and media storage. It can be integrated with your existing infrastructure - storages like AWS S3, web servers, your CDN and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
+ImageKit is a complete image optimization and transformation solution with an [image CDN](https://imagekit.io/features/imagekit-infrastructure) and media storage. It can be integrated with your existing infrastructure - storages like AWS S3, web servers, your CDN, and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
 
 Swift client for Imagekit Integration
 
@@ -27,11 +27,11 @@ end
 ```
 
 ## Initialization
-You need to initialize the sdk by providing the  `publicKey` and the `urlEndpoint`. You can do this either in your application or launcher activity. This needs to be called before any other function in the SDK or else an exception would be thrown.
+You need to initialize the SDK by providing the  `publicKey` and the `urlEndpoint`. You can do this either in your application or launcher activity. This needs to be called before any other function in the SDK, or else an exception would be thrown.
 
 `authenticationEndpoint` is only required if you want to use the upload functionality.
 
-_Note: Do not include your Private Key in any client side code, including this SDK or its initialization._
+_Note: Do not include your Private Key in any client-side code, including this SDK or its initialization._
 
 ```swift
 // AppDelegate.swift
@@ -43,9 +43,9 @@ ImageKit.init(
 ```
 
 ## Sample application
-This project has a sample application under `Example` folder. The sample application demonstrates the use of this SDK.
+This project has a sample application under the [sample folder](/sample). The sample application demonstrates the use of this SDK.
 
-To run the `Example` application, add Public Key to `Example/ImageKit/AppDelegate.swift` and add Private Key to `Server/.env` 
+To run the sample application, add Public Key to `sample/ImageKit/AppDelegate.swift` and add Private Key to `Server/.env` 
 ```bash
 npm install
 node index.js
@@ -94,7 +94,7 @@ ImageKit.shared.url(
 ```
 
 ### List of supported transformations
-The complete list of transformations supported and their usage in ImageKit can be found [here](https://docs.imagekit.io/imagekit-docs/image-transformations). The SDK provides a function for each transformation parameter, making the code simpler and readable. If a transformation is supported in ImageKit, but a name for it cannot be found in the table below, then use the `addCustomTransformation` function and pass the transformation code from ImageKit docs as the first parameter and value as second paramter. For example - `.addCustomTransformation("w", "400")`
+The complete list of transformations supported and their usage in ImageKit can be found [here](https://docs.imagekit.io/imagekit-docs/image-transformations). The SDK provides a function for each transformation parameter, making the code simpler and readable. If a transformation is supported in ImageKit, but a name for it cannot be found in the table below, then use the `addCustomTransformation` function and pass the transformation code from ImageKit docs as the first parameter and value as the second parameter. For example - `.addCustomTransformation("w", "400")`
 
 | Supported Transformation Function | Translates to parameter |
 | ----------------------------- | ----------------------- |
@@ -201,7 +201,7 @@ ImageKit.shared.uploader().upload(
 
 ## Support
 
-For any feedback or to report any issues or general implementation support please reach out to [support@imagekit.io](mailto:support@imagekit.io)
+For any feedback or to report any issues or general implementation support, please reach out to [support@imagekit.io](mailto:support@imagekit.io)
 
 ## Links
 * [Documentation](https://docs.imagekit.io)
