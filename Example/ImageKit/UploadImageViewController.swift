@@ -48,8 +48,10 @@ class UploadImageViewController: UIViewController{
             folder: "/",
             signatureHeaders: ["x-test-header":"Test"],
             progress: { progress in
-                let progressBar: UIProgressView = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as! UIProgressView
-                progressBar.setProgress(Float(progress.fractionCompleted), animated: true)
+                let progressBar: UIProgressView? = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as? UIProgressView
+                if (progressBar != nil){
+                    progressBar!.setProgress(Float(progress.fractionCompleted), animated: true)
+                }
             },
             completion: { result in
                 self.dismiss(animated: true)

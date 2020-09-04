@@ -16,8 +16,7 @@ public struct UserDefaultKeys{
 }
 
 open class ImageKit: NSObject{
-    public static var TransformationPostion: TransformationPosition.Type = TransformationPosition.self
-
+    
     open fileprivate(set) var clientPublicKey: String! = ""
     open fileprivate(set) var imageKitEndpoint: String! = ""
     fileprivate(set) var transformationPosition: TransformationPosition = TransformationPosition.PATH
