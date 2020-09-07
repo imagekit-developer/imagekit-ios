@@ -1,4 +1,4 @@
-# [Beta] ImageKit.io iOS SDK
+# ImageKit.io iOS SDK
 
 [![Version](https://img.shields.io/cocoapods/v/ImageKitIO.svg?label=Pod&style=flat)](https://cocoapods.org/pods/ImageKitIO)
 ![Swift CI](https://github.com/imagekit-developer/imagekit-ios/workflows/Swift%20CI/badge.svg)
