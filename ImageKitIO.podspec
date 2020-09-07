@@ -11,7 +11,7 @@ ImageKit is a complete image optimization and transformation solution that comes
 
   s.homepage         = 'https://imagekit.io/'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'ahnv' => 'abhinav@imagekit.io' }
+  s.author           = { 'ImageKit Developer' => 'developer@imagekit.io', 'ahnv' => 'abhinav@imagekit.io' }
   s.source           = { :git => 'https://github.com/imagekit-developer/imagekit-ios.git', :tag => s.version.to_s }
 
   s.swift_version    = '4.0'
