@@ -98,14 +98,14 @@ class URLGenerationSpec: QuickSpec {
         
         it("Custom Query Parameter with Transforms") {
             let actual = ImageKit.shared
-                .url(src: "https://ik.imagekit.io/demo/tr:h-300.00,w-300.00:rt-90/medium_cafe_B1iTdD0C.jpg")
+                .url(src: "https://ik.imagekit.io/demo/tr:h-300.00,w-300.00:rt-90/medium_cafe_B1iTdD0C.jpg?t1=v")
                 .height(height: 300)
                 .width(width: 300)
                 .chainTransformation()
                 .rotation(rotation: Rotation.VALUE_90)
                 .addCustomQueryParameters(params: ["x-test-header": "Test"])
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90&x-test-header=Test", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&t1=v?tr%%3Dh-300,w-300:rt-90&x-test-header=Test", apiVersion)))
         }
 }
 
