@@ -37,8 +37,15 @@ extension DataRequest {
             guard let data = data else {
                 return .failure(AFError.responseSerializationFailed(reason: .inputDataNil))
             }
-
-            return Result { try newJSONDecoder().decode(T.self, from: data) }
+            
+            do{
+                var json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                json["rawJSON"] = String.init(data: data, encoding: .utf8)
+                let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
+                return Result.success(try newJSONDecoder().decode(T.self, from: jsonData))
+            } catch{
+                return Result.failure(error)
+            }
         }
     }
 
