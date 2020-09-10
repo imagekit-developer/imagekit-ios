@@ -146,56 +146,66 @@ Make sure that you have specified `authenticationEndpoint` during SDK initializa
 
 #### Upload file from UIImage
 ``` swift
-let filename = "file-name.jpg"
-let timestamp = System.currentTimeMillis()
+let image: UIImage
 ImageKit.shared.uploader().upload(
-    file: UIImage,
-    fileName: String,
-    useUniqueFilename: Bool = true,
-    tags: [String] = [],
-    folder: String? = "/",
-    isPrivateFile: Bool? = false,
-    customCoordinates: String? = "",
-    responseFields: String? = "",
-    signatureHeaders: [String: String]? = [String: String](),
-    progress: ((Progress) -> Void)? = nil,
-    completion: @escaping (Result<UploadAPIResponse>)-> Void
+  file: image,
+  fileName: "sample-image.jpg",
+  useUniqueFilename: true,
+  tags: ["demo"],
+  folder: "/",
+  isPrivateFile: false,
+  customCoordinates: "",
+  responseFields: "",
+  signatureHeaders: ["x-test-header":"Test"],
+  progress: { progress in
+  	// Handle Progress
+  },
+  completion: { result in 
+  	// Handle Upload Response
+  }
 )
 ```
 
 #### Upload file from a remote URL
 ``` swift
-let filename = "file-name.jpg"
-let timestamp = System.currentTimeMillis()
 ImageKit.shared.uploader().upload(
-    file: String,
-    fileName: String,
-    useUniqueFilename: Bool = true,
-    tags: [String] = [],
-    folder: String? = "/",
-    isPrivateFile: Bool? = false,
-    customCoordinates: String? = "",
-    responseFields: String? = "",
-    signatureHeaders: [String: String]? = [String: String](),
-    progress: ((Progress) -> Void)? = nil,
-    completion: @escaping (Result<UploadAPIResponse>)-> Void
+  file: "https://www.example.com/sample-image.jpg",
+  fileName: "sample-image.jpg",
+  useUniqueFilename: true,
+  tags: ["demo"],
+  folder: "/",
+  isPrivateFile: false,
+  customCoordinates: "",
+  responseFields: "",
+  signatureHeaders: ["x-test-header":"Test"],
+  progress: { progress in
+  	// Handle Progress
+  },
+  completion: { result in 
+  	// Handle Upload Response
+  }
 )
 ```
 
 #### Upload file using Data
 ```swift
+let data : Data
 ImageKit.shared.uploader().upload(
-    file: Data,
-    fileName: String,
-    useUniqueFilename: Bool = true,
-    tags: [String] = [],
-    folder: String? = "/",
-    isPrivateFile: Bool? = false,
-    customCoordinates: String? = "",
-    responseFields: String? = "",
-    signatureHeaders: [String: String]? = [String: String](),
-    progress: ((Progress) -> Void)? = nil,
-    completion: @escaping (Result<UploadAPIResponse>)-> Void
+  file: data,
+  fileName: "sample-image.jpg",
+  useUniqueFilename: true,
+  tags: ["demo"],
+  folder: "/",
+  isPrivateFile: false,
+  customCoordinates: "",
+  responseFields: "",
+  signatureHeaders: ["x-test-header":"Test"],
+  progress: { progress in
+  	// Handle Progress
+  },
+  completion: { result in 
+  	// Handle Upload Response
+  }
 )
 ```
 
