@@ -43,10 +43,10 @@ open class ImageKit: NSObject{
         
     }
     
-    public init(clientPublicKey: String, imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, authenticationEndpoint: String? = ""){
+    public init(clientPublicKey: String = "", imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, authenticationEndpoint: String? = ""){
         
-        if imageKitEndpoint.isEmpty || clientPublicKey.isEmpty {
-            fatalError("Missing publicKey/urlEndpoint during initialization")
+        if imageKitEndpoint.isEmpty {
+            fatalError("Missing urlEndpoint during initialization")
         }
         
         
