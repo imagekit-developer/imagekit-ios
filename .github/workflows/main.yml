@@ -8,35 +8,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        
       - name: Install Cocoapods
         run: |
           gem install cocoapods
           pod repo add-cdn trunk https://cdn.cocoapods.org/
+          
       - name: Install Dependencies
         run: |
           cd Example
           pod install --repo-update
+      
       - name: Build Example Project
         run: |
           cd Example
           xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 11' clean build
-          
-  codecoverage:
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Cocoapods
-        run: |
-          gem install cocoapods
-          pod repo add-cdn trunk https://cdn.cocoapods.org/
-      - name: Install Dependencies
-        run: |
-          cd Example
-          pod install --repo-update
-      - name: Build Example Project
+
+      - name: Run Tests
         run: |
           cd Example
           xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 11' -enableCodeCoverage YES clean test
+          
       - name: Upload Coverage to codecov
         run: bash <(curl -s https://codecov.io/bash)
 
