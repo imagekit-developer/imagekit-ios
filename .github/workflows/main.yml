@@ -8,6 +8,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Install Cocoapods
+        run: |
+          gem install cocoapods
+          pod repo add-cdn trunk https://cdn.cocoapods.org/
       - name: Install Dependencies
         run: |
           cd Example
@@ -21,6 +25,10 @@ jobs:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Cocoapods
+        run: |
+          gem install cocoapods
+          pod repo add-cdn trunk https://cdn.cocoapods.org/
       - name: Install Dependencies
         run: |
           cd Example
@@ -37,6 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Cocoapods
-        run: gem install cocoapods
+        run: |
+          gem install cocoapods
+          pod repo add-cdn trunk https://cdn.cocoapods.org/
       - name: Lint and Test Cocoa Pod
         run: pod lib lint --verbose
