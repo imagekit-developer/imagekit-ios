@@ -21,6 +21,8 @@ jobs:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Cocoapods
+        run: gem install cocoapods
       - name: Lint Cocoa Pod
         run: pod lib lint --skip-tests --verbose
 
@@ -28,5 +30,7 @@ jobs:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Cocoapods
+        run: gem install cocoapods
       - name: Lint and Test Cocoa Pod
         run: pod lib lint --verbose
