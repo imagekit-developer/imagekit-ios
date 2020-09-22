@@ -30,7 +30,7 @@ jobs:
           xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 11' -enableCodeCoverage YES clean test
           
       - name: Upload Coverage to codecov
-        run: bash <(curl -s https://codecov.io/bash)
+        run: bash <(curl -s https://codecov.io/bash) -J '^ImageKitIO$' -X coveragepy
 
   lint-test-pod:
     runs-on: macOS-latest
