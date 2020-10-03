@@ -7,25 +7,25 @@
 import Foundation
 
 public class ImagekitUrlConstructor {
-    
+
     private var endpoint: String!
     private var imagePath: String!
     private var transformationPosition: TransformationPosition!
     private var queryParams: [String: String] = [:]
-    
+
     private var isSource: Bool = false
     private var source: String!
-    
+
     private var transformationList = [String]()
-    private var transformationMap = [String : Any]()
-    
+    private var transformationMap = [String: Any]()
+
     init(endpoint: String, imagePath: String, transformationPosition: TransformationPosition, queryParams: [String: String] = [:]) {
         self.endpoint = endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.imagePath = imagePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.transformationPosition = transformationPosition
         self.queryParams = queryParams
     }
-    
+
     init(src: String, transformationPosition: TransformationPosition, queryParams: [String: String] = [:]) {
         self.source = src
         self.transformationPosition = transformationPosition
@@ -161,7 +161,7 @@ public class ImagekitUrlConstructor {
     */
     public func effectGray(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.eGrayscale] = flag
-        if (flag){
+        if flag {
             transformationList.append(String(format: "%@", TransformationMapping.eGrayscale))
         }
         return self
@@ -260,7 +260,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%d", TransformationMapping.trimEdges, value))
         return self
     }
-    
+
     /**
      * Method to specify an image to overlay over another image. This will help you generate watermarked images if needed.
      * @param overlayImage
@@ -272,7 +272,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayImage, formattedOverlayImage))
         return self
     }
-    
+
     /**
      * Method used to specify the position of the overlaid image relative to the input image.
      * @param overlayFocus Possible values include center, top, left, bottom, right, top_left, top_right, bottom_left and bottom_right.
@@ -303,7 +303,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(s)
         return self
     }
-    
+
     /**
      * Method used to provide more granular control over the positioning of the overlay image on the input image.
      * The top left corner of the input image is considered as (0,0) and the bottom right corner is considered as (w, h)
@@ -320,7 +320,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(s)
         return self
     }
-    
+
     /**
      * Method used to specify the width of the overlaid image.
      * @param overlayWidth
@@ -331,7 +331,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%d", TransformationMapping.overlayWidth, overlayWidth))
         return self
     }
-    
+
     /**
      * Method used to specify the height of the overlaid image.
      * @param overlayHeight
@@ -348,48 +348,48 @@ public class ImagekitUrlConstructor {
      * @param overlayText
      * @return the current ImagekitUrlConstructor object.
      */
-    public func overlayText(overlayText: String) -> ImagekitUrlConstructor{
+    public func overlayText(overlayText: String) -> ImagekitUrlConstructor {
         var allowedQueryParamAndKey = NSCharacterSet.urlQueryAllowed
         allowedQueryParamAndKey.remove(charactersIn: ";/?:@&=+$, ")
         transformationMap[TransformationMapping.overlayText] = overlayText
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayText, overlayText.addingPercentEncoding(withAllowedCharacters: allowedQueryParamAndKey)!))
         return self
     }
-    
+
     /**
      * Method used to specify the color of the overlaid text on the image.
      * @param overlayTextColor Possible value is a valid valid RGB Hex Code
      * @return the current ImagekitUrlConstructor object.
      */
-    public func overlayTextColor(overlayTextColor: String) -> ImagekitUrlConstructor{
+    public func overlayTextColor(overlayTextColor: String) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.overlayTextColor] = overlayTextColor.uppercased()
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextColor, overlayTextColor.uppercased()))
         return self
     }
-    
+
     /**
      * Method used to specify the font family for the overlaid text.
      * @param overlayTextFontFamily
      * @return the current ImagekitUrlConstructor object.
      * @see overlayTextFontFamily
      */
-    public func overlayTextFontFamily(overlayTextFontFamily: OverlayTextFont) -> ImagekitUrlConstructor{
+    public func overlayTextFontFamily(overlayTextFontFamily: OverlayTextFont) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.overlayTextFont] = overlayTextFontFamily
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextFont, overlayTextFontFamily.rawValue))
         return self
     }
-    
+
     /**
      * Method used to specify the size of the overlaid text.
      * @param overlayTextFontSize Possible values include any integer. Default value - 14px
      * @return the current ImagekitUrlConstructor object.
      */
-    public func overlayTextFontSize(overlayTextSize: Int) -> ImagekitUrlConstructor{
+    public func overlayTextFontSize(overlayTextSize: Int) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.overlayTextSize] = overlayTextSize
         transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTextSize, overlayTextSize))
         return self
     }
-    
+
     /**
      * Method used to specify the typography of the font family used for the overlaid text. Possible values include bold b and italics i.
      * Note Bold & Italics are not supported for all provided fonts.
@@ -397,12 +397,12 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object
      * @see OverlayTextTypography
      */
-    public func overlayTextTypography(overlayTextTypography: OverlayTextTypography) -> ImagekitUrlConstructor{
+    public func overlayTextTypography(overlayTextTypography: OverlayTextTypography) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.overlayTextTypography] = overlayTextTypography
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextTypography, overlayTextTypography.rawValue))
         return self
     }
-    
+
     /**
      * Method used to specify the colour of background canvas to be overlaid. Possible values include a valid RGB Hex code.
      * @param overlayBackground
@@ -413,7 +413,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", TransformationMapping.overlayBackground, overlayBackground.uppercased()))
         return self
     }
-    
+
     /**
      * Method used to specify the transparency level for the overlaid image.
      * Note Overlay transparency is currently supported for overlay texts & backgrounds only.
@@ -425,7 +425,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTransparency, overlayAlpha))
         return self
     }
-    
+
     /**
      * Method used to specify if the output image should contain the color profile that is initially available
      * from the original image. It is recommended to remove the color profile before serving the image on web and apps.
@@ -439,7 +439,7 @@ public class ImagekitUrlConstructor {
          transformationList.append(String(format: "%@-%@", TransformationMapping.colorProfile, String(flag)))
          return self
      }
-    
+
     /**
      * Method used to specify if the output image should contain all the metadata that is initially available from
      * the original image. Enabling this is not recommended because this metadata is not relevant for rendering on the
@@ -454,7 +454,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", TransformationMapping.imageMetadata, String(flag)))
         return self
     }
-    
+
     /**
      * Method used to specify the degrees by which the output image has to be rotated or specifies the use of
      * EXIF Orientation tag for the rotation of the image using auto.
@@ -468,8 +468,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", TransformationMapping.rotate, rotation.rawValue))
          return self
      }
-    
-    
+
     /**
      * Method used to specify the radius to be used to get a rounded corner image.
      * This option is applied after resizing of the image, if any.
@@ -481,7 +480,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%d", TransformationMapping.radius, radius))
         return self
     }
-    
+
     /**
      * Method used to get a perfectly rounded image.
      * This option is applied after resizing of the image, if any.
@@ -492,7 +491,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", TransformationMapping.radius, "max"))
         return self
     }
-    
+
     /**
      * Method used to specify the background color as RGB hex code (e.g. FF0000) or an RGBA code (e.g. FFAABB50)
      * to be used for the image.
@@ -504,7 +503,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", TransformationMapping.backgroundColor, backgroundColor.uppercased()))
         return self
     }
-    
+
     /**
      * Method used to specify the width and color of the border that is added around the image.
      * The width is a positive integer that specifies the border width in pixels.
@@ -519,7 +518,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(s)
         return self
     }
-    
+
     /**
      * Method used to automatically enhance the contrast of the image by using the full range of intensity values
      * that a particular image format allows. This basically means that the lighter portions of the image would become
@@ -529,12 +528,12 @@ public class ImagekitUrlConstructor {
      */
     public func effectContrast(flag: Bool) -> ImagekitUrlConstructor {
         transformationMap[TransformationMapping.contrastStretch] = flag
-        if flag{
+        if flag {
             transformationList.append(String(format: "%@", TransformationMapping.contrastStretch))
         }
         return self
     }
-    
+
     /**
      * Method sharpens the input image. It is useful to highlight the edges and finer details in the image.
      * If just e-sharpen is used, then a default sharpening is performed on the image. This behavior can be controlled
@@ -549,7 +548,6 @@ public class ImagekitUrlConstructor {
         return self
     }
 
-    
     /**
      * Unsharp masking (USM) is an image sharpening technique.
      * Method allows you to apply and control unsharp mask on your images. The amount of sharpening can be controlled
@@ -579,7 +577,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(":")
         return self
     }
-    
+
     /**
      * Method allows adding custom transformations to the image.
      * @return the current ImagekitUrlConstructor object.
@@ -589,7 +587,7 @@ public class ImagekitUrlConstructor {
         transformationList.append(String(format: "%@-%@", key, value))
         return self
     }
-    
+
     /**
      * Method allows adding custom Query Parameter to the image.
      * @return the current ImagekitUrlConstructor object.
@@ -598,13 +596,13 @@ public class ImagekitUrlConstructor {
         queryParams[key] = value
         return self
     }
-    
+
     /**
      * Method allows adding custom Query Parameters to the image.
      * @return the current ImagekitUrlConstructor object.
      */
-    public func addCustomQueryParameters(params : [String: String]) -> ImagekitUrlConstructor {
-        queryParams.merge(params){ (current, _) in current }
+    public func addCustomQueryParameters(params: [String: String]) -> ImagekitUrlConstructor {
+        queryParams.merge(params) { (current, _) in current }
         return self
     }
 
@@ -615,16 +613,16 @@ public class ImagekitUrlConstructor {
     public func create() -> String {
         var url = self.source
         let apiVersion: String = API_VERSION
-        
+
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
-            if (self.isSource){
+            if self.isSource {
                 url = self.source
-                if self.source.contains("?tr="){
+                if self.source.contains("?tr=") {
                     let endRange = url!.range(of: "?tr=")?.lowerBound
                     url!.removeSubrange(endRange!..<url!.endIndex)
                 }
-                if self.source.contains("/tr:"){
+                if self.source.contains("/tr:") {
                     let urlComponents = url!.components(separatedBy: "/tr:")
                     var path = urlComponents[1]
                     let index = path.range(of: "/")?.upperBound
@@ -649,11 +647,11 @@ public class ImagekitUrlConstructor {
                 url = String(format: "%@/%@", self.endpoint!, self.imagePath!)
             }
         }
-        
+
         guard url != nil else {
             return ""
         }
-        
+
         self.queryParams["ik-sdk-version"] = String(format: "ios-%@", apiVersion)
         var urlComponents = URLComponents.init(string: url!)!
         urlComponents.queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
@@ -661,7 +659,7 @@ public class ImagekitUrlConstructor {
         urlComponents.queryItems = urlParams.sorted(by: { first, second in
             return first.name < second.name
         })
-    
+
         return urlComponents.string!
     }
 

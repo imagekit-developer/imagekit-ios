@@ -25,12 +25,12 @@ public struct UploadAPIResponse: Codable {
         case height, width, size, filePath, tags, isPrivateFile, customCoordinates, fileType
         case rawJSON
     }
-    
-    public func getRawResponse() -> String{
+
+    public func getRawResponse() -> String {
         return self.rawJSON
     }
-    
-    public func getRawJson() -> [String: Any]{
+
+    public func getRawJson() -> [String: Any] {
         do {
             return try JSONSerialization.jsonObject(with: self.rawJSON.data(using: .utf8)!, options: []) as! [String: Any]
         } catch {

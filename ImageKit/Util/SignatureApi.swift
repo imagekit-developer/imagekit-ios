@@ -6,19 +6,22 @@
 //
 
 import Foundation
-import Alamofire
 
 class SignatureAPI {
-    public static func getSignature(expire: String, headerMap: [String: String]?, completion: @escaping (Result<SignatureAPIResponse>) -> ()){
+    public static func getSignature(expire: String, headerMap: [String: String]?, completion: @escaping (Result<(HTTPURLResponse?, SignatureAPIResponse?), Error>) -> Void) {
         let endpoint = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)!
-        Alamofire.request(endpoint, headers: headerMap).validate(statusCode: 200...299).responseSignatureAPIResponse{ response in
-            switch response.result{
-                case .success(let signatureAPIResponse):
-                    completion(Result.success(signatureAPIResponse))
-                case .failure(let error):
-                    completion(Result.failure(error))
-            }
-        }
+        URLSession.shared.dataTask(with: URL(string: endpoint)!) {(data, response, error) in
+                if let error = error {
+                    completion(Result.failure(IKError.HTTPError.transportError(error)))
+                    return
+                }
+                let response = response as! HTTPURLResponse
+                let status = response.statusCode
+                guard (200...299).contains(status) else {
+                    completion(Result.failure(IKError.HTTPError.serverSideError(status)))
+                    return
+                }
+                completion(Result.success((response, try? IKJSONDecoder().decode(SignatureAPIResponse.self, from: data!))))
+        }.resume()
     }
 }
-

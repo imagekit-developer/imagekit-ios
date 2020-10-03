@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum OverlayFocusType: String{
+public enum OverlayFocusType: String {
     case CENTER = "center"
     case TOP = "top"
     case LEFT = "left"

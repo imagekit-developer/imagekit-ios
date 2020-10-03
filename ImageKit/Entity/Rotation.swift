@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Rotation: String{
+public enum Rotation: String {
     case AUTO = "auto"
     case VALUE_0 = "0"
     case VALUE_90 = "90"

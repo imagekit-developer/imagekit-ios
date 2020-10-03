@@ -336,7 +336,7 @@ public struct MimeType {
         for i in 0 ..< (_bytes.count - 1) {
           if _bytes[i] == 0x42 && _bytes[i + 1] == 0x82 {
             idPos = i
-            break;
+            break
           }
         }
 
@@ -377,7 +377,7 @@ public struct MimeType {
         for i in 0 ..< (_bytes.count - 1) {
           if _bytes[i] == 0x42 && _bytes[i + 1] == 0x82 {
             idPos = i
-            break;
+            break
           }
         }
 
@@ -565,7 +565,7 @@ public struct MimeType {
       type: .woff2,
       bytesCount: 8,
       matches: { bytes, _ in
-        return (bytes[0...3] == [0x77, 0x4F, 0x46,  0x32]) &&
+        return (bytes[0...3] == [0x77, 0x4F, 0x46, 0x32]) &&
           ((bytes[4...7] == [0x00, 0x01, 0x00, 0x00]) || (bytes[4...7] == [0x4F, 0x54, 0x54, 0x4F]))
       }
     ),

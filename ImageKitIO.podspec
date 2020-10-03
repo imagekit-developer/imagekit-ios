@@ -16,7 +16,6 @@ ImageKit is a complete image optimization and transformation solution that comes
 
   s.swift_version    = '4.0'
   s.ios.deployment_target = '8.0'
-  s.dependency 'Alamofire', '~> 4.8.2'
 
   s.source_files = 'ImageKit/**/*'
 
@@ -24,5 +23,6 @@ ImageKit is a complete image optimization and transformation solution that comes
     test_spec.source_files = 'Tests/**/*'
     test_spec.dependency 'Quick', '~> 1.2.0'
     test_spec.dependency 'Nimble', '~> 7.0'
+    test_spec.dependency 'Kakapo'
   end
 end
