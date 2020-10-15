@@ -20,8 +20,13 @@ public class ImageKitUploader {
         responseFields: String? = "",
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
+        urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-        if let publicKey = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY), let _ = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT) {
+        let publicKey = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
+        let authEndpoint = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)
+        print(publicKey)
+        print(authEndpoint)
+        if publicKey != nil &&  authEndpoint != nil && publicKey?.isEmpty == false && authEndpoint?.isEmpty == false {
             let expire = String(format: "%.0f", NSDate().timeIntervalSince1970 * 1000)
             SignatureAPI.getSignature(expire: expire, headerMap: signatureHeaders, completion: { result in
                 switch result {
@@ -29,7 +34,7 @@ public class ImageKitUploader {
                         if let signatureApiResponse = signatureApiResponse {
                             UploadAPI.upload(
                                 file: file,
-                                publicKey: publicKey,
+                                publicKey: publicKey!,
                                 signature: signatureApiResponse,
                                 fileName: fileName,
                                 useUniqueFileName: useUniqueFilename,
@@ -37,6 +42,7 @@ public class ImageKitUploader {
                                 folder: folder,
                                 isPrivateFile: isPrivateFile!,
                                 progressClosure: progress,
+                                urlConfiguration: urlConfiguration,
                                 completion: { uploadResult in
                                     completion(uploadResult)
                             })
@@ -64,9 +70,10 @@ public class ImageKitUploader {
         responseFields: String? = "",
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
+        urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
         let image = UIImagePNGRepresentation(file)!
-        self.upload(file: image, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, completion: completion)
+        self.upload(file: image, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, urlConfiguration: urlConfiguration, completion: completion)
     }
 
     public func upload(
@@ -80,8 +87,9 @@ public class ImageKitUploader {
         responseFields: String? = "",
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
+        urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-        self.upload(file: file.data(using: .utf8)!, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, completion: completion)
+        self.upload(file: file.data(using: .utf8)!, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, urlConfiguration: urlConfiguration, completion: completion)
     }
 }
 
@@ -92,12 +100,4 @@ internal func IKJSONDecoder() -> JSONDecoder {
         decoder.dateDecodingStrategy = .iso8601
     }
     return decoder
-}
-
-internal func IKJSONEncoder() -> JSONEncoder {
-    let encoder = JSONEncoder()
-    if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
-        encoder.dateEncodingStrategy = .iso8601
-    }
-    return encoder
 }

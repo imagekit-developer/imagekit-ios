@@ -105,7 +105,16 @@ class URLGenerationSpec: QuickSpec {
                 .rotation(rotation: Rotation.VALUE_90)
                 .addCustomQueryParameters(params: ["x-test-header": "Test"])
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&t1=v?tr%%3Dh-300,w-300:rt-90&x-test-header=Test", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&t1=v&tr=h-300,w-300:rt-90&x-test-header=Test", apiVersion)))
+        }
+        
+        it("Appending Custom Query Parameter") {
+            let actual = ImageKit.shared
+                .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
+                .addCustomQueryParameter(key: "t1", value: "v")
+                .addCustomQueryParameters(params: ["x-test-header": "Test"])
+                .create()
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&t1=v&x-test-header=Test", apiVersion)))
         }
 }
 
@@ -886,6 +895,13 @@ class UnitTestSpec: QuickSpec {
                            .create()
                        expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90", apiVersion)))
                    }
+                
+                    it("Empty URL") {
+                        let actual = ImageKit.shared
+                            .url(src: "")
+                            .create()
+                        expect(actual).to(equal(String(format: "", apiVersion)))
+                    }
                }
            }
     }
@@ -1060,36 +1076,157 @@ func loadFileData(path: String) -> Data {
 }
 
 class UploadSpec: QuickSpec {
+    
+    var router : Router? = nil
+    
     override func spec() {
+        
+        
         beforeSuite {
             _ = ImageKit.init(clientPublicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH, authenticationEndpoint: "https://upload.imagekit.io/temp/client-side-upload-signature")
-            let router = Router.register("https://upload.imagekit.io")
-            router.get("/temp/client-side-upload-signature") { _ in
-                return ["token": "Token", "expire": 1601106661, "signature": "Signature"]
+            self.router = Router.register("https://upload.imagekit.io")
+        }
+        
+        describe("Failed Upload"){
+            it("Invalid Signature"){
+                self.router!.get("/temp/client-side-upload-signature") { _ in
+                    return []
+                }
+                waitUntil(timeout: 60){ done in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    urlConfiguration.protocolClasses = [Server.self]
+                    ImageKit.shared.uploader().upload(
+                    file: "https://ik.imagekit.io/demo/default-image.jpg",
+                    fileName: "default-image-test.jpg",
+                    urlConfiguration: urlConfiguration,
+                    completion: { result in
+                        switch result{
+                            case .success( _, _):
+                                fail("Shoul not succeed")
+                                break;
+                            case .failure( _ as UploadAPIError):
+                                fail("Should not throw Error")
+                                break;
+                            case .failure(let error):
+                                assert(type(of: error) == IKError.SignatureError.self)
+                                break;
+                        }
+                        done()
+                    })
+                }
             }
-            router.post("/api/v1/files/upload"){ request in
-                print(request)
-                return []
+            it("Invalid Signature Response"){
+                self.router!.get("/temp/client-side-upload-signature") { _ in
+                    return Response(statusCode: 400, body: [])
+                }
+                waitUntil(timeout: 60){ done in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    urlConfiguration.protocolClasses = [Server.self]
+                    ImageKit.shared.uploader().upload(
+                    file: "https://ik.imagekit.io/demo/default-image.jpg",
+                    fileName: "default-image-test.jpg",
+                    urlConfiguration: urlConfiguration,
+                    completion: { result in
+                        switch result{
+                            case .success( _, _):
+                                fail("Shoul not succeed")
+                                break;
+                            case .failure( _ as UploadAPIError):
+                                fail("Should not throw Error")
+                                break;
+                            case .failure(let error):
+                                assert(type(of: error) == IKError.HTTPError.self)
+                                break;
+                        }
+                        done()
+                    })
+                }
+            }
+            
+            it("Invalid Upload"){
+                self.router!.get("/temp/client-side-upload-signature") { _ in
+                    return ["token": "Token", "expire": 1601106661, "signature": "Signature"]
+                }
+                waitUntil(timeout: 60){ done in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    urlConfiguration.protocolClasses = [Server.self]
+                    ImageKit.shared.uploader().upload(
+                    file: "https://ik.imagekit.io/demo/default-image.jpg",
+                    fileName: "default-image-test.jpg",
+                    urlConfiguration: urlConfiguration,
+                    completion: { result in
+                        switch result{
+                            case .success( _, _):
+                                fail("Shoul not succeed")
+                                break;
+                            case .failure(let uploadAPIError as UploadAPIError):
+                                expect(uploadAPIError.message).to(equal("Your request contains invalid expire parameter. Expire parameter should be a Unix time in less than 1 hour into the future."))
+                                expect(uploadAPIError.help).to(equal("For support kindly contact us at support@imagekit.io ."))
+                                break;
+                            case .failure(_):
+                                fail("Should not throw Error")
+                                break;
+                        }
+                        done()
+                    })
+                }
+            }
+        }
+        
+        describe("Successful Upload"){
+            it("Upload From Url"){
+                self.router!.get("/temp/client-side-upload-signature") { _ in
+                    return ["token": "Token", "expire": 1601106661, "signature": "Signature"]
+                }
+                self.router!.post("/api/v1/files/upload"){ request in
+                    return [
+                        "fileId": "5f881125ce8f14336dda25b6",
+                        "name": "default-image-test_1JO5mllWR.jpg",
+                        "size": 146974,
+                        "filePath": "/default-image-test_1JO5mllWR.jpg",
+                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+                        "fileType": "image",
+                        "height": 1000,
+                        "width": 1000,
+                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+                    ]
+                }
+                waitUntil(timeout: 60){ done in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    urlConfiguration.protocolClasses = [Server.self]
+                    ImageKit.shared.uploader().upload(
+                    file: "https://ik.imagekit.io/demo/default-image.jpg",
+                    fileName: "default-image-test.jpg",
+                    urlConfiguration: urlConfiguration,
+                    completion: { result in
+                        switch result{
+                            case .success( _, let uploadAPIResponse):
+                                if let uploadAPIResponse = uploadAPIResponse{
+                                    expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
+                                    expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
+                                    expect(uploadAPIResponse.size).to(equal(146974))
+                                    expect(uploadAPIResponse.filePath).to(equal("/default-image-test_1JO5mllWR.jpg"))
+                                    expect(uploadAPIResponse.url).to(equal("https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg"))
+                                    expect(uploadAPIResponse.fileType).to(equal("image"))
+                                    expect(uploadAPIResponse.height).to(equal(1000))
+                                    expect(uploadAPIResponse.width).to(equal(1000))
+                                    expect(uploadAPIResponse.thumbnailUrl).to(equal("https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"))
+                                }
+                                break;
+                            case .failure( _ as UploadAPIError):
+                                fail("Should not throw Error")
+                                break;
+                            case .failure( _):
+                                fail("Should not throw Error")
+                                break;
+                        }
+                        done()
+                    })
+                }
             }
         }
 
-        it("Upload From Url"){
-            waitUntil(timeout: 60){ done in
-                ImageKit.shared.uploader().upload(
-                file: "https://ik.imagekit.io/demo/default-image.jpg",
-                fileName: "default-image-test.jpg",
-                completion: { result in
-                    switch result{
-                        case .success(let uploadAPIResponse):
-                            print(uploadAPIResponse)
-                        case .failure(let error as UploadAPIError):
-                            print(error)
-                        case .failure(let error):
-                            print(error)
-                    }
-                    done()
-                })
-            }
-        }
+        
     }
 }
+

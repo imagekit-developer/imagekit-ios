@@ -8,11 +8,11 @@
 import Foundation
 
 public enum IKError: Error {
-    enum SignatureError: Error {
+    public enum SignatureError: Error {
         case invalidSignatureResponse(String)
     }
 
-    enum HTTPError: Error {
+    public enum HTTPError: Error {
         case transportError(Error)
         case serverSideError(Int)
     }

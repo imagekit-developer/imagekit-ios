@@ -20,8 +20,9 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         customCoordinates: String? = "",
         responseFields: String? = "",
         progressClosure: ((Progress) -> Void)? = nil,
+        urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-
+        
         let mimeType = MimeDetector.mimeType(data: file)?.mime ?? "image/png"
 
         var request = URLRequest(url: URL(string: "https://upload.imagekit.io/api/v1/files/upload")!)
@@ -47,7 +48,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
             let multipartData = try formData.encode()
             request.httpBody = multipartData
             let uploadDelegate = UploadTaskDelegate()
-            let urlSession = URLSession(configuration: URLSession.shared.configuration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
+            let urlSession = URLSession(configuration: urlConfiguration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
             uploadDelegate.uploadProgressHandler = progressClosure
             let task = urlSession.dataTask(with: request) { data, response, error in
                 if let error = error {

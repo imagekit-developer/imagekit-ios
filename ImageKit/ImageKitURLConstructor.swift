@@ -602,7 +602,7 @@ public class ImagekitUrlConstructor {
      * @return the current ImagekitUrlConstructor object.
      */
     public func addCustomQueryParameters(params: [String: String]) -> ImagekitUrlConstructor {
-        queryParams.merge(params) { (current, _) in current }
+        params.forEach{ (key, value) in queryParams[key] = value }
         return self
     }
 
@@ -613,15 +613,13 @@ public class ImagekitUrlConstructor {
     public func create() -> String {
         var url = self.source
         let apiVersion: String = API_VERSION
-
+        
+        
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
             if self.isSource {
                 url = self.source
-                if self.source.contains("?tr=") {
-                    let endRange = url!.range(of: "?tr=")?.lowerBound
-                    url!.removeSubrange(endRange!..<url!.endIndex)
-                }
+                
                 if self.source.contains("/tr:") {
                     let urlComponents = url!.components(separatedBy: "/tr:")
                     var path = urlComponents[1]
@@ -629,17 +627,26 @@ public class ImagekitUrlConstructor {
                     path.removeSubrange(path.startIndex..<index!)
                     url = String(format: "%@/%@", urlComponents[0], path)
                 }
-                url = String(format: "%@?tr=%@", url!, transforms)
+                
+                if let urlParams = URLComponents.init(string: url!)!.queryItems {
+                    for item in urlParams {
+                        if (item.name != "tr"){
+                            queryParams[item.name] = item.value!
+                        }
+                    }
+                    url = url!.components(separatedBy: "?")[0]
+                }
+                
+                queryParams["tr"] = transforms
+                
             } else {
                 url = self.endpoint!
-                switch self.transformationPosition {
-                    case .PATH:
-                        url = String(format: "%@/tr:%@/%@", url!, transforms, self.imagePath)
-                        break
-                    case .QUERY:
-                        url = String(format: "%@/%@?tr=%@", url!, self.imagePath, transforms)
-                        break
-                    default: break
+                if (self.transformationPosition == .PATH){
+                    url = String(format: "%@/tr:%@/%@", url!, transforms, self.imagePath)
+                }
+                if (self.transformationPosition == .QUERY){
+                    url = String(format: "%@/%@", url!, self.imagePath)
+                    queryParams["tr"] = transforms
                 }
             }
         } else {
@@ -647,8 +654,7 @@ public class ImagekitUrlConstructor {
                 url = String(format: "%@/%@", self.endpoint!, self.imagePath!)
             }
         }
-
-        guard url != nil else {
+        guard url != nil && url!.isEmpty == false else {
             return ""
         }
 
