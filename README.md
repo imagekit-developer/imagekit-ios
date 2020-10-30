@@ -1,3 +1,5 @@
+[<img width="250" alt="ImageKit.io" src="https://raw.githubusercontent.com/imagekit-developer/imagekit-javascript/master/assets/imagekit-light-logo.svg"/>](https://imagekit.io)
+
 # ImageKit.io iOS SDK
 
 [![Version](https://img.shields.io/cocoapods/v/ImageKitIO.svg?label=Pod&style=flat)](https://cocoapods.org/pods/ImageKitIO)
@@ -6,11 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/imagekitio?label=Follow&style=social)](https://twitter.com/ImagekitIo)
 
-iOS Pod for [ImageKit.io](https://imagekit.io) which implements client-side upload and URL generation for use inside an iOS application.
-
-ImageKit is a complete image optimization and transformation solution with an [image CDN](https://imagekit.io/features/imagekit-infrastructure) and media storage. It can be integrated with your existing infrastructure - storages like AWS S3, web servers, your CDN, and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
-
-Swift client for Imagekit Integration
+ImageKit iOS Pod allows you to use real-time [image resizing](https://docs.imagekit.io/features/image-transformations), [optimization](https://docs.imagekit.io/features/image-optimization), and [file uploading](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload) in the client-side.
 
 ## Requirements
 The library requires Swift 4.0 or above.
@@ -46,7 +44,8 @@ ImageKit.init(
 ## Sample application
 This project has a sample application under the [Example folder](/Example). The sample application demonstrates the use of this SDK.
 
-To run the sample application, add Public Key to `Example/ImageKit/AppDelegate.swift` and add Private Key to `Server/.env` 
+To run the sample application, add Public Key to `Example/ImageKit/AppDelegate.swift` and add Private Key to `Server/.env`. We also need to run a backend server for implementing `authenticationEndpoint` for client-side upload to work.
+
 ```bash
 npm install
 node index.js
@@ -95,7 +94,7 @@ ImageKit.shared.url(
 ```
 
 ### List of supported transformations
-The complete list of transformations supported and their usage in ImageKit can be found [here](https://docs.imagekit.io/imagekit-docs/image-transformations). The SDK provides a function for each transformation parameter, making the code simpler and readable. If a transformation is supported in ImageKit, but a name for it cannot be found in the table below, then use the `addCustomTransformation` function and pass the transformation code from ImageKit docs as the first parameter and value as the second parameter. For example - `.addCustomTransformation("w", "400")`
+The complete list of transformations supported and their usage in ImageKit can be found [here](https://docs.imagekit.io/imagekit-docs/image-transformations). The SDK provides a function for each transformation parameter, making the code simpler and readable. If a transformation is supported in ImageKit, but if a name for it cannot be found in the table below, then use the `addCustomTransformation` function and pass the transformation code from ImageKit docs as the first parameter and value as the second parameter. For example - `.addCustomTransformation("w", "400")`
 
 | Supported Transformation Function | Translates to parameter |
 | ----------------------------- | ----------------------- |
@@ -109,7 +108,7 @@ The complete list of transformations supported and their usage in ImageKit can b
 | format                        | f                       |
 | radius                        | r                       |
 | background                    | bg                      |
-| border                        | bo                      |
+| border                        | b                      |
 | rotation                      | rt                      |
 | blur                          | bl                      |
 | named                         | n                       |
@@ -141,7 +140,7 @@ The complete list of transformations supported and their usage in ImageKit can b
 ### File Upload
 The SDK provides a simple interface using the `ImageKit.shared.uploader().upload` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
 
-Make sure that you have specified `authenticationEndpoint` during SDK initialization. The SDK makes an HTTP GET request to this endpoint and expects a JSON response with three fields i.e. `signature`, `token` and `expire`.  
+Make sure that you have specified `authenticationEndpoint` during SDK initialization. The SDK makes an HTTP GET request to this endpoint and expects a JSON response with three fields i.e. `signature`, `token`, and `expire`.  
 
 [Learn how to implement authenticationEndpoint](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) on your server.
 
@@ -211,7 +210,6 @@ ImageKit.shared.uploader().upload(
 ```
 
 ## Support
-
 For any feedback or to report any issues or general implementation support, please reach out to [support@imagekit.io](mailto:support@imagekit.io)
 
 ## Links
@@ -219,5 +217,4 @@ For any feedback or to report any issues or general implementation support, plea
 * [Main website](https://imagekit.io)
 
 ## License
-
 Released under the MIT license.
