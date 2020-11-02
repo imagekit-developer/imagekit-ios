@@ -24,8 +24,6 @@ public class ImageKitUploader {
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
         let publicKey = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
         let authEndpoint = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)
-        print(publicKey)
-        print(authEndpoint)
         if publicKey != nil &&  authEndpoint != nil && publicKey?.isEmpty == false && authEndpoint?.isEmpty == false {
             let expire = String(format: "%.0f", NSDate().timeIntervalSince1970 * 1000)
             SignatureAPI.getSignature(expire: expire, headerMap: signatureHeaders, completion: { result in
