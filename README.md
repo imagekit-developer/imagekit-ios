@@ -231,6 +231,8 @@ ImageKit.shared.url(
 .create()
 ```
 
+More Examples can be found in [Tests/Tests.swift](Tests/Tests.swift)
+
 ### List of supported transformations
 The complete list of transformations supported and their usage in ImageKit can be found [here](https://docs.imagekit.io/imagekit-docs/image-transformations). The SDK provides a function for each transformation parameter, making the code simpler and readable. If a transformation is supported in ImageKit, but if a name for it cannot be found in the table below, then use the `addCustomTransformation` function and pass the transformation code from ImageKit docs as the first parameter and value as the second parameter. For example - `.addCustomTransformation("w", "400")`
 
