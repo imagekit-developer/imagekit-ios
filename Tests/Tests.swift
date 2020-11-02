@@ -1420,7 +1420,7 @@ class UploadSpec: QuickSpec {
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
-                            case .success( _, let uploadAPIResponse):
+                            case .success((_, let uploadAPIResponse)):
                                 if let uploadAPIResponse = uploadAPIResponse{
                                     expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
                                     expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
@@ -1471,7 +1471,7 @@ class UploadSpec: QuickSpec {
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
-                            case .success( _, let uploadAPIResponse):
+                            case .success((_, let uploadAPIResponse)):
                                 if let uploadAPIResponse = uploadAPIResponse{
                                     expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
                                     expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
@@ -1522,7 +1522,7 @@ class UploadSpec: QuickSpec {
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
-                            case .success( _, let uploadAPIResponse):
+                            case .success((_, let uploadAPIResponse)):
                                 if let uploadAPIResponse = uploadAPIResponse{
                                     expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
                                     expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
