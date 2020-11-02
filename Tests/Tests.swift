@@ -1321,7 +1321,7 @@ class UploadSpec: QuickSpec {
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
-                            case .success( _, _):
+                            case .success((_, _)):
                                 fail("Shoul not succeed")
                                 break;
                             case .failure( _ as UploadAPIError):
@@ -1348,7 +1348,7 @@ class UploadSpec: QuickSpec {
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
-                            case .success( _, _):
+                            case .success((_, _)):
                                 fail("Shoul not succeed")
                                 break;
                             case .failure( _ as UploadAPIError):
@@ -1376,7 +1376,7 @@ class UploadSpec: QuickSpec {
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
-                            case .success( _, _):
+                            case .success((_, _)):
                                 fail("Shoul not succeed")
                                 break;
                             case .failure(let uploadAPIError as UploadAPIError):
