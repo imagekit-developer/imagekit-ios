@@ -247,13 +247,12 @@ The complete list of transformations supported and their usage in ImageKit can b
 | quality | quality(quality: Int) | q |
 | crop | crop(cropType: CropType) | c |
 | cropMode | cropMode(cropMode: CropMode) | cm |
-| x | focus(x: Int, y: Int) | x |
-| y | focus(focusType: FocusType) | y |
-| focus | format(format: Format) | fo |
-| format | radius(radius: Int) | f |
-| radius | background(backgroundColor: String) <br> background(backgroundColor: UIColor) | r |
-| background | border(borderWidth: Int, borderColor: String) | bg |
-| border | border(borderWidth: Int, borderColor: UIColor) | b |
+| x, y | focus(x: Int, y: Int) | x, y |
+| focus | focus(focusType: FocusType) | fo |
+| format | format(format: Format) | f |
+| radius | radius(radius: Int) | r |
+| background | background(backgroundColor: String) <br> background(backgroundColor: UIColor) | bg |
+| border | border(borderWidth: Int, borderColor: String) <br>  border(borderWidth: Int, borderColor: UIColor) | b |
 | rotation | rotation(rotation: Rotation) | rt |
 | blur | blur(blur: Int) | bl |
 | named | named(namedTransformation: String) | n |
