@@ -207,7 +207,7 @@ ImageKit.init(
 ## Constructing Image URLs
 The `ImageKitURLConstructor` is used to create a url which can be used for rendering and manipulating images in real-time. `ImageKitURLConstructor` consists of functions that can be chained together to perform transformations.
 
-`ImageKitURLConstructor` can be initlized by calling the static function `ImageKit.url(...)` with set of parameters defined below.
+`ImageKitURLConstructor` can be initlized by calling `ImageKit.shared.url(...)` with set of parameters defined below.
 
 | Parameter             | Type | Description                    |
 | :----------------| :----|:----------------------------- |
@@ -216,7 +216,7 @@ The `ImageKitURLConstructor` is used to create a url which can be used for rende
 | src              | String |Conditional. This is the complete URL of an image already mapped to ImageKit. For example, `https://ik.imagekit.io/your_imagekit_id/endpoint/path/to/image.jpg`. Either the `path` or `src` parameter needs to be specified for URL generation. |
 | transformationPosition | [TransformationPosition](/ImageKit/Entity/TransformationPosition.swift) |Optional. The default value is `.PATH` that places the transformation string as a URL path parameter. It can also be specified as `.QUERY`, which adds the transformation string as the URL's query parameter i.e.`tr`. If you use `src` parameter to create the URL, then the transformation string is always added as a query parameter. |
 
-The transformations to be applied to the URL can be chained to `ImageKit.url(...)`. See the list of [different tranformations](#list-of-supported-transformations). Different steps of a [chained transformation](https://docs.imagekit.io/features/image-transformations/chained-transformations) can be added by calling the function `chainTransformation`.
+The transformations to be applied to the URL can be chained to `ImageKit.shared.url(...)`. See the list of [different tranformations](#list-of-supported-transformations). Different steps of a [chained transformation](https://docs.imagekit.io/features/image-transformations/chained-transformations) can be added by calling the function `chainTransformation`.
 
 
 ### Basic Examples
@@ -236,6 +236,7 @@ The complete list of transformations supported and their usage in ImageKit can b
 
 <details>
 <summary>Expand</summary>
+
 | Supported Transformation Name | Transformation Function Prototypes | Translates to parameter |
 | ----------------------------- | ---------------------------------- | ----------------------- |
 | height | height(height: Int) | h |
@@ -248,7 +249,7 @@ The complete list of transformations supported and their usage in ImageKit can b
 | y | focus(focusType: FocusType) | y |
 | focus | format(format: Format) | fo |
 | format | radius(radius: Int) | f |
-| radius | background(backgroundColor: String) / background(backgroundColor: UIColor) | r |
+| radius | background(backgroundColor: String) <br> background(backgroundColor: UIColor) | r |
 | background | border(borderWidth: Int, borderColor: String) | bg |
 | border | border(borderWidth: Int, borderColor: UIColor) | b |
 | rotation | rotation(rotation: Rotation) | rt |
@@ -262,28 +263,28 @@ The complete list of transformations supported and their usage in ImageKit can b
 | overlayImage | overlayImage(overlayImage: String) | oi |
 | overlayImageTrim | overlayImageTrim(overlayImageTrim: Bool) | oit |
 | overlayImageAspectRatio | overlayImageAspectRatio(width: Int, height: Int) | oiar |
-| overlayImageBackground | overlayImageBackground(overlayImageBackground: String) / overlayImageBackground(overlayImageBackground: UIColor) | oibg |
-| overlayImageBorder | overlayImageBorder(borderWidth: Int, borderColor: String) / overlayImageBorder(borderWidth: Int, borderColor: UIColor) | oib |
+| overlayImageBackground | overlayImageBackground(overlayImageBackground: String)<br>overlayImageBackground(overlayImageBackground: UIColor) | oibg |
+| overlayImageBorder | overlayImageBorder(borderWidth: Int, borderColor: String)<br>overlayImageBorder(borderWidth: Int, borderColor: UIColor) | oib |
 | overlayImageDPR | overlayImageDPR(dpr: Float) | oidpr |
 | overlayImageQuality | overlayImageQuality(quality: Int) | oiq |
 | overlayImageCropping | overlayImageCropping(cropMode: CropMode) | oic |
 | overlayText | overlayText(overlayText: String) | ot |
 | overlayTextFontSize | overlayTextFontSize(overlayTextSize: Int) | ots |
 | overlayTextFontFamily | overlayTextFontFamily(overlayTextFontFamily: OverlayTextFont) | otf |
-| overlayTextColor | overlayTextColor(overlayTextColor: String) / overlayTextColor(overlayTextColor: UIColor) | otc |
+| overlayTextColor | overlayTextColor(overlayTextColor: String)<br>overlayTextColor(overlayTextColor: UIColor) | otc |
 | overlayTextTransparency | overlayTextTransparency(overlayTextTransparency: Int) | oa |
 | overlayAlpha | overlayAlpha(overlayAlpha: Int) | oa |
 | overlayTextTypography | overlayTextTypography(overlayTextTypography: OverlayTextTypography) | ott |
-| overlayBackground | overlayBackground(overlayBackground: String) / overlayBackground(overlayBackground: UIColor) | obg |
+| overlayBackground | overlayBackground(overlayBackground: String)<br>overlayBackground(overlayBackground: UIColor) | obg |
 | overlayTextEncoded | overlayTextEncoded(overlayTextEncoded: String, encoded: Bool = false) | ote |
 | overlayTextWidth | overlayTextWidth(width: Int) | otw |
-| overlayTextBackground | overlayTextBackground(overlayTextColor: String) / overlayTextBackground(overlayTextColor: UIColor) | otbg |
-| overlayTextPadding | overlayTextPadding(overlayTextPadding: String) / overlayTextPadding(overlayTextPadding: Int) / overlayTextPadding(verticalPadding: Int, horizontalPadding: Int) / overlayTextPadding(topPading: Int, horizontalPadding: Int, bottomPadding: Int) / overlayTextPadding(topPading: Int, rightPadding: Int, bottomPadding: Int, leftPadding: Int) | otp |
+| overlayTextBackground | overlayTextBackground(overlayTextColor: String)<br>overlayTextBackground(overlayTextColor: UIColor) | otbg |
+| overlayTextPadding | overlayTextPadding(overlayTextPadding: String)<br>overlayTextPadding(overlayTextPadding: Int)<br>overlayTextPadding(verticalPadding: Int, horizontalPadding: Int)<br>overlayTextPadding(topPading: Int, horizontalPadding: Int, bottomPadding: Int)<br>overlayTextPadding(topPading: Int, rightPadding: Int, bottomPadding: Int, leftPadding: Int) | otp |
 | overlayTextInnerAlignment | overlayTextInnerAlignment(overlayTextInnerAlignment: OverlayTextInnerAlignment) | otia |
 | overlayRadius | overlayRadius(radius: Int) | or |
 | progressive | progressive(flag: Bool) | pr |
 | lossless | lossless(flag: Bool) | lo |
-| trim | trim(flag: Bool) / trim(value: Int) | t |
+| trim | trim(flag: Bool)<br>trim(value: Int) | t |
 | metadata | metadata(flag: Bool) | md |
 | colorProfile | colorProfile(flag: Bool) | cp |
 | defaultImage | defaultImage(defaultImage: String) | di |
@@ -297,11 +298,55 @@ The complete list of transformations supported and their usage in ImageKit can b
 </details>
 
 ### File Upload
-The SDK provides a simple interface using the `ImageKit.shared.uploader().upload` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
+The SDK provides a simple interface using the `ImageKit.shared.uploader().upload(...)` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
 
 Make sure that you have specified `authenticationEndpoint` during SDK initialization. The SDK makes an HTTP GET request to this endpoint and expects a JSON response with three fields i.e. `signature`, `token`, and `expire`.  
 
 [Learn how to implement authenticationEndpoint](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) on your server.
+
+
+The `ImageKit.shared.uploader().upload(...)` accepts the following parameters
+
+| Parameter             | Type | Description                    |
+| :----------------| :----|:----------------------------- |
+| file | Data / UIImage / String | Required. 
+| fileName | String | Required. If not specified, the file system name is picked. 
+| useUniqueFileName  | Boolean | Optional. Accepts `true` of `false`. The default value is `true`. Specify whether to use a unique filename for this file or not. |
+| tags     | Array of string | Optional. Set the tags while uploading the file e.g. ["tag1","tag2"] |
+| folder        | String | Optional. The folder path (e.g. `/images/folder/`) in which the file has to be uploaded. If the folder doesn't exist before, a new folder is created.|
+| isPrivateFile | Boolean | Optional. Accepts `true` of `false`. The default value is `false`. Specify whether to mark the file as private or not. This is only relevant for image type files|
+| customCoordinates   | String | Optional. Define an important area in the image. This is only relevant for image type files. To be passed as a string with the `x` and `y` coordinates of the top-left corner, and `width` and `height` of the area of interest in format `x,y,width,height`. For example - `10,10,100,100` |
+| responseFields   | Array of string | Optional. Values of the fields that you want upload API to return in the response. For example, set the value of this field to `["tags", "customCoordinates", "isPrivateFile"]` to get value of `tags`, `customCoordinates`, and `isPrivateFile` in the response. |
+| progress      | ((Progress) -> Void) | Optional. |
+| completion      | (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void | Required. |
+
+Sample Usage
+```swift
+ImageKit.shared.uploader().upload(
+  file: image,
+  fileName: "sample-image.jpg",
+  useUniqueFilename: true,
+  tags: ["demo"],
+  folder: "/",
+  isPrivateFile: false,
+  customCoordinates: "",
+  responseFields: "",
+  signatureHeaders: ["x-test-header":"Test"],
+  progress: { progress in
+  	// Handle Progress
+  },
+  completion: { result in 
+  	 switch result{
+            case .success(let uploadAPIResponse):
+                // Handle Success Response
+            case .failure(let error as UploadAPIError):
+                // Handle Upload Error
+            case .failure(let error):
+                // Handle Other Errors
+      }
+  }
+)
+```
 
 
 ## Support
