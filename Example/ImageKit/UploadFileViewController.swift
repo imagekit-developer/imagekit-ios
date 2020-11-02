@@ -51,8 +51,8 @@ class UploadFileViewController: UIViewController {
                 completion: { result in
                     self.dismiss(animated: true)
                     switch result{
-                        case .success(let uploadAPIResponse):
-                            self.showToast(title: "Upload Complete", message: "The uploaded file can be accessed using url: " + uploadAPIResponse.url!)
+                        case .success((_, let uploadAPIResponse)):
+                            self.showToast(title: "Upload Complete", message: "The uploaded file can be accessed using url: " + (uploadAPIResponse?.url!)!)
                         case .failure(let error as UploadAPIError):
                             self.showToast(title: "Upload Failed", message: "Error: " + error.message)
                         case .failure(let error):

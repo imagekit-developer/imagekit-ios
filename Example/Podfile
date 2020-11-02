@@ -2,5 +2,4 @@ use_frameworks!
 
 target 'ImageKit_Example' do
   pod 'ImageKitIO', :path => '../', :testspecs => ['Tests']
-  pod 'Alamofire', '~> 4.8.2'
 end

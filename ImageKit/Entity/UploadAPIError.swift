@@ -10,9 +10,5 @@ import Foundation
 public struct UploadAPIError: Error & Decodable {
     public let message: String
     public let help: String?
-    
-    init(message: String, help: String?) {
-        self.message = message
-        self.help = help
-    }
+
 }

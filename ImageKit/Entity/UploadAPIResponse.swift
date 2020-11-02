@@ -15,7 +15,6 @@ public struct UploadAPIResponse: Codable {
     public let tags: [String]?
     public let isPrivateFile: Bool?
     public let customCoordinates, metadata, thumbnailUrl: String?
-    public let rawJSON: String
 
     enum CodingKeys: String, CodingKey {
         case fileId
@@ -23,18 +22,5 @@ public struct UploadAPIResponse: Codable {
         case name, url
         case thumbnailUrl
         case height, width, size, filePath, tags, isPrivateFile, customCoordinates, fileType
-        case rawJSON
-    }
-    
-    public func getRawResponse() -> String{
-        return self.rawJSON
-    }
-    
-    public func getRawJson() -> [String: Any]{
-        do {
-            return try JSONSerialization.jsonObject(with: self.rawJSON.data(using: .utf8)!, options: []) as! [String: Any]
-        } catch {
-            return [:]
-        }
     }
 }

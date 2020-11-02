@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum TransformationPosition: String{
+public enum TransformationPosition: String {
     case PATH = "path"
     case QUERY = "query"
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum OverlayTextFont: String{
+public enum OverlayTextFont: String {
     case ABRIL_FAT_FACE = "AbrilFatFace"
     case AMARANTH = "Amarnath"
     case ARVO = "Arvo"

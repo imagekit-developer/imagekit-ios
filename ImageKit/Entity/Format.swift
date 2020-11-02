@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Format: String{
+public enum Format: String {
     case AUTO = "auto"
     case WEBP = "webp"
     case JPG = "jpg"

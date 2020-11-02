@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum OverlayTextTypography: String{
+public enum OverlayTextTypography: String {
     case BOLD = "b"
     case ITALICS = "i"
     case BOLD_ITALICS = "bi"

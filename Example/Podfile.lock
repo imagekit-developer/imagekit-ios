@@ -1,22 +1,20 @@
 PODS:
-  - Alamofire (4.8.2)
-  - ImageKitIO (1.1.1):
-    - Alamofire (~> 4.8.2)
+  - ImageKitIO (1.1.1)
   - ImageKitIO/Tests (1.1.1):
-    - Alamofire (~> 4.8.2)
+    - Kakapo
     - Nimble (~> 7.0)
     - Quick (~> 1.2.0)
+  - Kakapo (2.1.0)
   - Nimble (7.3.4)
   - Quick (1.2.0)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.8.2)
   - ImageKitIO (from `../`)
   - ImageKitIO/Tests (from `../`)
 
 SPEC REPOS:
   trunk:
-    - Alamofire
+    - Kakapo
     - Nimble
     - Quick
 
@@ -25,11 +23,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
-  ImageKitIO: 80d210caeb5c1d24a43db80ad006e9b678b735eb
+  ImageKitIO: f54c69be5920f16e940d32cc27b64cdf5088ff96
+  Kakapo: a30b8f6ce2ce17eec2d441df923a2af0ec5f538f
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
 
-PODFILE CHECKSUM: b609f39968b02438f4bd465b695fbaad9d6afb86
+PODFILE CHECKSUM: 2eba1966dbe76453f1bde8d84ee487f59549fb06
 
 COCOAPODS: 1.9.1
