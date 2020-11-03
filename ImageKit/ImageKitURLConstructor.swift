@@ -967,7 +967,7 @@ public class ImagekitUrlConstructor {
         var urlComponents = URLComponents.init(string: url)!
         var queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
         queryItems = queryItems.sorted(by: { first, second in return first.name < second.name })
-        var urlParams = queryItems.map({ (queryItem) -> String in return "\(queryItem.name)=\(queryItem.value ?? "")" }).joined(separator: "&")
+        let urlParams = queryItems.map({ (queryItem) -> String in return "\(queryItem.name)=\(queryItem.value ?? "")" }).joined(separator: "&")
         urlComponents.queryItems = queryItems
         urlComponents.percentEncodedQuery = urlParams
         
