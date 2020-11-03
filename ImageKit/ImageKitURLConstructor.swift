@@ -965,11 +965,11 @@ public class ImagekitUrlConstructor {
         
         self.queryParams["ik-sdk-version"] = String("ios-\(apiVersion)")
         var urlComponents = URLComponents.init(string: url)!
-        urlComponents.queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
-        let urlParams = urlComponents.queryItems!
-        urlComponents.queryItems = urlParams.sorted(by: { first, second in
-            return first.name < second.name
-        })
+        var queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
+        queryItems = queryItems.sorted(by: { first, second in return first.name < second.name })
+        var urlParams = queryItems.map({ (queryItem) -> String in return "\(queryItem.name)=\(queryItem.value ?? "")" }).joined(separator: "&")
+        urlComponents.queryItems = queryItems
+        urlComponents.percentEncodedQuery = urlParams
         
         return urlComponents.string!
     }
