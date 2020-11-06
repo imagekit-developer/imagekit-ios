@@ -177,7 +177,7 @@ ImageKit.shared.uploader().upload(
 
 ## Demo application
 * The official step by step iOS quick start guide - https://docs.imagekit.io/getting-started/quickstart-guides/ios
-* You can also run the demo application in [Example](/Example) folder by running `pod install` and then `open ImageKit.xcworkspace` in terminal.
+* You can also run the demo application in [Example](/Example) folder by running `pod install` and then `open ImageKit.xcworkspace` in the terminal.
 
 ## Components
 
@@ -205,9 +205,9 @@ ImageKit.init(
 > Note: Do not include your Private Key in any client-side code.
 
 ## Constructing Image URLs
-The `ImageKitURLConstructor` is used to create a url which can be used for rendering and manipulating images in real-time. `ImageKitURLConstructor` consists of functions that can be chained together to perform transformations.
+The `ImageKitURLConstructor` is used to create a url that can be used for rendering and manipulating images in real-time. `ImageKitURLConstructor` consists of functions that can be chained together to perform transformations.
 
-`ImageKitURLConstructor` can be initlized by calling `ImageKit.shared.url(...)` with set of parameters defined below.
+`ImageKitURLConstructor` can be initialized by calling `ImageKit.shared.url(...)` with a set of parameters defined below.
 
 | Parameter             | Type | Description                    |
 | :----------------| :----|:----------------------------- |
