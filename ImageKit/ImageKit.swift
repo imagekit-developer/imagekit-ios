@@ -43,14 +43,19 @@ open class ImageKit: NSObject {
         self.authenticationEndpoint = authenticationEndpoint
 
     }
+    
+    @available(*, deprecated, message: "clientPublicKey Renamed to publicKey")
+    public convenience init(clientPublicKey: String = "", imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, authenticationEndpoint: String? = "") {
+        self.init(publicKey: clientPublicKey, imageKitEndpoint: imageKitEndpoint, transformationPosition: transformationPosition, authenticationEndpoint: authenticationEndpoint)
+    }
 
-    public init(clientPublicKey: String = "", imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, authenticationEndpoint: String? = "") {
-
+    public init(publicKey: String = "", imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, authenticationEndpoint: String? = "") {
+        
         if imageKitEndpoint.isEmpty {
             preconditionFailure("Missing urlEndpoint during initialization")
         }
 
-        UserDefaults.standard.set(clientPublicKey, forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
+        UserDefaults.standard.set(publicKey, forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
         UserDefaults.standard.set(imageKitEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)
         UserDefaults.standard.set(transformationPosition.rawValue, forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)
         UserDefaults.standard.set(authenticationEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)

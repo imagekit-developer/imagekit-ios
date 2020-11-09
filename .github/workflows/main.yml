@@ -41,4 +41,4 @@ jobs:
           gem install cocoapods
           pod repo add-cdn trunk https://cdn.cocoapods.org/
       - name: Lint and Test Cocoa Pod
-        run: pod lib lint --verbose
+        run: pod lib lint --allow-warnings
