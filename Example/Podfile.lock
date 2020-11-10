@@ -1,6 +1,6 @@
 PODS:
-  - ImageKitIO (1.1.1)
-  - ImageKitIO/Tests (1.1.1):
+  - ImageKitIO (2.0.0)
+  - ImageKitIO/Tests (2.0.0):
     - Kakapo
     - Nimble (~> 7.0)
     - Quick (~> 1.2.0)
@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ImageKitIO: f54c69be5920f16e940d32cc27b64cdf5088ff96
+  ImageKitIO: e265556e071aa657d25fc3c33aad0bf1ae671474
   Kakapo: a30b8f6ce2ce17eec2d441df923a2af0ec5f538f
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08

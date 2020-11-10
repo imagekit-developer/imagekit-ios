@@ -23,7 +23,7 @@ You can use CocoaPods to install ImageKit by adding it to your Podfile:
 use_frameworks!
 
 target 'target_name' do
-    pod 'ImageKitIO', '~> 1.1.0'
+    pod 'ImageKitIO', '~> 2.0.0'
 end
 ```
 
