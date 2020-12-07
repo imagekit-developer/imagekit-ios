@@ -13,6 +13,7 @@ class URLGenerationSpec: QuickSpec {
         
         beforeSuite {
             _ = ImageKit.init(publicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
+            _ = ImageKit.init(publicKey: "Dummy public key", urlEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
         }
         
         it("Overriding urlEndpoint Parameter") {

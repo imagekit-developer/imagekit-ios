@@ -23,7 +23,7 @@ You can use CocoaPods to install ImageKit by adding it to your Podfile:
 use_frameworks!
 
 target 'target_name' do
-    pod 'ImageKitIO', '~> 2.0.0'
+    pod 'ImageKitIO'
 end
 ```
 
@@ -41,7 +41,7 @@ _Note: Do not include your Private Key in any client-side code, including this S
 
 ImageKit.init(
     publicKey: "your_public_api_key=", 
-    imageKitEndpoint: "https://ik.imagekit.io/your_imagekit_id", 
+    urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", 
     transformationPosition: TransformationPosition.PATH, 
     authenticationEndpoint: "http://www.yourserver.com/auth")
 ```
@@ -192,13 +192,13 @@ The library includes 3 Primary Classes:
 In order to use the SDK, you need to provide it with a few configuration parameters. 
 ```swift
 ImageKit.init(
-  imageKitEndpoint: "https://ik.imagekit.io/your_imagekit_id", // Required.
+  urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", // Required.
   publicKey: "your_public_api_key=",  //Optional
   transformationPosition: TransformationPosition.PATH, //Optional
   authenticationEndpoint: "http://www.yourserver.com/auth" //Optional
 )
 ```
-* `imageKitEndpoint` is required to use the SDK. You can get URL-endpoint from your ImageKit dashboard - https://imagekit.io/dashboard#url-endpoints.
+* `urlEndpoint` is required to use the SDK. You can get URL-endpoint from your ImageKit dashboard - https://imagekit.io/dashboard#url-endpoints.
 * `publicKey` and `authenticationEndpoint` parameters are required if you want to use the SDK for client-side file upload. You can get these parameters from the developer section in your ImageKit dashboard - https://imagekit.io/dashboard#developers.
 * `transformationPosition` is optional. The default value for this parameter is `TransformationPosition.PATH`. Acceptable values are `TransformationPosition.PATH` & `TransformationPosition.QUERY`
 
