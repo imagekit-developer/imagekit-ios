@@ -30,9 +30,11 @@ end
 ## Usage
 
 ### Initialization
-You need to initialize the SDK by providing the  `publicKey` and the `urlEndpoint`. You can do this either in your application or launcher activity. This needs to be called before any other function in the SDK, or else an exception would be thrown.
+`urlEndpoint` is the required parameter. You can get the value of URL-endpoint from your ImageKit dashboard - https://imagekit.io/dashboard#url-endpoints.
 
-`authenticationEndpoint` is only required if you want to use the upload functionality.
+`publicKey` and `authenticationEndpoint` parameters are optional and only needed if you want to use the SDK for client-side file upload. You can get these parameters from the developer section in your ImageKit dashboard - https://imagekit.io/dashboard#developers.
+
+`transformationPosition` is optional. The default value for this parameter is `TransformationPosition.PATH`. Acceptable values are `TransformationPosition.PATH` & `TransformationPosition.QUERY`
 
 _Note: Do not include your Private Key in any client-side code, including this SDK or its initialization._
 
