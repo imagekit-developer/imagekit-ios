@@ -27,12 +27,10 @@ target 'target_name' do
 end
 ```
 
-## Usage
-
-### Initialization
+## Initialization
 `urlEndpoint` is the required parameter. You can get the value of URL-endpoint from your ImageKit dashboard - https://imagekit.io/dashboard#url-endpoints.
 
-`publicKey` and `authenticationEndpoint` parameters are optional and only needed if you want to use the SDK for client-side file upload. You can get these parameters from the developer section in your ImageKit dashboard - https://imagekit.io/dashboard#developers.
+`publicKey` parameter is optional and only needed if you want to use the SDK for client-side file upload. You can get this parameter from the developer section in your ImageKit dashboard - https://imagekit.io/dashboard#developers.
 
 `transformationPosition` is optional. The default value for this parameter is `TransformationPosition.PATH`. Acceptable values are `TransformationPosition.PATH` & `TransformationPosition.QUERY`
 
@@ -45,7 +43,6 @@ ImageKit.init(
     publicKey: "your_public_api_key=", 
     urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", 
     transformationPosition: TransformationPosition.PATH, 
-    authenticationEndpoint: "http://www.yourserver.com/auth")
 ```
 
 ### Quick Examples
@@ -70,9 +67,6 @@ ImageKit.shared.url(
             src: "https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg",
             transformationPosition: "path"
         )
-        .overlayImage("logo-white_SJwqB4Nfe.png")
-        .overlayX(10)
-        .overlayY(20)
         .create()
 ```
 
@@ -83,11 +77,6 @@ ImageKit.shared.url(
     src : "https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20"
     )
         .addCustomTransformation("w", "400")
-        .overlayText("Hand with a green plant")
-        .overlayTextColor("264120")
-        .overlayTextSize(30)
-        .overlayX(10)
-        .overlayY(10)
         .create()
 ```
 
@@ -197,11 +186,10 @@ ImageKit.init(
   urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", // Required.
   publicKey: "your_public_api_key=",  //Optional
   transformationPosition: TransformationPosition.PATH, //Optional
-  authenticationEndpoint: "http://www.yourserver.com/auth" //Optional
 )
 ```
 * `urlEndpoint` is required to use the SDK. You can get URL-endpoint from your ImageKit dashboard - https://imagekit.io/dashboard#url-endpoints.
-* `publicKey` and `authenticationEndpoint` parameters are required if you want to use the SDK for client-side file upload. You can get these parameters from the developer section in your ImageKit dashboard - https://imagekit.io/dashboard#developers.
+* `publicKey` parameter is required if you want to use the SDK for client-side file upload. You can get this parameter from the developer section in your ImageKit dashboard - https://imagekit.io/dashboard#developers.
 * `transformationPosition` is optional. The default value for this parameter is `TransformationPosition.PATH`. Acceptable values are `TransformationPosition.PATH` & `TransformationPosition.QUERY`
 
 > Note: Do not include your Private Key in any client-side code.
@@ -258,33 +246,6 @@ The complete list of transformations supported and their usage in ImageKit can b
 | rotation | rotation(rotation: Rotation) | rt |
 | blur | blur(blur: Int) | bl |
 | named | named(namedTransformation: String) | n |
-| overlayX | overlayX(overlayX: Int) | ox |
-| overlayY | overlayY(overlayY: Int) | oy |
-| overlayFocus | overlayFocus(overlayFocus: OverlayFocusType) | ofo |
-| overlayHeight | overlayHeight(overlayHeight: Int) | oh |
-| overlayWidth | overlayWidth(overlayWidth: Int) | ow |
-| overlayImage | overlayImage(overlayImage: String) | oi |
-| overlayImageTrim | overlayImageTrim(overlayImageTrim: Bool) | oit |
-| overlayImageAspectRatio | overlayImageAspectRatio(width: Int, height: Int) | oiar |
-| overlayImageBackground | overlayImageBackground(overlayImageBackground: String)<br>overlayImageBackground(overlayImageBackground: UIColor) | oibg |
-| overlayImageBorder | overlayImageBorder(borderWidth: Int, borderColor: String)<br>overlayImageBorder(borderWidth: Int, borderColor: UIColor) | oib |
-| overlayImageDPR | overlayImageDPR(dpr: Float) | oidpr |
-| overlayImageQuality | overlayImageQuality(quality: Int) | oiq |
-| overlayImageCropping | overlayImageCropping(cropMode: CropMode) | oic |
-| overlayText | overlayText(overlayText: String) | ot |
-| overlayTextFontSize | overlayTextFontSize(overlayTextSize: Int) | ots |
-| overlayTextFontFamily | overlayTextFontFamily(overlayTextFontFamily: OverlayTextFont) | otf |
-| overlayTextColor | overlayTextColor(overlayTextColor: String)<br>overlayTextColor(overlayTextColor: UIColor) | otc |
-| overlayTextTransparency | overlayTextTransparency(overlayTextTransparency: Int) | oa |
-| overlayAlpha | overlayAlpha(overlayAlpha: Int) | oa |
-| overlayTextTypography | overlayTextTypography(overlayTextTypography: OverlayTextTypography) | ott |
-| overlayBackground | overlayBackground(overlayBackground: String)<br>overlayBackground(overlayBackground: UIColor) | obg |
-| overlayTextEncoded | overlayTextEncoded(overlayTextEncoded: String, encoded: Bool = false) | ote |
-| overlayTextWidth | overlayTextWidth(width: Int) | otw |
-| overlayTextBackground | overlayTextBackground(overlayTextColor: String)<br>overlayTextBackground(overlayTextColor: UIColor) | otbg |
-| overlayTextPadding | overlayTextPadding(overlayTextPadding: String)<br>overlayTextPadding(overlayTextPadding: Int)<br>overlayTextPadding(verticalPadding: Int, horizontalPadding: Int)<br>overlayTextPadding(topPading: Int, horizontalPadding: Int, bottomPadding: Int)<br>overlayTextPadding(topPading: Int, rightPadding: Int, bottomPadding: Int, leftPadding: Int) | otp |
-| overlayTextInnerAlignment | overlayTextInnerAlignment(overlayTextInnerAlignment: OverlayTextInnerAlignment) | otia |
-| overlayRadius | overlayRadius(radius: Int) | or |
 | progressive | progressive(flag: Bool) | pr |
 | lossless | lossless(flag: Bool) | lo |
 | trim | trim(flag: Bool)<br>trim(value: Int) | t |
