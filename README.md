@@ -10,6 +10,13 @@
 
 ImageKit iOS Pod allows you to use real-time [image resizing](https://docs.imagekit.io/features/image-transformations), [optimization](https://docs.imagekit.io/features/image-optimization), and [file uploading](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload) in the client-side.
 
+## Table of contents
+* [Installation](#installation)
+* [Initialization](#initialization)
+* [URL construction](#url-construction)
+* [Components](#components)
+* [ImageKit](#imagekit)
+
 ## Installation
 
 ### Requirements
