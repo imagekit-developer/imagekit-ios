@@ -265,8 +265,49 @@ The complete list of transformations supported and their usage in ImageKit can b
 | effectContrast | effectContrast(flag: Bool) | e-contrast |
 | effectGray | effectGray(flag: Bool) | e-grayscale |
 | original | original() | orig |
+| Raw param string | raw(params: String) | - |
 
 </details>
+
+## Constructing Video URLs
+The `ImageKitURLConstructor` can also be used to create a url that can be used for streaming videos with real-time transformations. `ImageKitURLConstructor` consists of functions that can be chained together to perform transformations.
+
+The initialization is same as that for image URLs by calling `ImageKit.shared.url(...)` with a set of parameters defined below.
+
+### Basic Examples
+```swift
+// https://ik.imagekit.io/your_imagekit_id/default-video.mp4?tr=h-400.00,w-400.00
+ImageKit.shared.url(
+    path: "default-video.mp4",
+    transformationPosition: "query"
+)
+.height(height: 400)
+.width(width: 400)
+.create()
+```
+
+### Adaptive bitrate streaming
+To obtain the video URL with adaptive streaming, call `ImageKit.shared.url(...).setAdaptiveStreaming(...)` with a set of parameters defined below.
+
+| Parameter   | Type            | Description                                                                                                               |
+|:------------|:----------------|:--------------------------------------------------------------------------------------------------------------------------|
+| format      | StreamingFormat | Specifies the format for streaming video. Supported values for type are `StreamingFormat.hls` and `StreamingFormat.dash`. |
+| resolutions | [Int]      | Specifies the representations of the required video resolutions. E. g. 480, 720, 1080 etc.                                |
+
+Code example:
+```swift
+// https://ik.imagekit.io/your_imagekit_id/default-video.mp4/ik-master.m3u8?tr=sr-240_360_480_720_1080_1440_2160
+ImageKit.shared.url(
+    path: "default-video.mp4",
+    transformationPosition: "query"
+)
+.setAdaptiveStreaming(
+    format: StreamingFormat.hls,
+    resolutions: [240, 360, 480, 720, 1080, 1440, 2160]
+)
+.create()
+```
+
 
 ### File Upload
 The SDK provides a simple interface using the `ImageKit.shared.uploader().upload(...)` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
@@ -282,32 +323,48 @@ The `ImageKit.shared.uploader().upload(...)` accepts the following parameters
 | :----------------| :----|:----------------------------- |
 | file | Data / UIImage / String | Required. 
 | fileName | String | Required. If not specified, the file system name is picked. 
-| useUniqueFileName  | Boolean | Optional. Accepts `true` of `false`. The default value is `true`. Specify whether to use a unique filename for this file or not. |
+| token | String | Required. the client-generated JSON Web Token (JWT), which the ImageKit.io server uses to authenticate and check that the upload request parameters have not been tampered with after the generation of the token. Refer this [guide](https://docs.imagekit.io/api-reference/upload-file-api/secure-client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) to create the token below on the page. |
+| useUniqueFileName  | Bool | Optional. Accepts `true` of `false`. The default value is `true`. Specify whether to use a unique filename for this file or not. |
 | tags     | Array of string | Optional. Set the tags while uploading the file e.g. ["tag1","tag2"] |
 | folder        | String | Optional. The folder path (e.g. `/images/folder/`) in which the file has to be uploaded. If the folder doesn't exist before, a new folder is created.|
-| isPrivateFile | Boolean | Optional. Accepts `true` of `false`. The default value is `false`. Specify whether to mark the file as private or not. This is only relevant for image type files|
+| isPrivateFile | Bool | Optional. Accepts `true` of `false`. The default value is `false`. Specify whether to mark the file as private or not. This is only relevant for image type files|
 | customCoordinates   | String | Optional. Define an important area in the image. This is only relevant for image type files. To be passed as a string with the `x` and `y` coordinates of the top-left corner, and `width` and `height` of the area of interest in format `x,y,width,height`. For example - `10,10,100,100` |
-| responseFields   | Array of string | Optional. Values of the fields that you want upload API to return in the response. For example, set the value of this field to `["tags", "customCoordinates", "isPrivateFile"]` to get value of `tags`, `customCoordinates`, and `isPrivateFile` in the response. |
+| responseFields | [String] | Optional. Values of the fields that you want upload API to return in the response. For example, set the value of this field to `["tags", "customCoordinates", "isPrivateFile"]` to get value of `tags`, `customCoordinates`, and `isPrivateFile` in the response. |
+| extensions | [[String : Any]] | Optional. array of extensions to be processed on the image. For reference about extensions [read here](https://docs.imagekit.io/extensions/overview). |
+| webhookUrl | String | Optional. Final status of pending extensions will be sent to this URL. To learn more about how ImageKit uses webhooks, [read here](https://docs.imagekit.io/extensions/overview#webhooks). |
+| overwriteFile | Bool | Optional. Default is `true`. If `overwriteFile` is set to false and `useUniqueFileName` is also false, and a file already exists at the exact location, upload API will return an error immediately. |
+| overwriteAITags | Bool | Optional. Default is `true`. If set to `true` and a file already exists at the exact location, its AITags will be removed. Set this to `false` to preserve AITags. |
+| overwriteTags | Bool | Optional. Default is `true`. If the request does not have `tags`, `overwriteTags` is set to `true` and if a file already exists at the exact location, exiting `tags` will be removed. In case the request body has `tags`, setting `overwriteTags` to `false` has no effect and request's `tags` are set on the asset. |
+| overwriteCustomMetadata | Bool | Optional. Default is `true`. If the request does not have `customMetadata`, `overwriteCustomMetadata` is set to `true` and if a file already exists at the exact location, exiting `customMetadata` will be removed. In case the request body has `customMetadata`, setting `overwriteCustomMetadata` to `false` has no effect and request's `customMetadata` is set on the asset. |
+| customMetadata | [String : Any] | Optional. Key-value data to be associated with the uploaded file. Check `overwriteCustomMetadata` parameter to understand default behaviour. Before setting any custom metadata on an asset you have to create the field using [custom metadata fields API](https://docs.imagekit.io/api-reference/custom-metadata-fields-api). |
+| policy | [UploadPolicy](README.md#UploadPolicy) | Optional. Set the custom policy to override the default policy for this upload request only. This doesn't modify the default upload policy. |
 | progress      | ((Progress) -> Void) | Optional. |
 | completion      | (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void | Required. |
 
 Sample Usage
 ```swift
 ImageKit.shared.uploader().upload(
-  file: image,
-  fileName: "sample-image.jpg",
-  useUniqueFilename: true,
-  tags: ["demo"],
-  folder: "/",
-  isPrivateFile: false,
-  customCoordinates: "",
-  responseFields: "",
-  signatureHeaders: ["x-test-header":"Test"],
-  progress: { progress in
-  	// Handle Progress
-  },
-  completion: { result in 
-  	 switch result{
+    file: image,
+    fileName: "sample-image.jpg",
+    useUniqueFilename: true,
+    tags: ["demo"],
+    folder: "/",
+    isPrivateFile: false,
+    customCoordinates: "",
+    responseFields: "",
+    signatureHeaders: ["x-test-header":"Test"],
+    extensions: [["name": "google-auto-tagging", "minConfidence": 80, "maxTags": 10]],
+    webhookUrl: "https://abc.xyz",
+    overwriteFile: false,
+    overwriteAITags: true,
+    overwriteTags: true,
+    overwriteCustomMetadata: true,
+    customMetadata: ["SKU": "VS882HJ2JD", "price": 599.99, "brand": "H&M"],
+    progress: { progress in
+    // Handle Progress
+    },
+    completion: { result in 
+     switch result{
             case .success(let uploadAPIResponse):
                 // Handle Success Response
             case .failure(let error as UploadAPIError):
@@ -315,10 +372,31 @@ ImageKit.shared.uploader().upload(
             case .failure(let error):
                 // Handle Other Errors
       }
-  }
+    }
 )
 ```
 
+### UploadPolicy
+The `UploadPolicy` class represents a set of conditions that need to be met for an upload request to be executed.
+
+`UploadPolicy.Builder` class is responsible for building the UploadPolicy instances. This class provides following methods to access and modify the policy parameters:
+
+| Parameter | Type | Description  |
+|:---------------------------------------------------|:---------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| requireNetworkType(type: NetworkType) | UploadPolicy.Builder | Specifies the network type required for the upload request. Possible values are `UploadPolicy.NetworkPolicy.ANY` and `UploadPolicy.NetworkPolicy.UNMETERED`. Defaults to `NetworkPolicy.ANY`.                                    |
+| requiresBatteryCharging(requiresCharging: Bool) | UploadPolicy.Builder | Sets whether the device needs to be connected to a charger for the upload request. Defaults to `false`. |
+| setMaxRetries(count: Int) | UploadPolicy.Builder | Sets the maximum number of retries for the upload request. Negative value will throw an `IllegalArgumentException`. Defaults to 5. |
+| setRetryBackoff(interval: Long, policy: UploadPolicy.BackoffPolicy) | UploadPolicy.Builder | Sets the backoff interval in milliseconds and policy (`UploadPolicy.BackoffPolicy.linear` or `UploadPolicy.BackoffPolicy.exponential`) for retry attempts. Defaults to interval of 10000ms and policy of `BackoffPolicy.linear`. This increases the gap between each upload retry in either linear or exponential manner. E. g. if the `interval` is set to 3 seconds, then delay for each retry (n) will increase as following: <ul><li>With linear backoff: 3, 6, 9, 12 seconds.. (`interval` * n).</li><li>With exponential backoff: 3, 6, 12, 24 seconds.. (`interval` * 2<sup>n-1</sup>).</li></ul> |
+
+Example code
+```swift
+let policy = UploadPolicy.Builder()
+    .requireNetworkType(UploadPolicy.NetworkType.UNMETERED)
+    .requiresCharging(true)
+    .setMaxRetries(5)
+    .setRetryBackoff(60000, UploadPolicy.BackoffPolicy.exponential)
+    .build()
+```
 
 ## Support
 For any feedback or to report any issues or general implementation support, please reach out to [support@imagekit.io](mailto:support@imagekit.io)
