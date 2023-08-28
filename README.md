@@ -16,6 +16,17 @@ ImageKit iOS Pod allows you to use real-time [image resizing](https://docs.image
 * [URL construction](#url-construction)
 * [Components](#components)
 * [ImageKit](#imagekit)
+    * [List of supported transformations](#list-of-supported-transformations)
+    * [Responsive image loading](#responsive-image-loading)
+* [Constructing Video URLs](#constructing-video-urls)
+    * [Adaptive bitrate streaming](#adaptive-bitrate-streaming)
+* [File Upload](#file-upload)
+    * [Upload policy](#uploadpolicy)
+* [Upload preprocessing](#upload-preprocessing)
+    * [Image preprocessing](#image-preprocessing)
+* [Support](#support)
+* [Links](#links)
+* [License](#license)
 
 ## Installation
 
@@ -49,7 +60,12 @@ _Note: Do not include your Private Key in any client-side code, including this S
 ImageKit.init(
     publicKey: "your_public_api_key=", 
     urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", 
-    transformationPosition: TransformationPosition.PATH, 
+    transformationPosition: TransformationPosition.PATH,
+    defaultUploadPolicy: UploadPolicy.Builder()
+        .requireNetworkType(UploadPolicy.NetworkType.ANY)
+        .setMaxRetries(3)
+        .build()
+)
 ```
 
 ### Quick Examples
@@ -59,22 +75,22 @@ ImageKit.init(
 ```swift
 //https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,ar-3-2
 ImageKit.shared.url(
-            path: "default-image.jpg",
-            transformationPosition: "query"
-        )
-        .height(height: 400)
-        .aspectRatio(width: 3, height: 2)
-        .create()
+    path: "default-image.jpg",
+    transformationPosition: TransformationPosition.QUERY
+)
+.height(height: 400)
+.aspectRatio(width: 3, height: 2)
+.create()
 ```
 
 #### Using full image URL
 ```swift
 // https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20
 ImageKit.shared.url(
-            src: "https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg",
-            transformationPosition: "path"
-        )
-        .create()
+    src: "https://ik.imagekit.io/your_imagekit_id/medium_cafe_B1iTdD0C.jpg",
+    transformationPosition: "path"
+)
+.create()
 ```
 
 #### Using a custom parameter
@@ -82,29 +98,28 @@ ImageKit.shared.url(
 // https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=w-400,ot-Hand with a green plant,otc-264120,ots-30,ox-10,oy-10
 ImageKit.shared.url(
     src : "https://ik.imagekit.io/your_imagekit_id/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20"
-    )
-        .addCustomTransformation("w", "400")
-        .create()
+)
+.addCustomTransformation("w", "400")
+.create()
 ```
 
 #### Upload file from UIImage
 ``` swift
 let image: UIImage
 ImageKit.shared.uploader().upload(
-  file: image,
-  fileName: "sample-image.jpg",
-  useUniqueFilename: true,
-  tags: ["demo"],
-  folder: "/",
-  isPrivateFile: false,
-  customCoordinates: "",
-  responseFields: "",
-  signatureHeaders: ["x-test-header":"Test"],
-  progress: { progress in
-  	// Handle Progress
-  },
-  completion: { result in 
-  	 switch result{
+    file: image,
+    fileName: "sample-image.jpg",
+    useUniqueFilename: true,
+    tags: ["demo"],
+    folder: "/",
+    isPrivateFile: false,
+    customCoordinates: "",
+    responseFields: "",
+    progress: { progress in
+    // Handle Progress
+    },
+    completion: { result in 
+     switch result{
             case .success(let uploadAPIResponse):
                 // Handle Success Response
             case .failure(let error as UploadAPIError):
@@ -112,27 +127,26 @@ ImageKit.shared.uploader().upload(
             case .failure(let error):
                 // Handle Other Errors
       }
-  }
+    }
 )
 ```
 
 #### Upload file from a remote URL
 ``` swift
 ImageKit.shared.uploader().upload(
-  file: "https://www.example.com/sample-image.jpg",
-  fileName: "sample-image.jpg",
-  useUniqueFilename: true,
-  tags: ["demo"],
-  folder: "/",
-  isPrivateFile: false,
-  customCoordinates: "",
-  responseFields: "",
-  signatureHeaders: ["x-test-header":"Test"],
-  progress: { progress in
-  	// Handle Progress
-  },
-  completion: { result in 
-  	 switch result{
+    file: "https://www.example.com/sample-image.jpg",
+    fileName: "sample-image.jpg",
+    useUniqueFilename: true,
+    tags: ["demo"],
+    folder: "/",
+    isPrivateFile: false,
+    customCoordinates: "",
+    responseFields: "",
+    progress: { progress in
+    // Handle Progress
+    },
+    completion: { result in 
+     switch result{
             case .success(let uploadAPIResponse):
                 // Handle Success Response
             case .failure(let error as UploadAPIError):
@@ -140,7 +154,7 @@ ImageKit.shared.uploader().upload(
             case .failure(let error):
                 // Handle Other Errors
       }
-  }
+    }
 )
 ```
 
@@ -148,20 +162,19 @@ ImageKit.shared.uploader().upload(
 ```swift
 let data : Data
 ImageKit.shared.uploader().upload(
-  file: data,
-  fileName: "sample-image.jpg",
-  useUniqueFilename: true,
-  tags: ["demo"],
-  folder: "/",
-  isPrivateFile: false,
-  customCoordinates: "",
-  responseFields: "",
-  signatureHeaders: ["x-test-header":"Test"],
-  progress: { progress in
-  	// Handle Progress
-  },
-  completion: { result in 
-  	 switch result{
+    file: data,
+    fileName: "sample-image.jpg",
+    useUniqueFilename: true,
+    tags: ["demo"],
+    folder: "/",
+    isPrivateFile: false,
+    customCoordinates: "",
+    responseFields: "",
+    progress: { progress in
+    // Handle Progress
+    },
+    completion: { result in 
+     switch result{
             case .success(let uploadAPIResponse):
                 // Handle Success Response
             case .failure(let error as UploadAPIError):
@@ -169,7 +182,7 @@ ImageKit.shared.uploader().upload(
             case .failure(let error):
                 // Handle Other Errors
       }
-  }
+    }
 )
 ```
 
@@ -184,15 +197,17 @@ The library includes 3 Primary Classes:
 * [`ImageKit`](#ImageKit) for defining options like `urlEndpoint`, `publicKey` or `authenticationEndpoint` for the application to use.
 * `ImageKitURLConstructor` for [constructing image urls](#constructing-image-urls).
 * `ImageKitUploader`for client-side [file uploading](#file-upload).
+* `UploadPolicy` for setting a set of policy constraints that need to be validated for an upload request to be executed.
+* `ImageUploadPreprocessor` to set the parameters for preprocessing the image to be uploaded.
 
 ## ImageKit
 
 In order to use the SDK, you need to provide it with a few configuration parameters. 
 ```swift
 ImageKit.init(
-  urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", // Required.
-  publicKey: "your_public_api_key=",  //Optional
-  transformationPosition: TransformationPosition.PATH, //Optional
+    urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", // Required.
+    publicKey: "your_public_api_key=",  //Optional
+    transformationPosition: TransformationPosition.PATH, //Optional
 )
 ```
 * `urlEndpoint` is required to use the SDK. You can get URL-endpoint from your ImageKit dashboard - https://imagekit.io/dashboard#url-endpoints.
@@ -220,8 +235,8 @@ The transformations to be applied to the URL can be chained to `ImageKit.shared.
 ```swift
 // https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,ar-3-2
 ImageKit.shared.url(
-  path: "default-image.jpg",
-  transformationPosition: "query"
+    path: "default-image.jpg",
+    transformationPosition: TransformationPosition.QUERY
 )
 .height(height: 400)
 .aspectRatio(width: 3, height: 2)
@@ -269,6 +284,34 @@ The complete list of transformations supported and their usage in ImageKit can b
 
 </details>
 
+### Responsive image loading
+ImageKit URL constructor can be set to input any Android View and determine the parameters for image height and width based on the dimensions of the view. If the view's dimensions are not set at the time, it uses the display's dimensions as the fallback. It also sets the DPR of the image automatically to match that of the device display.
+To automatically set the dimensions and pixel ratio of the image , call `ImageKit.getInstance().url(...).setResponsive(...)` with a set of parameters defined below:
+
+| Parameter | Type | Description |
+|:----------|:------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| view | [UIView](https://developer.apple.com/documentation/uikit/uiview) | Specifies the reference of the view of which the dimensions are to be taken into consideration for image sizing. |
+| minSize | Int | Optional. Explicitly sets the minimum size for image dimensions. Defaults to 0. Passing a negative value will throw an `InvalidArgumentError`. |
+| maxSize   | Int | Optional. Explicitly sets the maximum size for image dimensions. Defaults to `Int.MAX_VALUE`. Passing a negative value will throw an `InvalidArgumentError`. |
+| step      | Int | Optional. Explicitly sets the step in pixels for rounding the dimensions to the nearest next multiple of `step`. Defaults to 100. Passing a negative value will throw an `InvalidArgumentError`. |
+| crop | CropMode | Optional. Explicitly sets the mode for image cropping. Defaults to `CropMode.RESIZE`. |
+| focus | FocusType | Optional. Specifies the area of the image to be set as the focal point for crop transform. Defaults to `FocusType.CENTER`. |
+
+Code example:
+```swift
+// https://ik.imagekit.io/your_imagekit_id/default-image.jpg?tr=h-400.00,w-400.00,
+ImageKit.shared.url(
+    path: "default-image.jpg",
+    transformationPosition: TransformationPosition.QUERY
+)
+.setResponsive(
+    view: displayView,
+    crop: CropMode.EXTRACT,
+    focus: FocusType.TOP_LEFT
+)
+.create()
+```
+
 ## Constructing Video URLs
 The `ImageKitURLConstructor` can also be used to create a url that can be used for streaming videos with real-time transformations. `ImageKitURLConstructor` consists of functions that can be chained together to perform transformations.
 
@@ -279,7 +322,7 @@ The initialization is same as that for image URLs by calling `ImageKit.shared.ur
 // https://ik.imagekit.io/your_imagekit_id/default-video.mp4?tr=h-400.00,w-400.00
 ImageKit.shared.url(
     path: "default-video.mp4",
-    transformationPosition: "query"
+    transformationPosition: TransformationPosition.QUERY
 )
 .height(height: 400)
 .width(width: 400)
@@ -291,7 +334,7 @@ To obtain the video URL with adaptive streaming, call `ImageKit.shared.url(...).
 
 | Parameter   | Type            | Description                                                                                                               |
 |:------------|:----------------|:--------------------------------------------------------------------------------------------------------------------------|
-| format      | StreamingFormat | Specifies the format for streaming video. Supported values for type are `StreamingFormat.hls` and `StreamingFormat.dash`. |
+| format      | StreamingFormat | Specifies the format for streaming video. Supported values for type are `StreamingFormat.HLS` and `StreamingFormat.DASH`. |
 | resolutions | [Int]      | Specifies the representations of the required video resolutions. E. g. 480, 720, 1080 etc.                                |
 
 Code example:
@@ -299,23 +342,18 @@ Code example:
 // https://ik.imagekit.io/your_imagekit_id/default-video.mp4/ik-master.m3u8?tr=sr-240_360_480_720_1080_1440_2160
 ImageKit.shared.url(
     path: "default-video.mp4",
-    transformationPosition: "query"
+    transformationPosition: TransformationPosition.QUERY
 )
 .setAdaptiveStreaming(
-    format: StreamingFormat.hls,
+    format: StreamingFormat.HLS,
     resolutions: [240, 360, 480, 720, 1080, 1440, 2160]
 )
 .create()
 ```
 
 
-### File Upload
+## File Upload
 The SDK provides a simple interface using the `ImageKit.shared.uploader().upload(...)` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#request-structure-multipart-form-data).
-
-Make sure that you have specified `authenticationEndpoint` during SDK initialization. The SDK makes an HTTP GET request to this endpoint and expects a JSON response with three fields i.e. `signature`, `token`, and `expire`.  
-
-[Learn how to implement authenticationEndpoint](https://docs.imagekit.io/api-reference/upload-file-api/client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) on your server.
-
 
 The `ImageKit.shared.uploader().upload(...)` accepts the following parameters
 
@@ -341,6 +379,9 @@ The `ImageKit.shared.uploader().upload(...)` accepts the following parameters
 | progress      | ((Progress) -> Void) | Optional. |
 | completion      | (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void | Required. |
 
+Note: Sending a JWT that has been used in the past will result in a validation error. Even if your previous request resulted in an error, you should always send a new JWT as the token parameter.
+Warning: JWT must be generated on the server-side because it is generated using your account's private API key. This field is required for authentication when uploading a file from the client-side.
+
 Sample Usage
 ```swift
 ImageKit.shared.uploader().upload(
@@ -352,7 +393,6 @@ ImageKit.shared.uploader().upload(
     isPrivateFile: false,
     customCoordinates: "",
     responseFields: "",
-    signatureHeaders: ["x-test-header":"Test"],
     extensions: [["name": "google-auto-tagging", "minConfidence": 80, "maxTags": 10]],
     webhookUrl: "https://abc.xyz",
     overwriteFile: false,
@@ -386,7 +426,7 @@ The `UploadPolicy` class represents a set of conditions that need to be met for 
 | requireNetworkType(type: NetworkType) | UploadPolicy.Builder | Specifies the network type required for the upload request. Possible values are `UploadPolicy.NetworkPolicy.ANY` and `UploadPolicy.NetworkPolicy.UNMETERED`. Defaults to `NetworkPolicy.ANY`.                                    |
 | requiresBatteryCharging(requiresCharging: Bool) | UploadPolicy.Builder | Sets whether the device needs to be connected to a charger for the upload request. Defaults to `false`. |
 | setMaxRetries(count: Int) | UploadPolicy.Builder | Sets the maximum number of retries for the upload request. Negative value will throw an `IllegalArgumentException`. Defaults to 5. |
-| setRetryBackoff(interval: Long, policy: UploadPolicy.BackoffPolicy) | UploadPolicy.Builder | Sets the backoff interval in milliseconds and policy (`UploadPolicy.BackoffPolicy.linear` or `UploadPolicy.BackoffPolicy.exponential`) for retry attempts. Defaults to interval of 10000ms and policy of `BackoffPolicy.linear`. This increases the gap between each upload retry in either linear or exponential manner. E. g. if the `interval` is set to 3 seconds, then delay for each retry (n) will increase as following: <ul><li>With linear backoff: 3, 6, 9, 12 seconds.. (`interval` * n).</li><li>With exponential backoff: 3, 6, 12, 24 seconds.. (`interval` * 2<sup>n-1</sup>).</li></ul> |
+| setRetryBackoff(interval: Long, policy: UploadPolicy.BackoffPolicy) | UploadPolicy.Builder | Sets the backoff interval in milliseconds and policy (`UploadPolicy.BackoffPolicy.LINEAR` or `UploadPolicy.BackoffPolicy.EXPONENTIAL`) for retry attempts. Defaults to interval of 1000ms and policy of `BackoffPolicy.linear`. This increases the gap between each upload retry in either linear or exponential manner. E. g. if the `interval` is set to 3 seconds, then delay for each retry (n) will increase as following: <ul><li>With linear backoff: 3, 6, 9, 12 seconds.. (`interval` * n).</li><li>With exponential backoff: 3, 6, 12, 24 seconds.. (`interval` * 2<sup>n-1</sup>).</li></ul> |
 
 Example code
 ```swift
@@ -394,7 +434,29 @@ let policy = UploadPolicy.Builder()
     .requireNetworkType(UploadPolicy.NetworkType.UNMETERED)
     .requiresCharging(true)
     .setMaxRetries(5)
-    .setRetryBackoff(60000, UploadPolicy.BackoffPolicy.exponential)
+    .setRetryBackoff(60000, UploadPolicy.BackoffPolicy.EXPONENTIAL)
+    .build()
+```
+
+## Upload preprocessing
+### Image preprocessing
+The `ImagePreprocessor` class encapsulates a set of methods to apply certain transformations to an image before uploading. This will create a copy of the selected image, which will be transformed as per the given parameters before uploading.
+
+`ImagePreprocessor.Builder` class is responsible for building the ImagePreprocess instances. This class provides following methods to access and modify the policy parameters:
+
+| Parameter | Type | Description |
+|:------------------------------------------------------------------------------------------------------------------------|:--------------------------|:-------------------------------------------------------------------------|
+| limit(width: Int, height: Int) | ImagePreprocessor.Builder | Specifies the maximum width and height of the image |
+| crop(p1: Point, p2: Point) | ImagePreprocessor.Builder | Specifies the two points on the diagonal of the rectangle to be cropped. |
+| format(format: ImageFormat) | ImagePreprocessor.Builder | Specify the target image format. |
+| rotate(degrees: Float) | ImagePreprocessor.Builder | Specify the rotation angle of the target image. |
+
+Example code
+```swift
+let preprocessor = ImagePreprocessor.Builder()
+    .limit(1280, 720)
+    .format(ImageFormat.PNG)
+    .rotate(45.0)
     .build()
 ```
 
