@@ -19,6 +19,9 @@ public class ImagekitUrlConstructor {
     private var transformationList = [String]()
     private var transformationMap = [String: Any]()
     
+    private var streamingParam: [String : String] = [:]
+    private var rawParams: String? = nil
+    
     init(endpoint: String, imagePath: String, transformationPosition: TransformationPosition, queryParams: [String: String] = [:]) {
         self.endpoint = endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.imagePath = imagePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
@@ -431,6 +434,38 @@ public class ImagekitUrlConstructor {
     }
     
     /**
+     * Add the raw transformation options passed as a string to the transformations list.
+     * @param params The string containing the comma-separated transformation parameters.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func raw(params: String) -> ImagekitUrlConstructor {
+        rawParams = params
+        return self
+    }
+    
+    /**
+     * Set the parameters to fetch the video in an adaptive streaming format.
+     * @param format The desired streaming format to be fetched (HLS or DASH).
+     * @param resolutions The list of video resolutions to be made available to choose from during video streaming.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func setAdaptiveStreaming(
+        format: StreamingFormat,
+        resolutions: [Int]
+    ) -> ImagekitUrlConstructor {
+        streamingParam["ik-master"] = format.rawValue
+
+        transformationMap[TransformationMapping.streamingResolution] = resolutions
+        transformationList.append(
+            String(format: "%@-%@",
+                TransformationMapping.streamingResolution,
+                resolutions.map { String($0) }.joined(separator: "_")
+            )
+        )
+        return self
+    }
+    
+    /**
      * Method used to get a perfectly rounded image.
      * This option is applied after resizing of the image, if any.
      * @return the current ImagekitUrlConstructor object.
@@ -482,12 +517,64 @@ public class ImagekitUrlConstructor {
     }
     
     /**
+     * Set the image size and crop of the image to be responsive to the target view/window.
+     * Method allows you to automatically set the height, width and DPR parameters of images according to the target View specified. The height and width can be constrained
+     * by varying the parameters - minSize, maxSize, and step. the default crop mode and focus area values can also be overridden by passing the crop and focus arguments, else.
+     * @param view The reference of the view of which the dimensions are to be taken into consideration for image sizing.
+     * @param minSize Minimum allowed size for image width/height.
+     * @param maxSize Maximum allowed size for image width/height.
+     * @param step Possible values include positive integer values.
+     * @param cropMode Possible values include the values defined in enum CropMode.
+     * @param focus Possible values include the values defined in enum FocusType.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func setResponsive(
+        view: UIView,
+        minSize: Int = 0,
+        maxSize: Int = 5000,
+        step: Int = 100,
+        cropMode: CropMode = CropMode.RESIZE,
+        focus: FocusType = FocusType.CENTER
+    ) throws -> ImagekitUrlConstructor {
+        guard minSize >= 0 && maxSize >= 0 && step >= 0 else {
+            throw InvalidArgumentError(message: "minSize and maxSize cannot be negative")
+        }
+        var screen: UIScreen
+        if #available(iOS 13.0, *) {
+            screen = view.window?.windowScene?.screen ?? UIScreen.main
+        } else {
+            screen = UIScreen.main
+        }
+        var targetWidth = Int(view.frame.width - view.layoutMargins.left - view.layoutMargins.right)
+        var targetHeight = Int(view.frame.height - view.layoutMargins.top - view.layoutMargins.bottom)
+        if targetWidth <= 0 {
+            targetWidth = Int(screen.bounds.width - view.layoutMargins.left - view.layoutMargins.right)
+        }
+        if targetHeight <= 0 {
+            targetHeight = Int(screen.bounds.height - view.layoutMargins.top - view.layoutMargins.bottom)
+        }
+        return self.width(width: max(minSize, min(roundUpSize(targetWidth, step), maxSize)))
+            .height(height: max(minSize, min(roundUpSize(targetHeight, step), maxSize)))
+            .dpr(dpr: Float(screen.scale.rounded(.toNearestOrAwayFromZero)))
+            .cropMode(cropMode: cropMode)
+            .focus(focusType: focus)
+    }
+    
+    private func roundUpSize(_ size: Int, _ step: Int) -> Int {
+        return ((size - 1) / step + 1) * step
+    }
+    
+    /**
      * Used to create the url using the transformations specified before invoking this method.
      * @return the Url used to fetch an image after applying the specified transformations.
      */
     public func create() -> String {
         var url = self.source
         let apiVersion: String = API_VERSION
+        
+        if (rawParams != nil) {
+            transformationList.append(contentsOf: rawParams?.split(separator: ",").map { String($0) } ?? [])
+        }
         
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
@@ -510,6 +597,9 @@ public class ImagekitUrlConstructor {
                     }
                     url = url.components(separatedBy: "?")[0]
                 }
+                if (streamingParam.keys.contains("ik-master")) {
+                    url = url + "/ik-master.\(String(describing: streamingParam["ik-master"]))"
+                }
                 
                 queryParams["tr"] = transforms
                 
@@ -517,9 +607,15 @@ public class ImagekitUrlConstructor {
                 url = self.endpoint
                 if (self.transformationPosition == .PATH){
                     url = String("\(url)/tr:\(transforms)/\(self.imagePath)")
+                    if (streamingParam.keys.contains("ik-master")) {
+                        url = url + "/ik-master.\(String(describing: streamingParam["ik-master"]))"
+                    }
                 }
                 if (self.transformationPosition == .QUERY){
                     url = String("\(url)/\(self.imagePath)")
+                    if (streamingParam.keys.contains("ik-master")) {
+                        url = url + "/ik-master.\(String(describing: streamingParam["ik-master"]))"
+                    }
                     queryParams["tr"] = transforms
                 }
             }

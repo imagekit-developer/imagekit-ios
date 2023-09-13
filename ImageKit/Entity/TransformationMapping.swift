@@ -64,5 +64,5 @@ struct TransformationMapping {
     static let effectGray = "e-grayscale"
     static let original = "orig"
     static let transformationStep = ":"
-    
+    static let streamingResolution = "sr"
 }
