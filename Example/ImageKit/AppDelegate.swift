@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        _ = ImageKit.init(publicKey: "your_public_key", imageKitEndpoint: "https://ik.imagekit.io/your_imagekit_id", transformationPosition: TransformationPosition.PATH, authenticationEndpoint: "http://localhost:8080/auth")
+        ImageKit.init(publicKey: "your_public_key", urlEndpoint: "https://ik.imagekit.io/your_imagekit_id", transformationPosition: TransformationPosition.PATH)
         return true
     }
 

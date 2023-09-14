@@ -9,9 +9,8 @@ import Foundation
 
 class UploadAPI: NSObject, URLSessionTaskDelegate {
     public static func upload(
-        file: Data,
-        publicKey: String,
-        signature: SignatureAPIResponse,
+        file: Any,
+        token: String,
         fileName: String,
         useUniqueFileName: Bool,
         tags: String,
@@ -22,18 +21,21 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         progressClosure: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-        
-        let mimeType = MimeDetector.mimeType(data: file)?.mime ?? "image/png"
 
         var request = URLRequest(url: URL(string: "https://upload.imagekit.io/api/v1/files/upload")!)
         request.httpMethod = "POST"
 
+        let mimeType: String? = nil
         let formData = MultipartFormData()
-        formData.append(file, withName: "file", fileName: fileName, mimeType: mimeType)
-        formData.append(publicKey.data(using: String.Encoding.utf8)!, withName: "publicKey")
-        formData.append(signature.signature.data(using: String.Encoding.utf8)!, withName: "signature")
-        formData.append(String(signature.expire).data(using: String.Encoding.utf8)!, withName: "expire")
-        formData.append(signature.token.data(using: String.Encoding.utf8)!, withName: "token")
+        var fileData: Data
+        if file is Data {
+            fileData = file as! Data
+            let mimeType = MimeDetector.mimeType(data: fileData)?.mime ?? "image/png"
+        } else {
+            fileData = (file as! String).data(using: String.Encoding.utf8)!
+        }
+        formData.append(fileData, withName: "file", fileName: fileName, mimeType: file is Data ? mimeType! : "text/plain")
+        formData.append(token.data(using: String.Encoding.utf8)!, withName: "token")
         formData.append(fileName.data(using: String.Encoding.utf8)!, withName: "fileName")
         formData.append(String(useUniqueFileName).data(using: String.Encoding.utf8)!, withName: "useUniqueFileName")
         formData.append(tags.data(using: String.Encoding.utf8)!, withName: "tags")
