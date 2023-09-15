@@ -12,37 +12,64 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         file: Any,
         token: String,
         fileName: String,
-        useUniqueFileName: Bool,
-        tags: String,
-        folder: String? = "",
-        isPrivateFile: Bool,
-        customCoordinates: String? = "",
-        responseFields: String? = "",
+        useUniqueFileName: Bool? = nil,
+        tags: String? = nil,
+        folder: String? = nil,
+        isPrivateFile: Bool?,
+        customCoordinates: String? = nil,
+        responseFields: String? = nil,
+        extensions: [[String : Any]]? = nil,
+        webhookUrl: String? = nil,
+        overwriteFile: Bool? = nil,
+        overwriteAITags: Bool? = nil,
+        overwriteTags: Bool? = nil,
+        overwriteCustomMetadata: Bool? = nil,
+        customMetadata: [String : Any]? = nil,
         progressClosure: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
 
-        var request = URLRequest(url: URL(string: "https://upload.imagekit.io/api/v1/files/upload")!)
+        var request = URLRequest(url: URL(string: "https://upload.imagekit.io/api/v2/files/upload")!)
         request.httpMethod = "POST"
 
-        let mimeType: String? = nil
+        var mimeType: String? = nil
         let formData = MultipartFormData()
         var fileData: Data
         if file is Data {
             fileData = file as! Data
-            let mimeType = MimeDetector.mimeType(data: fileData)?.mime ?? "image/png"
+            mimeType = MimeDetector.mimeType(data: fileData)?.mime ?? "image/png"
         } else {
             fileData = (file as! String).data(using: String.Encoding.utf8)!
         }
+        let extData = try? JSONSerialization.data(withJSONObject: extensions!)
+        let metaData = try? JSONSerialization.data(withJSONObject: customMetadata!)
         formData.append(fileData, withName: "file", fileName: fileName, mimeType: file is Data ? mimeType! : "text/plain")
         formData.append(token.data(using: String.Encoding.utf8)!, withName: "token")
         formData.append(fileName.data(using: String.Encoding.utf8)!, withName: "fileName")
-        formData.append(String(useUniqueFileName).data(using: String.Encoding.utf8)!, withName: "useUniqueFileName")
-        formData.append(tags.data(using: String.Encoding.utf8)!, withName: "tags")
-        formData.append(folder!.data(using: String.Encoding.utf8)!, withName: "folder")
-        formData.append(String(isPrivateFile).data(using: String.Encoding.utf8)!, withName: "isPrivateFile")
-        formData.append(customCoordinates!.data(using: String.Encoding.utf8)!, withName: "customCoordinates")
-        formData.append(responseFields!.data(using: String.Encoding.utf8)!, withName: "responseFields")
+        if useUniqueFileName != nil {
+            formData.append(String(useUniqueFileName!).data(using: String.Encoding.utf8), withName: "useUniqueFileName")
+        }
+        formData.append(tags?.data(using: String.Encoding.utf8), withName: "tags")
+        formData.append(folder?.data(using: String.Encoding.utf8), withName: "folder")
+        if isPrivateFile != nil {
+            formData.append(String(isPrivateFile!).data(using: String.Encoding.utf8), withName: "isPrivateFile")
+        }
+        formData.append(customCoordinates?.data(using: String.Encoding.utf8), withName: "customCoordinates")
+        formData.append(responseFields?.data(using: String.Encoding.utf8), withName: "responseFields")
+        formData.append(extData, withName: "extensions")
+        if overwriteFile != nil {
+            formData.append(String(overwriteFile!).data(using: String.Encoding.utf8), withName: "overwriteFile")
+        }
+        if overwriteAITags != nil {
+            formData.append(String(overwriteAITags!).data(using: String.Encoding.utf8), withName: "overwriteAITags")
+        }
+        if overwriteTags != nil {
+            formData.append(String(overwriteTags!).data(using: String.Encoding.utf8), withName: "overwriteTags")
+        }
+        if overwriteCustomMetadata != nil {
+            formData.append(String(overwriteCustomMetadata!).data(using: String.Encoding.utf8), withName: "overwriteCustomMetadata")
+        }
+        formData.append(metaData, withName: "customMetadata")
 
         request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
 
@@ -104,10 +131,11 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
             }
         }
 
-        public func append(_ data: Data, withName name: String) {
+        public func append(_ data: Data?, withName name: String) {
+            guard let datapart = data else { return }
             let headers = contentHeaders(withName: name)
-            let stream = InputStream(data: data)
-            let length = UInt64(data.count)
+            let stream = InputStream(data: datapart)
+            let length = UInt64(datapart.count)
 
             append(stream, withLength: length, headers: headers)
         }

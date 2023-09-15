@@ -42,11 +42,11 @@ class UploadImageViewController: UIViewController{
         let progressAlert = showProgressToast(title: "Uploading", message: "Please Wait")
         ImageKit.shared.uploader().upload(
             file: image,
+            token: "ada",
             fileName: imageName,
             useUniqueFilename: true,
             tags: ["demo","image"],
             folder: "/",
-            signatureHeaders: ["x-test-header":"Test"],
             progress: { progress in
                 let progressBar: UIProgressView? = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as? UIProgressView
                 if (progressBar != nil){
