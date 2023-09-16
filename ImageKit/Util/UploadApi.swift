@@ -46,28 +46,28 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         formData.append(fileData, withName: "file", fileName: fileName, mimeType: file is Data ? mimeType! : "text/plain")
         formData.append(token.data(using: String.Encoding.utf8)!, withName: "token")
         formData.append(fileName.data(using: String.Encoding.utf8)!, withName: "fileName")
-        if useUniqueFileName != nil {
-            formData.append(String(useUniqueFileName!).data(using: String.Encoding.utf8), withName: "useUniqueFileName")
+        if let useUniqueFileName = useUniqueFileName {
+            formData.append(String(useUniqueFileName).data(using: String.Encoding.utf8), withName: "useUniqueFileName")
         }
         formData.append(tags?.data(using: String.Encoding.utf8), withName: "tags")
         formData.append(folder?.data(using: String.Encoding.utf8), withName: "folder")
-        if isPrivateFile != nil {
-            formData.append(String(isPrivateFile!).data(using: String.Encoding.utf8), withName: "isPrivateFile")
+        if let isPrivateFile = isPrivateFile {
+            formData.append(String(isPrivateFile).data(using: String.Encoding.utf8), withName: "isPrivateFile")
         }
         formData.append(customCoordinates?.data(using: String.Encoding.utf8), withName: "customCoordinates")
         formData.append(responseFields?.data(using: String.Encoding.utf8), withName: "responseFields")
         formData.append(extData, withName: "extensions")
-        if overwriteFile != nil {
-            formData.append(String(overwriteFile!).data(using: String.Encoding.utf8), withName: "overwriteFile")
+        if let overwriteFile = overwriteFile {
+            formData.append(String(overwriteFile).data(using: String.Encoding.utf8), withName: "overwriteFile")
         }
-        if overwriteAITags != nil {
-            formData.append(String(overwriteAITags!).data(using: String.Encoding.utf8), withName: "overwriteAITags")
+        if let overwriteAITags = overwriteAITags {
+            formData.append(String(overwriteAITags).data(using: String.Encoding.utf8), withName: "overwriteAITags")
         }
-        if overwriteTags != nil {
-            formData.append(String(overwriteTags!).data(using: String.Encoding.utf8), withName: "overwriteTags")
+        if let overwriteTags = overwriteTags {
+            formData.append(String(overwriteTags).data(using: String.Encoding.utf8), withName: "overwriteTags")
         }
-        if overwriteCustomMetadata != nil {
-            formData.append(String(overwriteCustomMetadata!).data(using: String.Encoding.utf8), withName: "overwriteCustomMetadata")
+        if let overwriteCustomMetadata = overwriteCustomMetadata {
+            formData.append(String(overwriteCustomMetadata).data(using: String.Encoding.utf8), withName: "overwriteCustomMetadata")
         }
         formData.append(metaData, withName: "customMetadata")
 
@@ -132,10 +132,10 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         }
 
         public func append(_ data: Data?, withName name: String) {
-            guard let datapart = data else { return }
+            guard let data = data else { return }
             let headers = contentHeaders(withName: name)
-            let stream = InputStream(data: datapart)
-            let length = UInt64(datapart.count)
+            let stream = InputStream(data: data)
+            let length = UInt64(data.count)
 
             append(stream, withLength: length, headers: headers)
         }
