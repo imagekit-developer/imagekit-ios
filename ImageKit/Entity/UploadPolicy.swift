@@ -83,7 +83,7 @@ public class UploadPolicy {
         }
     }
     
-    static func defaultPolicy() -> UploadPolicy {
+    public static func defaultPolicy() -> UploadPolicy {
         return Builder()
             .requireNetworkType(NetworkType.ANY)
             .requiresBatteryCharging(false)
