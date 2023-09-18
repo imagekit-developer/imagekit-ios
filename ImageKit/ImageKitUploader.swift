@@ -21,6 +21,7 @@ public class ImageKitUploader {
         signatureHeaders: [String: String]? = [String: String](),
         progress: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
         let publicKey = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_CLIENT_PUBLIC_KEY)
         let authEndpoint = UserDefaults.standard.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)
@@ -41,6 +42,7 @@ public class ImageKitUploader {
                                 isPrivateFile: isPrivateFile!,
                                 progressClosure: progress,
                                 urlConfiguration: urlConfiguration,
+                                uploadPolicy: policy,
                                 completion: { uploadResult in
                                     completion(uploadResult)
                             })

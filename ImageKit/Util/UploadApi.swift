@@ -21,7 +21,10 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         responseFields: String? = "",
         progressClosure: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
-        completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
+        uploadPolicy: UploadPolicy,
+        completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void,
+        retryCount: Int = 0
+    ) {
         
         let mimeType = MimeDetector.mimeType(data: file)?.mime ?? "image/png"
 
@@ -44,30 +47,56 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
 
         request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
 
-        do {
-            let multipartData = try formData.encode()
-            request.httpBody = multipartData
-            let uploadDelegate = UploadTaskDelegate()
-            let urlSession = URLSession(configuration: urlConfiguration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
-            uploadDelegate.uploadProgressHandler = progressClosure
-            let task = urlSession.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    completion(Result.failure(error))
-                    return
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(getRetryTimeOut(uploadPolicy, retryCount))) {
+            do {
+                let multipartData = try formData.encode()
+                request.httpBody = multipartData
+                let uploadDelegate = UploadTaskDelegate()
+                let urlSession = URLSession(configuration: urlConfiguration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
+                uploadDelegate.uploadProgressHandler = progressClosure
+                let task = urlSession.dataTask(with: request) { data, response, error in
+                    if let error = error {
+                        completion(Result.failure(error))
+                        return
+                    }
+                    let response = response as! HTTPURLResponse
+                    let status = response.statusCode
+                    if (200...299).contains(status) {
+                        completion(Result.success((response, try? IKJSONDecoder().decode(UploadAPIResponse.self, from: data!))))
+                    } else if (400..<500).contains(status) || retryCount == uploadPolicy.maxErrorRetries {
+                        let uploadApiError = try? IKJSONDecoder().decode(UploadAPIError.self, from: data!)
+                        completion(Result.failure(uploadApiError!))
+                    } else {
+                        upload(
+                            file: file,
+                            publicKey: publicKey,
+                            signature: signature,
+                            fileName: fileName,
+                            useUniqueFileName: useUniqueFileName,
+                            tags: tags,
+                            folder: folder,
+                            isPrivateFile: isPrivateFile,
+                            progressClosure: progressClosure,
+                            urlConfiguration: urlConfiguration,
+                            uploadPolicy: uploadPolicy,
+                            completion: completion,
+                            retryCount: retryCount + 1
+                        )
+                    }
                 }
-                let response = response as! HTTPURLResponse
-                let status = response.statusCode
-                guard (200...299).contains(status) else {
-                    let uploadApiError = try? IKJSONDecoder().decode(UploadAPIError.self, from: data!)
-                    completion(Result.failure(uploadApiError!))
-                    return
-                }
-                completion(Result.success((response, try? IKJSONDecoder().decode(UploadAPIResponse.self, from: data!))))
+                task.resume()
+            } catch let error {
+                completion(Result.failure(error))
             }
-            task.resume()
-        } catch let error {
-            completion(Result.failure(error))
         }
+    }
+    
+    private static func getRetryTimeOut(_ policy: UploadPolicy, _ retryCount: Int) -> Int {
+        return policy.backoffPolicy == UploadPolicy.BackoffPolicy.LINEAR
+            ? policy.backoffMillis * retryCount
+            : policy.backoffPolicy == UploadPolicy.BackoffPolicy.EXPONENTIAL && retryCount > 0
+                ? policy.backoffMillis * Int(pow(2.0, Double(retryCount - 1)))
+                : 0
     }
 
     public typealias HTTPHeaders = [String: String]

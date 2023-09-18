@@ -23,7 +23,7 @@ open class ImageKit: NSObject {
     open fileprivate(set) var imageKitEndpoint: String! = ""
     fileprivate(set) var transformationPosition: TransformationPosition = TransformationPosition.PATH
     open fileprivate(set) var authenticationEndpoint: String? = ""
-    fileprivate(set) var defaultUploadPolicy: UploadPolicy? = UploadPolicy.defaultPolicy()
+    open fileprivate(set) var defaultUploadPolicy: UploadPolicy = UploadPolicy.defaultPolicy()
 
     var configured = false
     lazy var userDefaults = UserDefaults.standard
