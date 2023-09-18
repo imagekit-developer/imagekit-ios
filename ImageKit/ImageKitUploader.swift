@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Network
+import Reachability
 
 public class ImageKitUploader {
 
@@ -31,21 +33,25 @@ public class ImageKitUploader {
                 switch result {
                     case .success((_, let signatureApiResponse)):
                         if let signatureApiResponse = signatureApiResponse {
-                            UploadAPI.upload(
-                                file: file,
-                                publicKey: publicKey!,
-                                signature: signatureApiResponse,
-                                fileName: fileName,
-                                useUniqueFileName: useUniqueFilename,
-                                tags: tags.joined(separator: ","),
-                                folder: folder,
-                                isPrivateFile: isPrivateFile!,
-                                progressClosure: progress,
-                                urlConfiguration: urlConfiguration,
-                                uploadPolicy: policy,
-                                completion: { uploadResult in
-                                    completion(uploadResult)
-                            })
+                            if self.checkUploadPolicy(policy, completion) {
+                                UploadAPI.upload(
+                                    file: file,
+                                    publicKey: publicKey!,
+                                    signature: signatureApiResponse,
+                                    fileName: fileName,
+                                    useUniqueFileName: useUniqueFilename,
+                                    tags: tags.joined(separator: ","),
+                                    folder: folder,
+                                    isPrivateFile: isPrivateFile!,
+                                    progressClosure: progress,
+                                    urlConfiguration: urlConfiguration,
+                                    uploadPolicy: policy,
+                                    completion: { uploadResult in
+                                        completion(uploadResult)
+                                })
+                            } else {
+                                print("Upload policy check failed")
+                            }
                         } else {
                             completion(Result.failure(IKError.SignatureError.invalidSignatureResponse("Invalid Signature")))
                         }
@@ -90,6 +96,26 @@ public class ImageKitUploader {
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
         self.upload(file: file.data(using: .utf8)!, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, signatureHeaders: signatureHeaders, progress: progress, urlConfiguration: urlConfiguration, completion: completion)
+    }
+    
+    internal func checkUploadPolicy(_ policy: UploadPolicy, _ completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) -> Bool {
+        if policy.networkType == UploadPolicy.NetworkType.UNMETERED {
+            var isNetworkMetered = false
+            if #available(iOS 12.0, *) {
+                isNetworkMetered = NWPathMonitor().currentPath.isExpensive
+            } else {
+                isNetworkMetered = (try? Reachability())?.connection != .wifi
+            }
+            if isNetworkMetered {
+                completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_METERED_NETWORK", help: nil)))
+                return false
+            }
+        }
+        if policy.requiresCharging && UIDevice.current.batteryState == UIDevice.BatteryState.unplugged {
+            completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_BATTERY_DISCHARGING", help: nil)))
+            return false
+        }
+        return true
     }
 }
 

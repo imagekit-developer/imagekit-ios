@@ -14,7 +14,6 @@ public struct UserDefaultKeys {
     public static let KEY_IMAGEKIT_URL_ENDPOINT = "IKURLEndpoint"
     public static let KEY_IMAGEKIT_TRANSFORMATION_POSITION = "IKTransformationPosition"
     public static let KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT = "IKAuthenticationEndpoint"
-    public static let KEY_IMAGEKIT_DEFAULT_UPLOAD_POLICY = "IKDefaultUploadPolicy"
 }
 
 open class ImageKit: NSObject {
@@ -38,13 +37,11 @@ open class ImageKit: NSObject {
         let imageKitEndpoint: String = self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)!
         let transformationPosition: TransformationPosition = TransformationPosition(rawValue: self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)!)!
         let authenticationEndpoint: String = self.userDefaults.string(forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)!
-        let uploadPolicy: UploadPolicy = self.userDefaults.object(forKey: UserDefaultKeys.KEY_IMAGEKIT_DEFAULT_UPLOAD_POLICY) as! UploadPolicy
 
         self.clientPublicKey = clientPublicKey
         self.imageKitEndpoint = imageKitEndpoint
         self.transformationPosition = transformationPosition
         self.authenticationEndpoint = authenticationEndpoint
-        self.defaultUploadPolicy = uploadPolicy
     }
     
     @available(*, deprecated, message: "clientPublicKey Renamed to publicKey")
@@ -66,9 +63,9 @@ open class ImageKit: NSObject {
         UserDefaults.standard.set(urlEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_URL_ENDPOINT)
         UserDefaults.standard.set(transformationPosition.rawValue, forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)
         UserDefaults.standard.set(authenticationEndpoint, forKey: UserDefaultKeys.KEY_IMAGEKIT_AUTHENTICATION_ENDPOINT)
-        UserDefaults.standard.set(defaultUploadPolicy, forKey: UserDefaultKeys.KEY_IMAGEKIT_DEFAULT_UPLOAD_POLICY)
 
         UserDefaults.standard.synchronize()
+        ImageKit.shared.defaultUploadPolicy = defaultUploadPolicy
     }
 
     public func url(

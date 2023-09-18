@@ -1,12 +1,15 @@
 PODS:
-  - ImageKitIO (2.0.0)
-  - ImageKitIO/Tests (2.0.0):
+  - ImageKitIO (2.0.1):
+    - ReachabilitySwift
+  - ImageKitIO/Tests (2.0.1):
     - Kakapo
     - Nimble (~> 7.0)
     - Quick (~> 1.2.0)
+    - ReachabilitySwift
   - Kakapo (2.1.0)
   - Nimble (7.3.4)
   - Quick (1.2.0)
+  - ReachabilitySwift (5.0.0)
 
 DEPENDENCIES:
   - ImageKitIO (from `../`)
@@ -17,17 +20,19 @@ SPEC REPOS:
     - Kakapo
     - Nimble
     - Quick
+    - ReachabilitySwift
 
 EXTERNAL SOURCES:
   ImageKitIO:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ImageKitIO: e265556e071aa657d25fc3c33aad0bf1ae671474
+  ImageKitIO: 4d580c519377a54c1344c651d43a74898d0a451b
   Kakapo: a30b8f6ce2ce17eec2d441df923a2af0ec5f538f
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
 
 PODFILE CHECKSUM: 2eba1966dbe76453f1bde8d84ee487f59549fb06
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.12.1

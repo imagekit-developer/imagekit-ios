@@ -18,6 +18,7 @@ ImageKit is a complete image optimization and transformation solution that comes
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'ImageKit/**/*'
+  s.dependency 'ReachabilitySwift'
 
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'Tests/**/*'
