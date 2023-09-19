@@ -570,7 +570,6 @@ public class ImagekitUrlConstructor {
      */
     public func create() -> String {
         var url = self.source
-        let apiVersion: String = API_VERSION
         
         if (rawParams != nil) {
             transformationList.append(contentsOf: rawParams?.split(separator: ",").map { String($0) } ?? [])
@@ -628,13 +627,12 @@ public class ImagekitUrlConstructor {
             return ""
         }
         
-        self.queryParams["ik-sdk-version"] = String("ios-\(apiVersion)")
         var urlComponents = URLComponents.init(string: url)!
         var queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
         queryItems = queryItems.sorted(by: { first, second in return first.name < second.name })
         let urlParams = queryItems.map({ (queryItem) -> String in return "\(queryItem.name)=\(queryItem.value ?? "")" }).joined(separator: "&")
-        urlComponents.queryItems = queryItems
-        urlComponents.percentEncodedQuery = urlParams
+        urlComponents.queryItems = queryItems.isEmpty ? nil : queryItems
+        urlComponents.percentEncodedQuery = urlParams.isEmpty ? nil : urlParams
         
         return urlComponents.string!
     }

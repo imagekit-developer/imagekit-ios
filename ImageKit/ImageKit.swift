@@ -6,7 +6,6 @@
 //
 
 import Foundation
-public let API_VERSION: String = Bundle(identifier: "org.cocoapods.ImageKitIO")?.infoDictionary!["CFBundleShortVersionString"] as? String ?? "Unknown"
 public var TESTING: Bool = true
 
 public struct UserDefaultKeys {
