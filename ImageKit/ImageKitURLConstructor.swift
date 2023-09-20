@@ -597,7 +597,7 @@ public class ImagekitUrlConstructor {
                     url = url.components(separatedBy: "?")[0]
                 }
                 if (streamingParam.keys.contains("ik-master")) {
-                    url = url + "/ik-master.\(String(describing: streamingParam["ik-master"]))"
+                    url = url + "/ik-master.\(streamingParam["ik-master"] ?? "")"
                 }
                 
                 queryParams["tr"] = transforms
@@ -607,13 +607,13 @@ public class ImagekitUrlConstructor {
                 if (self.transformationPosition == .PATH){
                     url = String("\(url)/tr:\(transforms)/\(self.imagePath)")
                     if (streamingParam.keys.contains("ik-master")) {
-                        url = url + "/ik-master.\(String(describing: streamingParam["ik-master"]))"
+                        url = url + "/ik-master.\(streamingParam["ik-master"] ?? "")"
                     }
                 }
                 if (self.transformationPosition == .QUERY){
                     url = String("\(url)/\(self.imagePath)")
                     if (streamingParam.keys.contains("ik-master")) {
-                        url = url + "/ik-master.\(String(describing: streamingParam["ik-master"]))"
+                        url = url + "/ik-master.\(streamingParam["ik-master"] ?? "")"
                     }
                     queryParams["tr"] = transforms
                 }
