@@ -537,7 +537,7 @@ public class ImagekitUrlConstructor {
         focus: FocusType = FocusType.CENTER
     ) throws -> ImagekitUrlConstructor {
         guard minSize >= 0 && maxSize >= 0 && step >= 0 else {
-            throw InvalidArgumentError(message: "minSize and maxSize cannot be negative")
+            throw InvalidArgumentError(message: "minSize, maxSize and step cannot be negative")
         }
         var screen: UIScreen
         if #available(iOS 13.0, *) {
