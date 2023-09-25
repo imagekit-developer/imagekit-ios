@@ -62,20 +62,27 @@ class UploadImageViewController: UIViewController{
                     }
                 },
                 completion: { result in
-                    self.dismiss(animated: true)
-                    switch result {
-                    case .success(( _, let uploadAPIResponse)):
-                        self.showToast(title: "Upload Complete", message: "The uploaded image can be accessed using url: " + (uploadAPIResponse?.url!)!)
-                    case .failure(let error as UploadAPIError):
-                        self.showToast(title: "Upload Failed", message: "Error: " + error.message)
-                    case .failure(let error):
-                        self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
+                    DispatchQueue.main.async {
+                        self.dismiss(animated: true, completion: {
+                                switch result {
+                                case .success(( _, let uploadAPIResponse)):
+                                    self.showToast(title: "Upload Complete", message: "The uploaded image can be accessed using url: " + (uploadAPIResponse?.url!)!)
+                                case .failure(let error as UploadAPIError):
+                                    self.showToast(title: "Upload Failed", message: "Error: " + error.message)
+                                case .failure(let error):
+                                    self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
+                                }
+                            }
+                        )
                     }
                 }
             )
         } else {
-            self.dismiss(animated: true)
-            self.showToast(title: "Upload Failed", message: "Failed to fetch upload token")
+            DispatchQueue.main.async {
+                self.dismiss(animated: true, completion: {
+                    self.showToast(title: "Upload Failed", message: "Failed to fetch upload token")
+                })
+            }
         }
     }
 }

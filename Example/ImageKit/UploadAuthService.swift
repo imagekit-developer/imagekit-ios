@@ -2,7 +2,7 @@
 //  UploadAuthService.swift
 //  ImageKit_Example
 //
-//  Created by Animesh Verma on 16/09/23.
+//  Created by Animesh Verma on 25/09/23.
 //  Copyright © 2023 CocoaPods. All rights reserved.
 //
 
@@ -11,20 +11,22 @@ import Foundation
 class UploadAuthService {
     static let dispatchGroup = DispatchGroup()
     
-    static func getUploadToken(payload: [String : Any]) -> [String : String]? {
+    static func getUploadToken(payload: [String : String]) -> [String : String]? {
         let urlSession = URLSession(configuration: URLSessionConfiguration.default, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
-        var request = URLRequest(url: URL(string: "https://a19c-125-63-122-172.ngrok-free.app")!)
+        var request = URLRequest(url: URL(string: "AUTH_SERVER_HOST")!)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         var tokenResponse: [String : String]? = nil
-        guard let body = try? JSONSerialization.data(withJSONObject: TokenRequest(uploadPayload: payload, expire: 60, publicKey: "public_5P5QM23aRv9XkOcfJO1okZ0DzOw=")) else {
+        guard let body = try? JSONSerialization.data(withJSONObject: ["uploadPayload": payload, "expire": 60, "publicKey": "IK_PUBLIC_KEY"] as [String : Any]) else {
             return nil
         }
+        request.httpBody = body
         dispatchGroup.enter()
         DispatchQueue.global().async {
             let task = urlSession.dataTask(with: request) { data, response, error in
-                guard let error = error else {
+                guard error == nil else {
                     dispatchGroup.leave()
+                    print(error)
                     return
                 }
                 let response = response as! HTTPURLResponse

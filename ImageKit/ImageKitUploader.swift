@@ -36,7 +36,7 @@ public class ImageKitUploader {
                 useUniqueFileName: useUniqueFilename,
                 tags: tags?.joined(separator: ","),
                 folder: folder,
-                isPrivateFile: isPrivateFile!,
+                isPrivateFile: isPrivateFile,
                 progressClosure: progress,
                 urlConfiguration: urlConfiguration,
                 completion: { uploadResult in

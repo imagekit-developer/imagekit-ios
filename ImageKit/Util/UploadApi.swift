@@ -41,8 +41,14 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         } else {
             fileData = (file as! String).data(using: String.Encoding.utf8)!
         }
-        let extData = try? JSONSerialization.data(withJSONObject: extensions!)
-        let metaData = try? JSONSerialization.data(withJSONObject: customMetadata!)
+        var extData: Data? = nil
+        var metaData: Data? = nil
+        if let extensions = extensions {
+            extData = try? JSONSerialization.data(withJSONObject: extensions)
+        }
+        if let customMetadata = customMetadata {
+            metaData = try? JSONSerialization.data(withJSONObject: customMetadata)
+        }
         formData.append(fileData, withName: "file", fileName: fileName, mimeType: file is Data ? mimeType! : "text/plain")
         formData.append(token.data(using: String.Encoding.utf8)!, withName: "token")
         formData.append(fileName.data(using: String.Encoding.utf8)!, withName: "fileName")
@@ -56,7 +62,9 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         }
         formData.append(customCoordinates?.data(using: String.Encoding.utf8), withName: "customCoordinates")
         formData.append(responseFields?.data(using: String.Encoding.utf8), withName: "responseFields")
-        formData.append(extData, withName: "extensions")
+        if extData != nil {
+            formData.append(extData, withName: "extensions")
+        }
         if let overwriteFile = overwriteFile {
             formData.append(String(overwriteFile).data(using: String.Encoding.utf8), withName: "overwriteFile")
         }
@@ -69,7 +77,9 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         if let overwriteCustomMetadata = overwriteCustomMetadata {
             formData.append(String(overwriteCustomMetadata).data(using: String.Encoding.utf8), withName: "overwriteCustomMetadata")
         }
-        formData.append(metaData, withName: "customMetadata")
+        if metaData != nil {
+            formData.append(metaData, withName: "customMetadata")
+        }
 
         request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
 
