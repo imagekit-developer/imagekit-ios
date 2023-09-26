@@ -19,6 +19,9 @@ public class ImagekitUrlConstructor {
     private var transformationList = [String]()
     private var transformationMap = [String: Any]()
     
+    private var streamingParam: [String : String] = [:]
+    private var rawParams: String? = nil
+    
     init(endpoint: String, imagePath: String, transformationPosition: TransformationPosition, queryParams: [String: String] = [:]) {
         self.endpoint = endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.imagePath = imagePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
@@ -257,437 +260,6 @@ public class ImagekitUrlConstructor {
         return self
     }
     
-    
-    /**
-     * Method used to provide more granular control over the positioning of the overlay image on the input image.
-     * The top left corner of the input image is considered as (0,0) and the bottom right corner is considered as (w, h)
-     * where w is the width and h is the height of the input image.
-     * Negative values are supported with a leading capital N in front of the value provided. The value provided
-     * is subtracted from the original dimension of the image & positioned accordingly.
-     * @param overlayX Possible values include all integers.
-     * @return the current ImagekitUrlConstructor object.
-     * or the overlay focus has already been applied
-     */
-    public func overlayX(overlayX: Int) -> ImagekitUrlConstructor {
-        let s = String(format: "%@-%d", TransformationMapping.overlayX, abs(overlayX))
-        transformationMap[TransformationMapping.overlayX] = s
-        transformationList.append(s)
-        return self
-    }
-    
-    /**
-     * Method used to provide more granular control over the positioning of the overlay image on the input image.
-     * The top left corner of the input image is considered as (0,0) and the bottom right corner is considered as (w, h)
-     * where w is the width and h is the height of the input image.
-     * Negative values are supported with a leading capital N in front of the value provided. The value provided
-     * is subtracted from the original dimension of the image & positioned accordingly.
-     * @param overlayY Possible values include all integers.
-     * @return the current ImagekitUrlConstructor object.
-     * or the overlay focus has already been applied
-     */
-    public func overlayY(overlayY: Int) -> ImagekitUrlConstructor {
-        let s = String(format: "%@-%d", TransformationMapping.overlayY, abs(overlayY))
-        transformationMap[TransformationMapping.overlayY] = s
-        transformationList.append(s)
-        return self
-    }
-    
-    /**
-     * Method used to specify the position of the overlaid image relative to the input image.
-     * @param overlayFocus Possible values include center, top, left, bottom, right, top_left, top_right, bottom_left and bottom_right.
-     * Default value - center
-     * @see OverlayFocusType
-     * @return the current ImagekitUrlConstructor object.
-     * using either overlayPosX() or overlayPosY()
-     */
-    public func overlayFocus(overlayFocus: OverlayFocusType) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayFocus] = overlayFocus
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayFocus, overlayFocus.rawValue))
-        return self
-    }
-    
-    /**
-     * Method used to specify the height of the overlaid image.
-     * @param overlayHeight
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayHeight(overlayHeight: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayHeight] = overlayHeight
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayHeight, overlayHeight))
-        return self
-    }
-    
-    /**
-     * Method used to specify the width of the overlaid image.
-     * @param overlayWidth
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayWidth(overlayWidth: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayWidth] = overlayWidth
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayWidth, overlayWidth))
-        return self
-    }
-    
-    /**
-     * Method to specify an image to overlay over another image. This will help you generate watermarked images if needed.
-     * @param overlayImage
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImage(overlayImage: String) -> ImagekitUrlConstructor {
-        let formattedOverlayImage = overlayImage.replacingOccurrences(of: "/", with: "@@")
-        transformationMap[TransformationMapping.overlayImage] = formattedOverlayImage
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayImage, formattedOverlayImage))
-        return self
-    }
-    
-    /**
-     * Method to trims the overlay image before overlaying it on the base.
-     * @param overlayImage
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageTrim(overlayImageTrim: Bool) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayImageTrim] = String(overlayImageTrim)
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayImageTrim, String(overlayImageTrim)))
-        return self
-    }
-    
-    /**
-     * Method to specify the aspect ratio of the output image or the ratio of width to height of the output image.
-     * This transform must be used along with either the height or the width transform.
-     * @param width Accepts integer value greater than equal to 1
-     * @param height Accepts integer value greater than equal to 1
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageAspectRatio(width: Int, height: Int) -> ImagekitUrlConstructor {
-        let s = String(format: "%@-%d-%d", TransformationMapping.overlayImageAspectRatio, width, height)
-        transformationMap[TransformationMapping.overlayImageAspectRatio] = s
-        transformationList.append(s)
-        return self
-    }
-    
-    /**
-     * Method used to specify the colour of background canvas to be overlaid. Possible values include a valid RGB Hex code.
-     * @param overlayBackground
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageBackground(overlayImageBackground: String) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayImageBackground] = overlayImageBackground.uppercased()
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayImageBackground, overlayImageBackground.uppercased()))
-        return self
-    }
-    
-    /**
-     * Method used to specify the colour of background canvas to be overlaid. Possible values include a valid RGB Hex code.
-     * @param overlayBackground
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageBackground(overlayImageBackground: UIColor) -> ImagekitUrlConstructor {
-        return self.overlayImageBackground(overlayImageBackground: self.UIColorToHexString(overlayImageBackground))
-    }
-    
-    /**
-     * Method used to specify the width and color of the border that is added around the overlaid image.
-     * The width is a positive integer that specifies the border width in pixels.
-     * The border color is specified as a standard RGB hex code e.g b-{width}_{color}
-     * @param borderWidth width of the border
-     * @param borderColor color of the border as RGB hex code
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageBorder(borderWidth: Int, borderColor: String) -> ImagekitUrlConstructor {
-        let s = String(format: "%@-%d_%@", TransformationMapping.overlayImageBorder, borderWidth, borderColor.uppercased())
-        transformationMap[TransformationMapping.border] = s
-        transformationList.append(s)
-        return self
-    }
-    
-    /**
-     * Method used to specify the width and color of the border that is added around the overlaid image.
-     * The width is a positive integer that specifies the border width in pixels.
-     * The border color is specified as a standard RGB hex code e.g b-{width}_{color}
-     * @param borderWidth width of the border
-     * @param borderColor color of the border as RGB hex code
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageBorder(borderWidth: Int, borderColor: UIColor) -> ImagekitUrlConstructor {
-        return self.overlayImageBorder(borderWidth: borderWidth, borderColor: self.UIColorToHexString(borderColor))
-    }
-    
-    /**
-     * Method to specify the device pixel ratio to be used to calculate the dimension of the overlaid image. It is useful
-     * when creating image transformations for devices with high density screens (DPR greater than 1) like the iPhone.
-     * The DPR option works only when either the height or the width or both are specified for resizing the image
-     * If the resulting height or width after considering the specified DPR value is less than 1px or more than 5000px
-     * then the value of DPR is not considered and the normal height or width specified in the transformation string is used.
-     * @param dpr Possible values: 0.1 to 5.0
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageDPR(dpr: Float) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayImageDPR] = dpr
-        transformationList.append(String(format: "%@-%.2f", TransformationMapping.overlayImageDPR, dpr))
-        return self
-    }
-    
-    /**
-     * Method to specify the output quality of the lossy formats like JPG and WebP of Overlaid Image. A higher quality number means a
-     * larger size of the output image with high quality. A smaller number means low quality image at a smaller size.
-     * @param quality Accepts integer value between 1 and 100.
-     * Default value is picked from the dashboard settings. It is set to 80.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageQuality(quality: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayImageQuality] = quality
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayImageQuality, quality))
-        return self
-    }
-    
-    
-    /**
-     * Method used to specify the strategy of how the overlay image is used for cropping to get the output image.
-     * @param cropMode Accepts value of type CropMode. Possible values include resize, extract, pad_extract and pad_resize.
-     * Default value - resize
-     * @see CropMode
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayImageCropping(cropMode: CropMode) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayImageCropping] = cropMode
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayImageCropping, cropMode.rawValue))
-        return self
-    }
-    
-    /**
-     * Method used to overlay text over an image. Our current support is limited to alphanumberic & special characters _ & - only.
-     * @param overlayText
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayText(overlayText: String) -> ImagekitUrlConstructor {
-        var allowedQueryParamAndKey = NSCharacterSet.urlQueryAllowed
-        allowedQueryParamAndKey.remove(charactersIn: ";/?:@&=+$, ")
-        transformationMap[TransformationMapping.overlayText] = overlayText
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayText, overlayText.addingPercentEncoding(withAllowedCharacters: allowedQueryParamAndKey)!))
-        return self
-    }
-    
-    /**
-     * Method used to specify the size of the overlaid text.
-     * @param overlayTextFontSize Possible values include any integer. Default value - 14px
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextFontSize(overlayTextSize: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextFontSize] = overlayTextSize
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTextFontSize, overlayTextSize))
-        return self
-    }
-    
-    /**
-     * Method used to specify the font family for the overlaid text.
-     * @param overlayTextFontFamily
-     * @return the current ImagekitUrlConstructor object.
-     * @see overlayTextFontFamily
-     */
-    public func overlayTextFontFamily(overlayTextFontFamily: OverlayTextFont) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextFontFamily] = overlayTextFontFamily
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextFontFamily, overlayTextFontFamily.rawValue))
-        return self
-    }
-    
-    /**
-     * Method used to specify the color of the overlaid text on the image.
-     * @param overlayTextColor Possible value is a valid valid RGB Hex Code
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextColor(overlayTextColor: String) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextColor] = overlayTextColor.uppercased()
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextColor, overlayTextColor.uppercased()))
-        return self
-    }
-    
-    /**
-     * Method used to specify the color of the overlaid text on the image.
-     * @param overlayTextColor Possible value is a valid valid RGB Hex Code
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextColor(overlayTextColor: UIColor) -> ImagekitUrlConstructor {
-        return self.overlayTextColor(overlayTextColor: UIColorToHexString(overlayTextColor))
-    }
-    
-    /**
-     * Method used to specify the transparency leve of the overlaid text on the image.
-     * Note Overlay transparency is currently supported for overlay texts & backgrounds only.
-     * @param overlayAlpha Possible values include integer from 1 to 9.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextTransparency(overlayTextTransparency: Int) -> ImagekitUrlConstructor {
-        return self.overlayAlpha(overlayAlpha: overlayTextTransparency)
-    }
-    
-    /**
-     * Method used to specify the transparency level for the overlaid image.
-     * Note Overlay transparency is currently supported for overlay texts & backgrounds only.
-     * @param overlayAlpha Possible values include integer from 1 to 9.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayAlpha(overlayAlpha: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayAlpha] = overlayAlpha
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayAlpha, overlayAlpha))
-        return self
-    }
-    
-    /**
-     * Method used to specify the typography of the font family used for the overlaid text. Possible values include bold b and italics i.
-     * Note Bold & Italics are not supported for all provided fonts.
-     * @param overlayTextTypography
-     * @return the current ImagekitUrlConstructor object
-     * @see OverlayTextTypography
-     */
-    public func overlayTextTypography(overlayTextTypography: OverlayTextTypography) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextTypography] = overlayTextTypography
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextTypography, overlayTextTypography.rawValue))
-        return self
-    }
-    
-    /**
-     * Method used to specify the colour of background canvas to be overlaid. Possible values include a valid RGB Hex code.
-     * @param overlayBackground
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayBackground(overlayBackground: String) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayBackground] = overlayBackground.uppercased()
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayBackground, overlayBackground.uppercased()))
-        return self
-    }
-    
-    /**
-     * Method used to specify the colour of background canvas to be overlaid. Possible values include a valid RGB Hex code.
-     * @param overlayBackground
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayBackground(overlayBackground: UIColor) -> ImagekitUrlConstructor {
-        return self.overlayBackground(overlayBackground: UIColorToHexString(overlayBackground))
-    }
-    
-    /**
-     * Method used to base64 encded overlay text over an image.
-     * @param overlayTextEncoded
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextEncoded(overlayTextEncoded: String, encoded: Bool = false) -> ImagekitUrlConstructor {
-        var base64Text = encoded ? overlayTextEncoded : overlayTextEncoded.data(using: .utf8)!.base64EncodedString()
-        var allowedCharacters = CharacterSet.urlPathAllowed
-        allowedCharacters.remove("=")
-        base64Text = base64Text.addingPercentEncoding(withAllowedCharacters: allowedCharacters)!
-        
-        transformationMap[TransformationMapping.overlayTextEncoded] = base64Text
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextEncoded, base64Text))
-        
-        return self
-    }
-    
-    /**
-     * Method to specify the width of the overlaid text on the output image.
-     * @param width Accepts integer value greater than 1.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextWidth(width: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextWidth] = width
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayTextWidth, width))
-        return self
-    }
-    
-    /**
-     * Method used to specify the background color of the overlaid text on the image.
-     * @param overlayTextColor
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextBackground(overlayTextColor: String) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextBackground] = overlayTextColor.uppercased()
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextBackground, overlayTextColor.uppercased()))
-        return self
-    }
-    
-    /**
-     * Method used to specify the background color of the overlaid text on the image.
-     * @param overlayTextColor
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextBackground(overlayTextColor: UIColor) -> ImagekitUrlConstructor {
-        return self.overlayTextBackground(overlayTextColor: UIColorToHexString(overlayTextColor))
-    }
-    
-    /**
-     * Method used to specify the padding of the overlaid text on the image.
-     * @param overlayTextPadding
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextPadding(overlayTextPadding: String) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextPadding] = overlayTextPadding
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextPadding, overlayTextPadding))
-        return self
-    }
-    
-    /**
-     * Method used to specify the padding of the overlaid text on the image.
-     * @param overlayTextPadding
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextPadding(overlayTextPadding: Int) -> ImagekitUrlConstructor {
-        return self.overlayTextPadding(overlayTextPadding: String(format: "%d", overlayTextPadding))
-    }
-    
-    /**
-     * Method used to specify the padding of the overlaid text on the image.
-     * @param verticalPadding
-     * @param horizontalPadding
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextPadding(verticalPadding: Int, horizontalPadding: Int) -> ImagekitUrlConstructor {
-        return self.overlayTextPadding(overlayTextPadding: String(format: "%d_%d", verticalPadding, horizontalPadding))
-    }
-    
-    /**
-     * Method used to specify the padding of the overlaid text on the image.
-     * @param topPading
-     * @param horizontalPadding
-     * @param bottomPadding
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextPadding(topPading: Int, horizontalPadding: Int, bottomPadding: Int) -> ImagekitUrlConstructor {
-        return self.overlayTextPadding(overlayTextPadding: String(format: "%d_%d_%d", topPading, horizontalPadding, bottomPadding))
-    }
-    
-    /**
-     * Method used to specify the padding of the overlaid text on the image.
-     * @param topPading
-     * @param rightPadding
-     * @param bottomPadding
-     * @param leftPadding
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextPadding(topPading: Int, rightPadding: Int, bottomPadding: Int, leftPadding: Int) -> ImagekitUrlConstructor {
-        return self.overlayTextPadding(overlayTextPadding: String(format: "%d_%d_%d_%d", topPading, rightPadding, bottomPadding, leftPadding))
-    }
-    
-    /**
-     * Method used to specify the alignment of the overlaid text on the image.
-     * @param overlayTextInnerAlignment
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayTextInnerAlignment(overlayTextInnerAlignment: OverlayTextInnerAlignment) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayTextInnerAlignment] = overlayTextInnerAlignment.rawValue
-        transformationList.append(String(format: "%@-%@", TransformationMapping.overlayTextInnerAlignment, overlayTextInnerAlignment.rawValue))
-        return self
-    }
-    
-    /**
-     * Method used to specify the radius to be used to get a rounded corner overlay.
-     * @param radius Possible values include positive integer.
-     * @return the current ImagekitUrlConstructor object.
-     */
-    public func overlayRadius(radius: Int) -> ImagekitUrlConstructor {
-        transformationMap[TransformationMapping.overlayRadius] = radius
-        transformationList.append(String(format: "%@-%d", TransformationMapping.overlayRadius, radius))
-        return self
-    }
-    
     /**
      * Method to specify if the output JPEG image should be rendered progressively. In progressive rendering,
      * the client instead of downloading the image row-wise (baseline loading), renders a low-quality pixelated
@@ -862,6 +434,38 @@ public class ImagekitUrlConstructor {
     }
     
     /**
+     * Add the raw transformation options passed as a string to the transformations list.
+     * @param params The string containing the comma-separated transformation parameters.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func raw(params: String) -> ImagekitUrlConstructor {
+        rawParams = params
+        return self
+    }
+    
+    /**
+     * Set the parameters to fetch the video in an adaptive streaming format.
+     * @param format The desired streaming format to be fetched (HLS or DASH).
+     * @param resolutions The list of video resolutions to be made available to choose from during video streaming.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func setAdaptiveStreaming(
+        format: StreamingFormat,
+        resolutions: [Int]
+    ) -> ImagekitUrlConstructor {
+        streamingParam["ik-master"] = format.rawValue
+
+        transformationMap[TransformationMapping.streamingResolution] = resolutions
+        transformationList.append(
+            String(format: "%@-%@",
+                TransformationMapping.streamingResolution,
+                resolutions.map { String($0) }.joined(separator: "_")
+            )
+        )
+        return self
+    }
+    
+    /**
      * Method used to get a perfectly rounded image.
      * This option is applied after resizing of the image, if any.
      * @return the current ImagekitUrlConstructor object.
@@ -913,12 +517,63 @@ public class ImagekitUrlConstructor {
     }
     
     /**
+     * Set the image size and crop of the image to be responsive to the target view/window.
+     * Method allows you to automatically set the height, width and DPR parameters of images according to the target View specified. The height and width can be constrained
+     * by varying the parameters - minSize, maxSize, and step. the default crop mode and focus area values can also be overridden by passing the crop and focus arguments, else.
+     * @param view The reference of the view of which the dimensions are to be taken into consideration for image sizing.
+     * @param minSize Minimum allowed size for image width/height.
+     * @param maxSize Maximum allowed size for image width/height.
+     * @param step Possible values include positive integer values.
+     * @param cropMode Possible values include the values defined in enum CropMode.
+     * @param focus Possible values include the values defined in enum FocusType.
+     * @return the current ImagekitUrlConstructor object.
+     */
+    public func setResponsive(
+        view: UIView,
+        minSize: Int = 0,
+        maxSize: Int = 5000,
+        step: Int = 100,
+        cropMode: CropMode = CropMode.RESIZE,
+        focus: FocusType = FocusType.CENTER
+    ) throws -> ImagekitUrlConstructor {
+        guard minSize >= 0 && maxSize >= 0 && step >= 0 else {
+            throw InvalidArgumentError(message: "minSize, maxSize and step cannot be negative")
+        }
+        var screen: UIScreen
+        if #available(iOS 13.0, *) {
+            screen = view.window?.windowScene?.screen ?? UIScreen.main
+        } else {
+            screen = UIScreen.main
+        }
+        var targetWidth = Int(view.frame.width - view.layoutMargins.left - view.layoutMargins.right)
+        var targetHeight = Int(view.frame.height - view.layoutMargins.top - view.layoutMargins.bottom)
+        if targetWidth <= 0 {
+            targetWidth = Int(screen.bounds.width - view.layoutMargins.left - view.layoutMargins.right)
+        }
+        if targetHeight <= 0 {
+            targetHeight = Int(screen.bounds.height - view.layoutMargins.top - view.layoutMargins.bottom)
+        }
+        return self.width(width: max(minSize, min(roundUpSize(targetWidth, step), maxSize)))
+            .height(height: max(minSize, min(roundUpSize(targetHeight, step), maxSize)))
+            .dpr(dpr: Float(screen.scale.rounded(.toNearestOrAwayFromZero)))
+            .cropMode(cropMode: cropMode)
+            .focus(focusType: focus)
+    }
+    
+    private func roundUpSize(_ size: Int, _ step: Int) -> Int {
+        return ((size - 1) / step + 1) * step
+    }
+    
+    /**
      * Used to create the url using the transformations specified before invoking this method.
      * @return the Url used to fetch an image after applying the specified transformations.
      */
     public func create() -> String {
         var url = self.source
-        let apiVersion: String = API_VERSION
+        
+        if (rawParams != nil) {
+            transformationList.append(contentsOf: rawParams?.split(separator: ",").map { String($0) } ?? [])
+        }
         
         if !transformationList.isEmpty {
             let transforms = transformationList.joined(separator: ",").replacingOccurrences(of: ",:,", with: ":")
@@ -941,6 +596,9 @@ public class ImagekitUrlConstructor {
                     }
                     url = url.components(separatedBy: "?")[0]
                 }
+                if (streamingParam.keys.contains("ik-master")) {
+                    url = url + "/ik-master.\(streamingParam["ik-master"] ?? "")"
+                }
                 
                 queryParams["tr"] = transforms
                 
@@ -948,9 +606,15 @@ public class ImagekitUrlConstructor {
                 url = self.endpoint
                 if (self.transformationPosition == .PATH){
                     url = String("\(url)/tr:\(transforms)/\(self.imagePath)")
+                    if (streamingParam.keys.contains("ik-master")) {
+                        url = url + "/ik-master.\(streamingParam["ik-master"] ?? "")"
+                    }
                 }
                 if (self.transformationPosition == .QUERY){
                     url = String("\(url)/\(self.imagePath)")
+                    if (streamingParam.keys.contains("ik-master")) {
+                        url = url + "/ik-master.\(streamingParam["ik-master"] ?? "")"
+                    }
                     queryParams["tr"] = transforms
                 }
             }
@@ -963,13 +627,12 @@ public class ImagekitUrlConstructor {
             return ""
         }
         
-        self.queryParams["ik-sdk-version"] = String("ios-\(apiVersion)")
         var urlComponents = URLComponents.init(string: url)!
         var queryItems = (urlComponents.queryItems ?? []) + self.queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
         queryItems = queryItems.sorted(by: { first, second in return first.name < second.name })
         let urlParams = queryItems.map({ (queryItem) -> String in return "\(queryItem.name)=\(queryItem.value ?? "")" }).joined(separator: "&")
-        urlComponents.queryItems = queryItems
-        urlComponents.percentEncodedQuery = urlParams
+        urlComponents.queryItems = queryItems.isEmpty ? nil : queryItems
+        urlComponents.percentEncodedQuery = urlParams.isEmpty ? nil : urlParams
         
         return urlComponents.string!
     }

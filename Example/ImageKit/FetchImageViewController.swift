@@ -39,16 +39,15 @@ class FetchImageViewController: UIViewController {
     }
     
     @IBAction func OnClickTransformation3(_ sender: Any) {
-        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg", transformationPosition: TransformationPosition.PATH)
-            .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-            .overlayX(overlayX: 10)
-            .overlayY(overlayY: 20)
-            .create()
+        guard let url = try? ImageKit.shared.url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg", transformationPosition: TransformationPosition.PATH)
+            .setResponsive(view: imageView)
+            .create() else { return }
         self.showImage(url: url)
     }
     
     @IBAction func OnClickTransformation4(_ sender: Any) {
         let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ox-N10,oy-20/medium_cafe_B1iTdD0C.jpg")
+            .raw(params: "l-text,i-ik_logo.png,lx-20,ly-20,r-32,l-end")
             .create()
         self.showImage(url: url)
     }
@@ -56,11 +55,6 @@ class FetchImageViewController: UIViewController {
     @IBAction func OnClickTransformation5(_ sender: Any) {
         let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/img/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20")
             .addCustomTransformation(key: "w", value: "400")
-            .overlayText(overlayText: "Hand with a green plant")
-            .overlayTextColor(overlayTextColor: "264120")
-            .overlayTextFontSize(overlayTextSize: 30)
-            .overlayX(overlayX: 10)
-            .overlayY(overlayY: 20)
             .create()
         self.showImage(url: url)
     }
