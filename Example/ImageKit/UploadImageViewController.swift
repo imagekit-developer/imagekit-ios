@@ -40,30 +40,50 @@ class UploadImageViewController: UIViewController{
         let image: UIImage = self.imageView.image!
         let imageName = image.accessibilityIdentifier!
         let progressAlert = showProgressToast(title: "Uploading", message: "Please Wait")
-        ImageKit.shared.uploader().upload(
-            file: image,
-            fileName: imageName,
-            useUniqueFilename: true,
-            tags: ["demo","image"],
-            folder: "/",
-            signatureHeaders: ["x-test-header":"Test"],
-            progress: { progress in
-                let progressBar: UIProgressView? = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as? UIProgressView
-                if (progressBar != nil){
-                    progressBar!.setProgress(Float(progress.fractionCompleted), animated: true)
+        
+        let tokenResponse = UploadAuthService.getUploadToken(payload: [
+            "fileName" : imageName,
+            "useUniqueFileName" : "true",
+            "tags" : ["demo","image"].joined(separator: ","),
+            "folder" : "/",
+        ])
+        if let token = tokenResponse?["token"] {
+            ImageKit.shared.uploader().upload(
+                file: image,
+                token: token,
+                fileName: imageName,
+                useUniqueFilename: true,
+                tags: ["demo","image"],
+                folder: "/",
+                progress: { progress in
+                    let progressBar: UIProgressView? = progressAlert.view.subviews.filter{$0 is UIProgressView}.first as? UIProgressView
+                    if (progressBar != nil){
+                        progressBar!.setProgress(Float(progress.fractionCompleted), animated: true)
+                    }
+                },
+                completion: { result in
+                    DispatchQueue.main.async {
+                        self.dismiss(animated: true, completion: {
+                                switch result {
+                                case .success(( _, let uploadAPIResponse)):
+                                    self.showToast(title: "Upload Complete", message: "The uploaded image can be accessed using url: " + (uploadAPIResponse?.url!)!)
+                                case .failure(let error as UploadAPIError):
+                                    self.showToast(title: "Upload Failed", message: "Error: " + error.message)
+                                case .failure(let error):
+                                    self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
+                                }
+                            }
+                        )
+                    }
                 }
-            },
-            completion: { result in
-                self.dismiss(animated: true)
-                switch result{
-                case .success(( _, let uploadAPIResponse)):
-                        self.showToast(title: "Upload Complete", message: "The uploaded image can be accessed using url: " + (uploadAPIResponse?.url!)!)
-                    case .failure(let error as UploadAPIError):
-                        self.showToast(title: "Upload Failed", message: "Error: " + error.message)
-                    case .failure(let error):
-                        self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
-                }
-        })
+            )
+        } else {
+            DispatchQueue.main.async {
+                self.dismiss(animated: true, completion: {
+                    self.showToast(title: "Upload Failed", message: "Failed to fetch upload token")
+                })
+            }
+        }
     }
 }
 
