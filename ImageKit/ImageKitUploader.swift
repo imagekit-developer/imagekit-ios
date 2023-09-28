@@ -21,7 +21,7 @@ public class ImageKitUploader {
         isPrivateFile: Bool? = nil,
         customCoordinates: String? = nil,
         responseFields: String? = nil,
-        extensions: [String : Any]? = nil,
+        extensions: [[String : Any]]? = nil,
         webhookUrl: String? = nil,
         overwriteFile: Bool? = nil,
         overwriteAITags: Bool? = nil,
@@ -32,21 +32,33 @@ public class ImageKitUploader {
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-            UploadAPI.upload(
-                file: file,
-                token: token,
-                fileName: fileName,
-                useUniqueFileName: useUniqueFilename,
-                tags: tags?.joined(separator: ","),
-                folder: folder,
-                isPrivateFile: isPrivateFile,
-                progressClosure: progress,
-                urlConfiguration: urlConfiguration,
-                completion: { uploadResult in
-                    completion(uploadResult)
-                }
-            )
-    }
+            if checkUploadPolicy(policy, completion) {
+                UploadAPI.upload(
+                    file: file,
+                    token: token,
+                    fileName: fileName,
+                    useUniqueFileName: useUniqueFilename,
+                    tags: tags?.joined(separator: ","),
+                    folder: folder,
+                    isPrivateFile: isPrivateFile,
+                    customCoordinates: customCoordinates,
+                    responseFields: responseFields,
+                    extensions: extensions,
+                    webhookUrl: webhookUrl,
+                    overwriteFile: overwriteFile,
+                    overwriteAITags: overwriteAITags,
+                    overwriteTags: overwriteTags,
+                    overwriteCustomMetadata: overwriteCustomMetadata,
+                    customMetadata: customMetadata,
+                    progressClosure: progress,
+                    urlConfiguration: urlConfiguration,
+                    uploadPolicy: policy,
+                    completion: { uploadResult in
+                        completion(uploadResult)
+                    }
+                )
+            }
+        }
 
     public func upload(
         file: UIImage,
@@ -58,7 +70,7 @@ public class ImageKitUploader {
         isPrivateFile: Bool? = nil,
         customCoordinates: String? = nil,
         responseFields: String? = nil,
-        extensions: [String : Any]? = nil,
+        extensions: [[String : Any]]? = nil,
         webhookUrl: String? = nil,
         overwriteFile: Bool? = nil,
         overwriteAITags: Bool? = nil,
@@ -67,10 +79,36 @@ public class ImageKitUploader {
         customMetadata: [String : Any]? = nil,
         progress: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-        let image = UIImagePNGRepresentation(file)!
-            self.upload(file: image, token: token, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, progress: progress, urlConfiguration: urlConfiguration, completion: completion)
-    }
+            if checkUploadPolicy(policy, completion) {
+                let image = UIImagePNGRepresentation(file)!
+                UploadAPI.upload(
+                    file: image,
+                    token: token,
+                    fileName: fileName,
+                    useUniqueFileName: useUniqueFilename,
+                    tags: tags?.joined(separator: ","),
+                    folder: folder,
+                    isPrivateFile: isPrivateFile,
+                    customCoordinates: customCoordinates,
+                    responseFields: responseFields,
+                    extensions: extensions,
+                    webhookUrl: webhookUrl,
+                    overwriteFile: overwriteFile,
+                    overwriteAITags: overwriteAITags,
+                    overwriteTags: overwriteTags,
+                    overwriteCustomMetadata: overwriteCustomMetadata,
+                    customMetadata: customMetadata,
+                    progressClosure: progress,
+                    urlConfiguration: urlConfiguration,
+                    uploadPolicy: policy,
+                    completion: { uploadResult in
+                        completion(uploadResult)
+                    }
+                )
+            }
+        }
 
     public func upload(
         file: String,
@@ -82,7 +120,7 @@ public class ImageKitUploader {
         isPrivateFile: Bool? = nil,
         customCoordinates: String? = nil,
         responseFields: String? = nil,
-        extensions: [String : Any]? = nil,
+        extensions: [[String : Any]]? = nil,
         webhookUrl: String? = nil,
         overwriteFile: Bool? = nil,
         overwriteAITags: Bool? = nil,
@@ -91,12 +129,36 @@ public class ImageKitUploader {
         customMetadata: [String : Any]? = nil,
         progress: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-            self.upload(file: file.data(using: .utf8)!, token: token, fileName: fileName, useUniqueFilename: useUniqueFilename, tags: tags, folder: folder, isPrivateFile: isPrivateFile, customCoordinates: customCoordinates, responseFields: responseFields, progress: progress, urlConfiguration: urlConfiguration, completion: completion)
-    }
+            UploadAPI.upload(
+                file: file.data(using: .utf8)!,
+                token: token,
+                fileName: fileName,
+                useUniqueFileName: useUniqueFilename,
+                tags: tags?.joined(separator: ","),
+                folder: folder,
+                isPrivateFile: isPrivateFile,
+                customCoordinates: customCoordinates,
+                responseFields: responseFields,
+                extensions: extensions,
+                webhookUrl: webhookUrl,
+                overwriteFile: overwriteFile,
+                overwriteAITags: overwriteAITags,
+                overwriteTags: overwriteTags,
+                overwriteCustomMetadata: overwriteCustomMetadata,
+                customMetadata: customMetadata,
+                progressClosure: progress,
+                urlConfiguration: urlConfiguration,
+                uploadPolicy: policy,
+                completion: { uploadResult in
+                    completion(uploadResult)
+                }
+            )
+        }
     
     internal func checkUploadPolicy(_ policy: UploadPolicy, _ completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) -> Bool {
-        if policy.networkType == UploadPolicy.NetworkType.UNMETERED {
+        if policy.networkType == .UNMETERED {
             var isNetworkMetered = false
             if #available(iOS 12.0, *) {
                 isNetworkMetered = NWPathMonitor().currentPath.isExpensive
@@ -108,7 +170,7 @@ public class ImageKitUploader {
                 return false
             }
         }
-        if policy.requiresCharging && UIDevice.current.batteryState == UIDevice.BatteryState.unplugged {
+        if policy.requiresCharging && UIDevice.current.batteryState == .unplugged {
             completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_BATTERY_DISCHARGING", help: nil)))
             return false
         }

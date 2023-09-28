@@ -8,7 +8,7 @@
 import Foundation
 
 class UploadAPI: NSObject, URLSessionTaskDelegate {
-    public static func upload(
+    internal static func upload(
         file: Any,
         token: String,
         fileName: String,
@@ -107,8 +107,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
                     } else {
                         upload(
                             file: file,
-                            publicKey: publicKey,
-                            signature: signature,
+                            token: token,
                             fileName: fileName,
                             useUniqueFileName: useUniqueFileName,
                             tags: tags,
@@ -124,15 +123,32 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
                 }
                 task.resume()
             } catch let error {
-                completion(Result.failure(error))
+                if retryCount == uploadPolicy.maxErrorRetries {
+                    completion(Result.failure(error))
+                } else {
+                    upload(
+                        file: file,
+                        token: token,
+                        fileName: fileName,
+                        useUniqueFileName: useUniqueFileName,
+                        tags: tags,
+                        folder: folder,
+                        isPrivateFile: isPrivateFile,
+                        progressClosure: progressClosure,
+                        urlConfiguration: urlConfiguration,
+                        uploadPolicy: uploadPolicy,
+                        completion: completion,
+                        retryCount: retryCount + 1
+                    )
+                }
             }
         }
     }
     
     private static func getRetryTimeOut(_ policy: UploadPolicy, _ retryCount: Int) -> Int {
-        return policy.backoffPolicy == UploadPolicy.BackoffPolicy.LINEAR
+        return policy.backoffPolicy == .LINEAR
             ? policy.backoffMillis * retryCount
-            : policy.backoffPolicy == UploadPolicy.BackoffPolicy.EXPONENTIAL && retryCount > 0
+            : policy.backoffPolicy == .EXPONENTIAL && retryCount > 0
                 ? policy.backoffMillis * Int(pow(2.0, Double(retryCount - 1)))
                 : 0
     }
