@@ -26,34 +26,36 @@ public class UploadPolicy {
         self.backoffPolicy = backoffPolicy
     }
     
-    enum NetworkType {
+    public enum NetworkType {
         case ANY
         case UNMETERED
     }
     
-    enum BackoffPolicy {
+    public enum BackoffPolicy {
         case LINEAR
         case EXPONENTIAL
     }
     
-    class Builder {
+    public class Builder {
         private var networkType = NetworkType.ANY
         private var requiresCharging = false
         private var maxRetries = DEFAULT_MAX_ERROR_RETRIES
         private var backoffMillis = DEFAULT_BACKOFF_MILLIS
         private var backoffPolicy = DEFAULT_BACKOFF_POLICY
         
-        func requireNetworkType(_ networkPolicy: NetworkType) -> Builder {
+        public init() {}
+        
+        public func requireNetworkType(_ networkPolicy: NetworkType) -> Builder {
             self.networkType = networkPolicy
             return self
         }
         
-        func requiresBatteryCharging(_ requiresCharging: Bool) -> Builder {
+        public func requiresBatteryCharging(_ requiresCharging: Bool) -> Builder {
             self.requiresCharging = requiresCharging
             return self
         }
         
-        func maxRetries(_ maxRetries: Int) -> Builder {
+        public func maxRetries(_ maxRetries: Int) -> Builder {
             guard maxRetries >= 0 else {
                 print("maxRetries cannot be a negative integer")
                 return self
@@ -62,7 +64,7 @@ public class UploadPolicy {
             return self
         }
         
-        func backoffCriteria(backoffMillis: Int, backoffPolicy: BackoffPolicy) -> Builder {
+        public func backoffCriteria(backoffMillis: Int, backoffPolicy: BackoffPolicy) -> Builder {
             guard backoffMillis >= 0 else {
                 print("backoffMillis cannot be a negative integer")
                 return self
@@ -72,7 +74,7 @@ public class UploadPolicy {
             return self
         }
         
-        func build() -> UploadPolicy {
+        public func build() -> UploadPolicy {
             return UploadPolicy(
                 networkType: networkType,
                 requiresCharging: requiresCharging,
