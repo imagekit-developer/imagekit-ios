@@ -19,6 +19,7 @@ open class ImageKit: NSObject {
     open fileprivate(set) var clientPublicKey: String! = ""
     open fileprivate(set) var imageKitEndpoint: String! = ""
     fileprivate(set) var transformationPosition: TransformationPosition = TransformationPosition.PATH
+    open fileprivate(set) var defaultUploadPolicy: UploadPolicy = UploadPolicy.defaultPolicy()
 
     var configured = false
     lazy var userDefaults = UserDefaults.standard
@@ -49,7 +50,7 @@ open class ImageKit: NSObject {
         self.init(publicKey: publicKey, urlEndpoint: imageKitEndpoint, transformationPosition: transformationPosition)
     }
 
-    public init(publicKey: String = "", urlEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH) {
+    public init(publicKey: String = "", urlEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH, defaultUploadPolicy: UploadPolicy = UploadPolicy.defaultPolicy()) {
         if urlEndpoint.isEmpty {
             preconditionFailure("Missing urlEndpoint during initialization")
         }
@@ -59,6 +60,7 @@ open class ImageKit: NSObject {
         UserDefaults.standard.set(transformationPosition.rawValue, forKey: UserDefaultKeys.KEY_IMAGEKIT_TRANSFORMATION_POSITION)
 
         UserDefaults.standard.synchronize()
+        ImageKit.shared.defaultUploadPolicy = defaultUploadPolicy
     }
 
     public func url(
