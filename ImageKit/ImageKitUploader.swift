@@ -170,6 +170,7 @@ public class ImageKitUploader {
                 return false
             }
         }
+        UIDevice.current.isBatteryMonitoringEnabled = true
         if policy.requiresCharging && UIDevice.current.batteryState == .unplugged {
             completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_BATTERY_DISCHARGING", help: nil)))
             return false
