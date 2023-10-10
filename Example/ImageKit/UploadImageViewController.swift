@@ -61,6 +61,12 @@ class UploadImageViewController: UIViewController{
                         progressBar!.setProgress(Float(progress.fractionCompleted), animated: true)
                     }
                 },
+                policy: UploadPolicy.Builder()
+                    .requireNetworkType(.UNMETERED)
+                    .requiresBatteryCharging(true)
+                    .maxRetries(4)
+                    .backoffCriteria(backoffMillis: 500, backoffPolicy: .EXPONENTIAL)
+                    .build(),
                 completion: { result in
                     DispatchQueue.main.async {
                         self.dismiss(animated: true, completion: {
