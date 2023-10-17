@@ -31,32 +31,39 @@ public class ImageKitUploader {
         progress: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
+        preprocessor: (any UploadPreprocessor)? = nil,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
             if checkUploadPolicy(policy, completion) {
-                UploadAPI.upload(
-                    file: file,
-                    token: token,
-                    fileName: fileName,
-                    useUniqueFileName: useUniqueFilename,
-                    tags: tags?.joined(separator: ","),
-                    folder: folder,
-                    isPrivateFile: isPrivateFile,
-                    customCoordinates: customCoordinates,
-                    responseFields: responseFields,
-                    extensions: extensions,
-                    webhookUrl: webhookUrl,
-                    overwriteFile: overwriteFile,
-                    overwriteAITags: overwriteAITags,
-                    overwriteTags: overwriteTags,
-                    overwriteCustomMetadata: overwriteCustomMetadata,
-                    customMetadata: customMetadata,
-                    progressClosure: progress,
-                    urlConfiguration: urlConfiguration,
-                    uploadPolicy: policy,
-                    completion: { uploadResult in
-                        completion(uploadResult)
+                DispatchQueue.global(qos: .default).async {
+                    var fileData = file
+                    if let imageProcessor = preprocessor as? ImageUploadPreprocessor<Data> {
+                        fileData = imageProcessor.outputFile(input: file, fileName: fileName)
                     }
-                )
+                    UploadAPI.upload(
+                        file: fileData,
+                        token: token,
+                        fileName: fileName,
+                        useUniqueFileName: useUniqueFilename,
+                        tags: tags?.joined(separator: ","),
+                        folder: folder,
+                        isPrivateFile: isPrivateFile,
+                        customCoordinates: customCoordinates,
+                        responseFields: responseFields,
+                        extensions: extensions,
+                        webhookUrl: webhookUrl,
+                        overwriteFile: overwriteFile,
+                        overwriteAITags: overwriteAITags,
+                        overwriteTags: overwriteTags,
+                        overwriteCustomMetadata: overwriteCustomMetadata,
+                        customMetadata: customMetadata,
+                        progressClosure: progress,
+                        urlConfiguration: urlConfiguration,
+                        uploadPolicy: policy,
+                        completion: { uploadResult in
+                            completion(uploadResult)
+                        }
+                    )
+                }
             }
         }
 
@@ -80,33 +87,36 @@ public class ImageKitUploader {
         progress: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
+        preprocessor: ImageUploadPreprocessor<UIImage>? = nil,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
             if checkUploadPolicy(policy, completion) {
-                let image = UIImagePNGRepresentation(file)!
-                UploadAPI.upload(
-                    file: image,
-                    token: token,
-                    fileName: fileName,
-                    useUniqueFileName: useUniqueFilename,
-                    tags: tags?.joined(separator: ","),
-                    folder: folder,
-                    isPrivateFile: isPrivateFile,
-                    customCoordinates: customCoordinates,
-                    responseFields: responseFields,
-                    extensions: extensions,
-                    webhookUrl: webhookUrl,
-                    overwriteFile: overwriteFile,
-                    overwriteAITags: overwriteAITags,
-                    overwriteTags: overwriteTags,
-                    overwriteCustomMetadata: overwriteCustomMetadata,
-                    customMetadata: customMetadata,
-                    progressClosure: progress,
-                    urlConfiguration: urlConfiguration,
-                    uploadPolicy: policy,
-                    completion: { uploadResult in
-                        completion(uploadResult)
-                    }
-                )
+                DispatchQueue.global(qos: .default).async {
+                    let image = preprocessor != nil ? preprocessor!.outputFile(input: file, fileName: fileName) : UIImagePNGRepresentation(file)!
+                    UploadAPI.upload(
+                        file: image,
+                        token: token,
+                        fileName: fileName,
+                        useUniqueFileName: useUniqueFilename,
+                        tags: tags?.joined(separator: ","),
+                        folder: folder,
+                        isPrivateFile: isPrivateFile,
+                        customCoordinates: customCoordinates,
+                        responseFields: responseFields,
+                        extensions: extensions,
+                        webhookUrl: webhookUrl,
+                        overwriteFile: overwriteFile,
+                        overwriteAITags: overwriteAITags,
+                        overwriteTags: overwriteTags,
+                        overwriteCustomMetadata: overwriteCustomMetadata,
+                        customMetadata: customMetadata,
+                        progressClosure: progress,
+                        urlConfiguration: urlConfiguration,
+                        uploadPolicy: policy,
+                        completion: { uploadResult in
+                            completion(uploadResult)
+                        }
+                    )
+                }
             }
         }
 
