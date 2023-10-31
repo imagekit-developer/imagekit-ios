@@ -33,18 +33,19 @@ class UploadFileViewController: UIViewController {
     @IBAction func OnClickUpload(_ sender: Any) {
         do{
             let filename = self.fileUrlToBeUploaded!.lastPathComponent
+            fileUrlToBeUploaded!.startAccessingSecurityScopedResource()
             let file = try NSData(contentsOf: self.fileUrlToBeUploaded!) as Data
             let progressAlert = showProgressToast(title: "Uploading", message: "Please Wait")
             let tokenResponse = UploadAuthService.getUploadToken(payload: [
                 "fileName" : filename,
                 "useUniqueFileName" : "true",
-                "tags" : ["demo","image"].joined(separator: ","),
+                "tags" : ["demo","file"].joined(separator: ","),
                 "folder" : "/",
             ])
             if let token = tokenResponse?["token"] {
                 ImageKit.shared.uploader().upload(
                     file: file,
-                    token: "fdf",
+                    token: token,
                     fileName: filename,
                     useUniqueFilename: true,
                     tags: ["demo","file"],
@@ -55,21 +56,32 @@ class UploadFileViewController: UIViewController {
                             progressBar!.setProgress(Float(progress.fractionCompleted), animated: true)
                         }
                     },
+                    preprocessor: VideoUploadPreprocessor.Builder()
+                        .limit(width: 800, height: 600)
+                        .frameRate(frameRateValue: 60)
+                        .keyFramesInterval(interval: 6)
+                        .targetVideoBitrateKbps(targetVideoBitrateKbps: 480)
+                        .targetAudioBitrateKbps(targetAudioBitrateKbps: 320)
+                        .build(),
                     completion: { result in
-                        self.dismiss(animated: true)
-                        switch result {
-                        case .success((_, let uploadAPIResponse)):
-                            self.showToast(title: "Upload Complete", message: "The uploaded file can be accessed using url: " + (uploadAPIResponse?.url!)!)
-                        case .failure(let error as UploadAPIError):
-                            self.showToast(title: "Upload Failed", message: "Error: " + error.message)
-                        case .failure(let error):
-                            self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
+                        DispatchQueue.main.async {
+                            self.dismiss(animated: true, completion: {
+                                switch result {
+                                case .success((_, let uploadAPIResponse)):
+                                    self.showToast(title: "Upload Complete", message: "The uploaded file can be accessed using url: " + (uploadAPIResponse?.url!)!)
+                                case .failure(let error as UploadAPIError):
+                                    self.showToast(title: "Upload Failed", message: "Error: " + error.message)
+                                case .failure(let error):
+                                    self.showToast(title: "Upload Failed", message: "Error: " + error.localizedDescription)
+                                }
+                            })
                         }
                     }
                 )
             } else {
-                self.dismiss(animated: true)
-                self.showToast(title: "Upload Failed", message: "Failed to fetch upload token")
+                self.dismiss(animated: true, completion: {
+                    self.showToast(title: "Upload Failed", message: "Failed to fetch upload token")
+                })
             }
         } catch {
           print(error)

@@ -61,15 +61,16 @@ class UploadImageViewController: UIViewController{
                         progressBar!.setProgress(Float(progress.fractionCompleted), animated: true)
                     }
                 },
-//                policy: UploadPolicy.Builder()
-//                    .requireNetworkType(.UNMETERED)
-//                    .requiresBatteryCharging(true)
-//                    .maxRetries(4)
-//                    .backoffCriteria(backoffMillis: 500, backoffPolicy: .EXPONENTIAL)
-//                    .build(),
+                policy: UploadPolicy.Builder()
+                    .requireNetworkType(.UNMETERED)
+                    .requiresBatteryCharging(true)
+                    .maxRetries(4)
+                    .backoffCriteria(backoffMillis: 500, backoffPolicy: .EXPONENTIAL)
+                    .build(),
                 preprocessor: ImageUploadPreprocessor<UIImage>.Builder()
                     .limit(width: 400, height: 300)
-//                    .rotate(degrees: 45)
+                    .rotate(degrees: 45)
+                    .format(format: .JPEG)
                     .build(),
                 completion: { result in
                     DispatchQueue.main.async {

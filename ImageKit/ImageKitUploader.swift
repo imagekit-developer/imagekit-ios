@@ -38,6 +38,35 @@ public class ImageKitUploader {
                     var fileData = file
                     if let imageProcessor = preprocessor as? ImageUploadPreprocessor<Data> {
                         fileData = imageProcessor.outputFile(input: file, fileName: fileName)
+                    } else if let videoProcessor = preprocessor as? VideoUploadPreprocessor {
+                        videoProcessor.listener = { data in
+                            UploadAPI.upload(
+                                file: data,
+                                token: token,
+                                fileName: fileName,
+                                useUniqueFileName: useUniqueFilename,
+                                tags: tags?.joined(separator: ","),
+                                folder: folder,
+                                isPrivateFile: isPrivateFile,
+                                customCoordinates: customCoordinates,
+                                responseFields: responseFields,
+                                extensions: extensions,
+                                webhookUrl: webhookUrl,
+                                overwriteFile: overwriteFile,
+                                overwriteAITags: overwriteAITags,
+                                overwriteTags: overwriteTags,
+                                overwriteCustomMetadata: overwriteCustomMetadata,
+                                customMetadata: customMetadata,
+                                progressClosure: progress,
+                                urlConfiguration: urlConfiguration,
+                                uploadPolicy: policy,
+                                completion: { uploadResult in
+                                    completion(uploadResult)
+                                }
+                            )
+                        }
+                        videoProcessor.outputFile(input: file, fileName: fileName)
+                        return
                     }
                     UploadAPI.upload(
                         file: fileData,
