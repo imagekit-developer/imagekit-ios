@@ -440,24 +440,48 @@ let policy = UploadPolicy.Builder()
 
 ## Upload preprocessing
 ### Image preprocessing
-The `ImagePreprocessor` class encapsulates a set of methods to apply certain transformations to an image before uploading. This will create a copy of the selected image, which will be transformed as per the given parameters before uploading.
+The `ImageUploadPreprocessor` class encapsulates a set of methods to apply certain transformations to an image before uploading. This will create a copy of the selected image, which will be transformed as per the given parameters before uploading.
 
-`ImagePreprocessor.Builder` class is responsible for building the ImagePreprocess instances. This class provides following methods to access and modify the policy parameters:
+`ImageUploadPreprocessor.Builder` class is responsible for building the ImagePreprocess instances. This class provides following methods to access and modify the policy parameters:
 
 | Parameter | Type | Description |
 |:------------------------------------------------------------------------------------------------------------------------|:--------------------------|:-------------------------------------------------------------------------|
-| limit(width: Int, height: Int) | ImagePreprocessor.Builder | Specifies the maximum width and height of the image |
-| crop(p1: Point, p2: Point) | ImagePreprocessor.Builder | Specifies the two points on the diagonal of the rectangle to be cropped. |
-| format(format: ImageFormat) | ImagePreprocessor.Builder | Specify the target image format. |
-| rotate(degrees: Float) | ImagePreprocessor.Builder | Specify the rotation angle of the target image. |
+| limit(width: Int, height: Int) | ImageUploadPreprocessor.Builder | Specifies the maximum width and height of the image |
+| crop(p1: Point, p2: Point) | ImageUploadPreprocessor.Builder | Specifies the two points on the diagonal of the rectangle to be cropped. |
+| format(format: ImageUploadPreprocessor.OutputFormat) | ImageUploadPreprocessor.Builder | Specify the target image format. Possible values are `ImageUploadPreprocessor.OutputFormat.JPEG` and `ImageUploadPreprocessor.OutputFormat.PNG`. Defaults to `.PNG` |
+| rotate(degrees: Float) | ImageUploadPreprocessor.Builder | Specify the rotation angle of the target image. |
 
 Example code
 ```swift
-let preprocessor = ImagePreprocessor.Builder()
-    .limit(1280, 720)
-    .format(ImageFormat.PNG)
-    .rotate(45.0)
-    .build()
+let preprocessor = ImageUploadPreprocessor.Builder()
+   .limit(width: 400, height: 300)
+   .rotate(degrees: 45)
+   .format(format: .JPEG)
+   .build()
+```
+
+### Video preprocessing
+The `VideoUploadPreprocessor` class encapsulates a set of methods to apply certain transformations to an image before uploading. This will create a copy of the selected image, which will be transformed as per the given parameters before uploading.
+
+`VideoUploadPreprocessor.Builder` class is responsible for building the ImagePreprocess instances. This class provides following methods to access and modify the policy parameters:
+
+| Parameter | Type | Description |
+|:------------------------------------------------------------------------------------------------------------------------|:--------------------------|:-------------------------------------------------------------------------|
+| limit(width: Int, height: Int) | VideoUploadPreprocessor.Builder | Specifies the maximum width and height of the video |
+| frameRate(frameRateValue: Int) | VideoUploadPreprocessor.Builder | Specifies the target frame rate of the video. |
+| keyFramesInterval(interval: Int) | VideoUploadPreprocessor.Builder | Specify the target keyframes interval of video. |
+| targetAudioBitrateKbps(targetAudioBitrateKbps: Int) | VideoUploadPreprocessor.Builder | Specify the target audio bitrate of the video. |
+| targetVideoBitrateKbps(targetVideoBitrateKbps: Int) | VideoUploadPreprocessor.Builder | Specify the target video bitrate of the video. |
+
+Example code
+```swift
+let preprocessor = VideoUploadPreprocessor.Builder()
+   .limit(width: 800, height: 600)
+   .frameRate(frameRateValue: 60)
+   .keyFramesInterval(interval: 6)
+   .targetVideoBitrateKbps(targetVideoBitrateKbps: 480)
+   .targetAudioBitrateKbps(targetAudioBitrateKbps: 320)
+   .build(),
 ```
 
 ## Support
