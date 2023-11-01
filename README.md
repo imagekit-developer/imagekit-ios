@@ -24,6 +24,7 @@ ImageKit iOS Pod allows you to use real-time [image resizing](https://docs.image
     * [Upload policy](#uploadpolicy)
 * [Upload preprocessing](#upload-preprocessing)
     * [Image preprocessing](#image-preprocessing)
+    * [Video preprocessing](#video-preprocessing)
 * [Support](#support)
 * [Links](#links)
 * [License](#license)
