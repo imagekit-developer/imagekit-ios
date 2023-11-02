@@ -67,6 +67,11 @@ class UploadImageViewController: UIViewController{
                     .maxRetries(4)
                     .backoffCriteria(backoffMillis: 500, backoffPolicy: .EXPONENTIAL)
                     .build(),
+                preprocessor: ImageUploadPreprocessor<UIImage>.Builder()
+                    .limit(width: 400, height: 300)
+                    .rotate(degrees: 45)
+                    .format(format: .JPEG)
+                    .build(),
                 completion: { result in
                     DispatchQueue.main.async {
                         self.dismiss(animated: true, completion: {
