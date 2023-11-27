@@ -19,14 +19,17 @@ internal class ImageDimensionsLimiter : Preprocess {
     }
     
     func process(source: UIImage) -> UIImage {
-        var screen = UIScreen.main
-        print("scale: \(source.scale)")
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
         if Int(source.size.width) <= maxWidth && Int(source.size.height) <= maxHeight {
             return source
         }
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: maxWidth / Int(screen.scale), height: maxHeight / Int(screen.scale)))
+        let renderer = UIGraphicsImageRenderer(
+            size: CGSize(width: maxWidth, height: maxHeight),
+            format: format
+        )
         return renderer.image(actions: { context in
-            source.draw(in: CGRect(x: 0, y: 0, width: maxWidth / Int(screen.scale), height: maxHeight / Int(screen.scale)))
+            source.draw(in: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
         })
     }
 }
