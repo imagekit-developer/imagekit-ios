@@ -7,13 +7,12 @@
 
 import Foundation
 
-public final class ImageUploadPreprocessor<I> : UploadPreprocessor {
+public final class ImageUploadPreprocessor<I> : UploadPreprocessor<I> {
     private let limit: ImageDimensionsLimiter
     private let cropPoints: ImageCrop?
     private let rotation: ImageRotation
     private let format: OutputFormat
     
-    public typealias T = I
     private init(limit: ImageDimensionsLimiter, cropPoints: ImageCrop?, rotation: ImageRotation, format: OutputFormat) {
         self.limit = limit
         self.cropPoints = cropPoints
@@ -21,7 +20,7 @@ public final class ImageUploadPreprocessor<I> : UploadPreprocessor {
         self.format = format
     }
     
-    public func outputFile(input: I, fileName: String) -> Data {
+    override func outputFile(input: I, fileName: String) -> Data {
         var image: UIImage
         if input is Data {
             image = UIImage(data: input as! Data)!
