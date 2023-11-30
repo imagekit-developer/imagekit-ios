@@ -2,7 +2,7 @@
 
 import Quick
 import Nimble
-import ImageKitIO
+@testable import ImageKitIO
 import Kakapo
 
 
@@ -1116,16 +1116,19 @@ class UploadPreprocessorSpec: QuickSpec {
                 expect(output?.size.height).to(equal(floor(outputDimensions.height)))
             }
             it("Image crop") {
+                let cropSrc = getImageWithGradient(colors: [UIColor.red, UIColor.green, UIColor.blue], size: CGSize(width: 1500, height: 800))
                 let imageData = ImageUploadPreprocessor<UIImage>.Builder()
                     .crop(p1: CGPoint(x: 20, y: 40), p2: CGPoint(x: 160, y: 200))
                     .format(format: .PNG)
                     .build()
-                    .outputFile(input: image, fileName: "test2.png")
+                    .outputFile(input: cropSrc, fileName: "test2.png")
                 let output = UIImage(data: imageData)
-                let outputDimensions = CGRect(origin: CGPoint.zero, size: CGSize(width: 1500, height: 800))
-                    .applying(CGAffineTransform(rotationAngle: 30 * Double.pi / 180))
-                expect(output?.size.width).to(equal(floor(outputDimensions.width)))
-                expect(output?.size.height).to(equal(floor(outputDimensions.height)))
+                let outputPixeldata = CFDataGetBytePtr(output?.cgImage?.dataProvider?.data)
+                for x in 20...160 {
+                    for y in 40...200 {
+                        expect(output?[x - 20, y - 40]).to(equal(cropSrc[x, y]))
+                    }
+                }
             }
         }
     }
@@ -1139,4 +1142,38 @@ func getImageWithColor(color: UIColor, size: CGSize) -> UIImage {
     let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
     UIGraphicsEndImageContext()
     return image
+}
+
+func getImageWithGradient(colors: [UIColor], size: CGSize) -> UIImage {
+    let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+    UIGraphicsBeginImageContextWithOptions(size, false, 1)
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.colors = colors
+    gradientLayer.frame = rect
+    gradientLayer.draw(in: UIGraphicsGetCurrentContext()!)
+    let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+    UIGraphicsEndImageContext()
+    return image
+}
+
+extension UIImage {
+    subscript (x: Int, y: Int) -> UIColor? {
+        guard x >= 0 && x < Int(size.width) && y >= 0 && y < Int(size.height),
+            let cgImage = cgImage,
+            let provider = cgImage.dataProvider,
+            let providerData = provider.data,
+            let data = CFDataGetBytePtr(providerData) else {
+            return nil
+        }
+
+        let numberOfComponents = 4
+        let pixelData = ((Int(size.width) * y) + x) * numberOfComponents
+
+        let r = CGFloat(data[pixelData]) / 255.0
+        let g = CGFloat(data[pixelData + 1]) / 255.0
+        let b = CGFloat(data[pixelData + 2]) / 255.0
+        let a = CGFloat(data[pixelData + 3]) / 255.0
+
+        return UIColor(red: r, green: g, blue: b, alpha: a)
+    }
 }
