@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ImageKitIO'
-  s.version          = '2.0.1'
+  s.version          = '3.0.0'
   s.summary          = 'iOS SDK for ImageKit.io'
 
 
@@ -15,7 +15,7 @@ ImageKit is a complete image optimization and transformation solution that comes
   s.source           = { :git => 'https://github.com/imagekit-developer/imagekit-ios.git', :tag => s.version.to_s }
 
   s.swift_version    = '4.0'
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
 
   s.source_files = 'ImageKit/**/*'
   s.dependency 'ReachabilitySwift'
