@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-public final class VideoUploadPreprocessor : UploadPreprocessor {
+public final class VideoUploadPreprocessor : UploadPreprocessor<Data> {
     
     private let limit: (Int, Int)
     private let frameRate: Int
@@ -26,7 +26,6 @@ public final class VideoUploadPreprocessor : UploadPreprocessor {
         }
     }
 
-    public typealias T = Data
     private init(limit: (Int, Int), frameRate: Int, keyFramesInterval: Int, targetAudioBitrate: Int, targetVideoBitrate: Int) {
         self.limit = limit
         self.frameRate = frameRate
@@ -35,7 +34,7 @@ public final class VideoUploadPreprocessor : UploadPreprocessor {
         self.targetVideoBitrate = targetVideoBitrate
     }
     
-    public func outputFile(input: Data, fileName: String) -> Data {
+    override internal func outputFile(input: Data, fileName: String) -> Data {
         let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("\(NSUUID().uuidString).mp4")
         try! input.write(to: tempUrl)
         let asset = AVAsset(url: tempUrl)
@@ -63,8 +62,6 @@ public final class VideoUploadPreprocessor : UploadPreprocessor {
         } else {
             audioWriteFinished = true
         }
-//        assetReaderVideoTrackOutput.alwaysCopiesSampleData = false
-//        assetReaderAudioTrackOutput.alwaysCopiesSampleData = false
         reader.add(assetReaderVideoTrackOutput)
         
         let videoDispatchQueue = DispatchQueue(label: "video_dispatcher")

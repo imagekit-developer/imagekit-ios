@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol UploadPreprocessor {
-    associatedtype T
-    func outputFile(input: T, fileName: String) -> Data
+public class UploadPreprocessor<T> {
+    func outputFile(input: T, fileName: String) -> Data {
+        fatalError("Cannot use the base UploadPreprocessor for output.")
+    }
 }

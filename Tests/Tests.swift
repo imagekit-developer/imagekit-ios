@@ -2,10 +2,9 @@
 
 import Quick
 import Nimble
-import ImageKitIO
+@testable import ImageKitIO
 import Kakapo
 
-let apiVersion: String = API_VERSION
 
 class URLGenerationSpec: QuickSpec {
     
@@ -20,21 +19,21 @@ class URLGenerationSpec: QuickSpec {
             let actual = ImageKit.shared
                 .url(urlEndpoint: "https://ik.imagekit.io/modified_imagekitid", path: "medium_cafe_B1iTdD0C.jpg")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/modified_imagekitid/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/modified_imagekitid/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("Removal of double slashes in urlEndpoint") {
             let actual = ImageKit.shared
                 .url(urlEndpoint: "https://ik.imagekit.io/demo/", path: "medium_cafe_B1iTdD0C.jpg")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("Removal of double slashes in path") {
             let actual = ImageKit.shared
                 .url(urlEndpoint: "https://ik.imagekit.io/demo/", path: "/medium_cafe_B1iTdD0C.jpg")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("New transformation parameter") {
@@ -42,14 +41,14 @@ class URLGenerationSpec: QuickSpec {
                 .url(urlEndpoint: "https://ik.imagekit.io/demo", path: "medium_cafe_B1iTdD0C.jpg")
                 .addCustomTransformation(key: "test", value: "test")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:test-test/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:test-test/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("SDK Version as Query Parameter") {
             let actual = ImageKit.shared
                 .url(urlEndpoint: "https://ik.imagekit.io/demo", path: "medium_cafe_B1iTdD0C.jpg")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("Query Transformations") {
@@ -58,7 +57,7 @@ class URLGenerationSpec: QuickSpec {
                 .width(width: 300)
                 .height(height: 300)
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=w-300,h-300", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=w-300,h-300")))
         }
         
         it("Chained Transformation") {
@@ -68,14 +67,14 @@ class URLGenerationSpec: QuickSpec {
                 .chainTransformation()
                 .rotation(rotation: Rotation.VALUE_90)
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300:rt-90/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300:rt-90/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("Source URL") {
             let actual = ImageKit.shared
                 .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
         }
         
         it("Custom Query Parameter") {
@@ -83,7 +82,7 @@ class URLGenerationSpec: QuickSpec {
                 .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
                 .addCustomQueryParameter(key: "x-test-header", value: "Test")
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&x-test-header=Test", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?x-test-header=Test")))
         }
         
         it("Source URL with Path Transforms") {
@@ -94,7 +93,7 @@ class URLGenerationSpec: QuickSpec {
                 .chainTransformation()
                 .rotation(rotation: Rotation.VALUE_90)
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300:rt-90")))
         }
         
         it("Custom Query Parameter with Transforms") {
@@ -106,7 +105,7 @@ class URLGenerationSpec: QuickSpec {
                 .rotation(rotation: Rotation.VALUE_90)
                 .addCustomQueryParameters(params: ["x-test-header": "Test"])
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&t1=v&tr=h-300,w-300:rt-90&x-test-header=Test", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?t1=v&tr=h-300,w-300:rt-90&x-test-header=Test")))
         }
         
         it("Appending Custom Query Parameter") {
@@ -115,7 +114,7 @@ class URLGenerationSpec: QuickSpec {
                 .addCustomQueryParameter(key: "t1", value: "v")
                 .addCustomQueryParameters(params: ["x-test-header": "Test"])
                 .create()
-            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&t1=v&x-test-header=Test", apiVersion)))
+            expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?t1=v&x-test-header=Test")))
         }
     }
 }
@@ -126,19 +125,19 @@ class UnitTestSpec: QuickSpec {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Url Endpoint and Path") {
                 let actual = ImageKit.shared
                     .url(urlEndpoint: "https://ik.imagekit.io/demo", path: "medium_cafe_B1iTdD0C.jpg")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Source") {
                 let actual = ImageKit.shared
                     .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")))
             }
         }
         
@@ -148,147 +147,147 @@ class UnitTestSpec: QuickSpec {
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .width(width: 300)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Height: 300") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .height(height: 300)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Aspect Ratio: 2 by 3") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .aspectRatio(width: 2, height: 3)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ar-2-3/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ar-2-3/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop: maintain_ratio") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .crop(cropType: CropType.MAINTAIN_RATIO)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-maintain_ratio/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-maintain_ratio/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop: force") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .crop(cropType: CropType.FORCE)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-force/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-force/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop: at_least") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .crop(cropType: CropType.AT_LEAST)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-at_least/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-at_least/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop: at_max") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .crop(cropType: CropType.AT_MAX)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-at_max/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:c-at_max/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop Mode: resize") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .cropMode(cropMode: .RESIZE)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-resize/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-resize/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop Mode: extract") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .cropMode(cropMode: .EXTRACT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-extract/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-extract/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop Mode: pad_extract") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .cropMode(cropMode: .PAD_EXTRACT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-pad_extract/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-pad_extract/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Crop Mode: pad_resize") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .cropMode(cropMode: .PAD_RESIZE)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-pad_resize/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cm-pad_resize/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: center") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .CENTER)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-center/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-center/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: top") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .TOP)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-top/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-top/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: left") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .LEFT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-left/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-left/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: bottom") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .BOTTOM)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-bottom/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-bottom/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: right") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .RIGHT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-right/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: top_left") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .TOP_LEFT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-top_left/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-top_left/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: top_right") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .TOP_RIGHT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-top_right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-top_right/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: bottom_left") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .BOTTOM_LEFT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-bottom_left/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-bottom_left/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: bottom_right") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .BOTTOM_RIGHT)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-bottom_right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-bottom_right/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus Type: auto") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .focus(focusType: .AUTO)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-auto/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:fo-auto/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Focus: 100, 300") {
                 let actual = ImageKit.shared
@@ -298,724 +297,203 @@ class UnitTestSpec: QuickSpec {
                     .cropMode(cropMode: .EXTRACT)
                     .focus(x: 100, y: 300)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300,h-300,cm-extract,x-100,y-300/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300,h-300,cm-extract,x-100,y-300/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Quality: 50") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .quality(quality: 50)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:q-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:q-50/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Format: auto") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .format(format: .AUTO)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-auto/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-auto/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Format: webp") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .format(format: .WEBP)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-webp/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-webp/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Format: jpg") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .format(format: .JPG)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-jpg/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-jpg/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Format: jpeg") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .format(format: .JPEG)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-jpeg/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-jpeg/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Format: png") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .format(format: .PNG)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-png/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:f-png/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Blur: 50") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .blur(blur: 50)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bl-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bl-50/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Grayscale") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .effectGray(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-grayscale/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-grayscale/medium_cafe_B1iTdD0C.jpg")))
             }
             it("DPR: 2.5") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .dpr(dpr: 2.5)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:dpr-2.50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:dpr-2.50/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Named Transform: test") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .named(namedTransformation: "test")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:n-test/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:n-test/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Default Image: medium_cafe_B1iTdD0C.jpg") {
                 let actual = ImageKit.shared
                     .url(path: "non_existent_image.jpg")
                     .defaultImage(defaultImage: "medium_cafe_B1iTdD0C.jpg")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:di-medium_cafe_B1iTdD0C.jpg/non_existent_image.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:di-medium_cafe_B1iTdD0C.jpg/non_existent_image.jpg")))
             }
             it("Progressive") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .progressive(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:pr-true/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:pr-true/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Lossless") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .lossless(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:lo-true/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:lo-true/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Trim") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .trim(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:t-true/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:t-true/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Trim: 50") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .trim(value: 50)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:t-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image: logo-white_SJwqB4Nfe.png") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            
-            it("Overlay Image Quality: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageQuality(quality: 50)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oiq-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image Quality: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageCropping(cropMode: .EXTRACT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oic-extract/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Trimming") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageTrim(overlayImageTrim: false)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oit-false/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Aspect Ratio 4:3") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageAspectRatio(width: 4, height: 3)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oiar-4-3/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image Background: #000000") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageBackground(overlayImageBackground: "000000")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oibg-000000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image Background: UIColor.black") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageBackground(overlayImageBackground: UIColor.black)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oibg-000000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image Border: 3, #000000") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageBorder(borderWidth: 3, borderColor: "000000")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oib-3_000000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image Border: 3, UIColor.black") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageBorder(borderWidth: 3, borderColor: UIColor.black)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oib-3_000000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Image DPR 3.0") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayImageDPR(dpr: 3.0)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oidpr-3.00/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: center") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .CENTER)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-center/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: top") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .TOP)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-top/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: left") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .LEFT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-left/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: bottom") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .BOTTOM)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-bottom/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: right") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .RIGHT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: top_left") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .TOP_LEFT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-top_left/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: top_right") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .TOP_RIGHT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-top_right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: bottom_left") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .BOTTOM_LEFT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-bottom_left/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Focus: bottom_right") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayFocus(overlayFocus: .BOTTOM_RIGHT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ofo-bottom_right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay X: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayX(overlayX: 50)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ox-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Y: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayY(overlayY: 50)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oy-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Width: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayWidth(overlayWidth: 50)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ow-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Height: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-                    .overlayHeight(overlayHeight: 50)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,oh-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text: overlay made easy") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Encoded: overlay made easy") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayTextEncoded(overlayTextEncoded: "overlay made easy")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ote-b3ZlcmxheSBtYWRlIGVhc3k%%3D/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Encoded: b3ZlcmxheSBtYWRlIGVhc3k=") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayTextEncoded(overlayTextEncoded: "b3ZlcmxheSBtYWRlIGVhc3k=", encoded: true)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ote-b3ZlcmxheSBtYWRlIGVhc3k%%3D/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Color: 00AAFF55") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextColor(overlayTextColor: "00AAFF55")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otc-00AAFF55/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Color: UIColor.red") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextColor(overlayTextColor: UIColor.red)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otc-FF0000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Width: 200px") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .overlayTextWidth(width: 200)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45,otw-200/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Padding: 40px") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .overlayTextWidth(width: 200)
-                    .overlayTextPadding(overlayTextPadding: 40)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45,otw-200,otp-40/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Padding: 25px 75px") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .overlayTextWidth(width: 200)
-                    .overlayTextPadding(verticalPadding: 25, horizontalPadding: 75)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45,otw-200,otp-25_75/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Padding: 25px 75px 60px") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .overlayTextWidth(width: 200)
-                    .overlayTextPadding(topPading: 25, horizontalPadding: 75, bottomPadding: 60)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45,otw-200,otp-25_75_60/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Padding: 25px 50px 75px 100px") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .overlayTextWidth(width: 200)
-                    .overlayTextPadding(topPading: 25, rightPadding: 50, bottomPadding: 75, leftPadding: 100)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45,otw-200,otp-25_50_75_100/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Padding: 25px 50px 75px 100px") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .overlayTextWidth(width: 200)
-                    .overlayTextInnerAlignment(overlayTextInnerAlignment: .RIGHT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45,otw-200,otia-right/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Background Color: 00AAFF55") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextBackground(overlayTextColor: "00AAFF55")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otbg-00AAFF55/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Background Color: UIColor.red") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextBackground(overlayTextColor: UIColor.red)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otbg-FF0000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Circle") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayBackground(overlayBackground: "FFFFFF80")
-                    .overlayRadius(radius: 150)
-                    .overlayHeight(overlayHeight: 300)
-                    .overlayWidth(overlayWidth: 300)
-                    .overlayFocus(overlayFocus: .CENTER)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:obg-FFFFFF80,or-150,oh-300,ow-300,ofo-center/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Transparency: 50") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextTransparency(overlayTextTransparency: 50)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,oa-50/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: AbrilFatFace") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .ABRIL_FAT_FACE)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-AbrilFatFace/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Amarnath") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .AMARANTH)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Amarnath/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Arvo") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .ARVO)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Arvo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Audiowide") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .AUDIOWIDE)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Audiowide/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: exo") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .EXO)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-exo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: FredokaOne") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .FREDOKA_ONE)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-FredokaOne/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Kanit") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .KANIT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Kanit/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Lato") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .LATO)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Lato/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Lobster") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .LOBSTER)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Lobster/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Lora") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .LORA)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Lora/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Monoton") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .MONOTON)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Monoton/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Montserrat") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .MONTSERRAT)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Montserrat/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: PT_Mono") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .PT_MONO)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-PT_Mono/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: PT_Serif") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .PT_SERIF)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-PT_Serif/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: OpenSans") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .OPEN_SANS)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-OpenSans/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Roboto") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .ROBOTO)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Roboto/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: stagOldStandard") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .STAG_OLD_STANDARD)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-stagOldStandard/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Ubuntu") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .UBUNTU)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Ubuntu/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Family: Vollkorn") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontFamily(overlayTextFontFamily: .VOLLKORN)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,otf-Vollkorn/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Font Size: 45") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextFontSize(overlayTextSize: 45)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ots-45/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Typography: Bold") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextTypography(overlayTextTypography: .BOLD)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ott-b/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Typography: Italics") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextTypography(overlayTextTypography: .ITALICS)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ott-i/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Typography: Bold Italics") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayTextTypography(overlayTextTypography: .BOLD_ITALICS)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,ott-bi/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Text Alpha: 5") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayText(overlayText: "overlay made easy")
-                    .overlayAlpha(overlayAlpha: 5)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:ot-overlay%%20made%%20easy,oa-5/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Background: 00AAFF55") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayBackground(overlayBackground: "00AAFF55")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:obg-00AAFF55/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
-            }
-            it("Overlay Background: UIColor.red") {
-                let actual = ImageKit.shared
-                    .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .overlayBackground(overlayBackground: UIColor.red.withAlphaComponent(0.5))
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:obg-FF00007F/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:t-50/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Color Profile") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .colorProfile(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cp-true/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:cp-true/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Metadata") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .metadata(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:md-true/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:md-true/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Rotation: auto") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .rotation(rotation: .AUTO)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-auto/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-auto/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Rotation: 0") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .rotation(rotation: .VALUE_0)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-0/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-0/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Rotation: 90") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .rotation(rotation: .VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-90/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-90/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Rotation: 180") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .rotation(rotation: .VALUE_180)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-180/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-180/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Rotation: 270") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .rotation(rotation: .VALUE_270)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-270/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-270/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Rotation: 360") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .rotation(rotation: .VALUE_360)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-360/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:rt-360/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Radius: 5") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .radius(radius: 5)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:r-5/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:r-5/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Round") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .round()
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:r-max/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:r-max/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Background: 00AAFF55") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .background(backgroundColor: "00AAFF55")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bg-00AAFF55/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bg-00AAFF55/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Background: UIColor.black") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .background(backgroundColor: UIColor.black)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bg-000000/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bg-000000/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Border: 5, 00AAFF55") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .border(borderWidth: 5, borderColor: "00AAFF55")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:b-5_00AAFF55/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:b-5_00AAFF55/medium_cafe_B1iTdD0C.jpg")))
             }
             
             it("Border: 5, UIColor.blue") {
@@ -1023,28 +501,28 @@ class UnitTestSpec: QuickSpec {
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .border(borderWidth: 5, borderColor: UIColor.blue)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:b-5_0000FF/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:b-5_0000FF/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Contrast") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .effectContrast(flag: true)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-contrast/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-contrast/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Sharpen: 5") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .effectSharpen(value: 5)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-sharpen-5/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-sharpen-5/medium_cafe_B1iTdD0C.jpg")))
             }
             it("USM") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
                     .effectUSM(radius: 5, sigma: 5, amount: 5, threshold: 5)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-usm-5.00-5.00-5.00-5.00/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:e-usm-5.00-5.00-5.00-5.00/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Chain Transformation") {
                 let actual = ImageKit.shared
@@ -1053,14 +531,14 @@ class UnitTestSpec: QuickSpec {
                     .chainTransformation()
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300:rt-90/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300:rt-90/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Custom Transfomation: w 300") {
                 let actual = ImageKit.shared
                     .url(urlEndpoint: "https://ik.imagekit.io/demo", path: "medium_cafe_B1iTdD0C.jpg")
                     .addCustomTransformation(key: "w", value: "300")
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300/medium_cafe_B1iTdD0C.jpg")))
             }
         }
         
@@ -1073,7 +551,7 @@ class UnitTestSpec: QuickSpec {
                     .chainTransformation()
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300,w-300:rt-90/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:h-300,w-300:rt-90/medium_cafe_B1iTdD0C.jpg")))
             }
             it("Query Transformations") {
                 let actual = ImageKit.shared
@@ -1083,7 +561,7 @@ class UnitTestSpec: QuickSpec {
                     .chainTransformation()
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300:rt-90")))
             }
         }
         describe("Src with Transformations height: 300, width: 300 and rotate: 90") {
@@ -1095,7 +573,7 @@ class UnitTestSpec: QuickSpec {
                     .chainTransformation()
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300:rt-90")))
             }
             it("With Path Transforms") {
                 let actual = ImageKit.shared
@@ -1105,7 +583,7 @@ class UnitTestSpec: QuickSpec {
                     .chainTransformation()
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300:rt-90")))
             }
             it("With Query Transforms") {
                 let actual = ImageKit.shared
@@ -1115,14 +593,64 @@ class UnitTestSpec: QuickSpec {
                     .chainTransformation()
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?ik-sdk-version=ios-%@&tr=h-300,w-300:rt-90", apiVersion)))
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300:rt-90")))
             }
-            
+            it("With raw transforms string") {
+                let actual = ImageKit.shared
+                    .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
+                    .raw(params: "h-300,w-300,rt-90")
+                    .create()
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300,rt-90")))
+            }
             it("Empty URL") {
                 let actual = ImageKit.shared
                     .url(src: "")
                     .create()
-                expect(actual).to(equal(String(format: "", apiVersion)))
+                expect(actual).to(equal(String(format: "")))
+            }
+        }
+        
+        describe("Video URL for adaptive streaming") {
+            it("DASH format with path params") {
+                let actual = ImageKit.shared
+                    .url(path: "sample_video.mp4", transformationPosition: .PATH)
+                    .setAdaptiveStreaming(format: .DASH, resolutions: [360, 480, 720, 1080])
+                    .create()
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:sr-360_480_720_1080/sample_video.mp4/ik-master.mpd")))
+            }
+            it("HLS format with path params") {
+                let actual = ImageKit.shared
+                    .url(path: "sample_video.mp4", transformationPosition: .PATH)
+                    .setAdaptiveStreaming(format: .HLS, resolutions: [360, 480, 720, 1080])
+                    .create()
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:sr-360_480_720_1080/sample_video.mp4/ik-master.m3u8")))
+            }
+            it("DASH format with query params") {
+                let actual = ImageKit.shared
+                    .url(path: "sample_video.mp4", transformationPosition: .QUERY)
+                    .setAdaptiveStreaming(format: .DASH, resolutions: [360, 480, 720, 1080])
+                    .create()
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/sample_video.mp4/ik-master.mpd?tr=sr-360_480_720_1080")))
+            }
+            it("HLS format with query params") {
+                let actual = ImageKit.shared
+                    .url(path: "sample_video.mp4", transformationPosition: .QUERY)
+                    .setAdaptiveStreaming(format: .HLS, resolutions: [360, 480, 720, 1080])
+                    .create()
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/sample_video.mp4/ik-master.m3u8?tr=sr-360_480_720_1080")))
+            }
+        }
+        
+        describe("Responsive URL loading for UIViews") {
+            it("With default params") {
+                let view = UIView()
+                let dpr = String(format: "%.2f", Float(UIScreen.main.scale.rounded(.toNearestOrAwayFromZero)))
+                view.frame = CGRect(x: 0, y: 0, width: 400, height: 300)
+                let actual = try! ImageKit.shared
+                    .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
+                    .setResponsive(view: view)
+                    .create()
+                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=w-400,h-300,dpr-\(dpr),cm-resize,fo-center")))
             }
         }
     }
@@ -1304,7 +832,7 @@ class UploadSpec: QuickSpec {
         
         
         beforeSuite {
-            _ = ImageKit.init(clientPublicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH, authenticationEndpoint: "https://upload.imagekit.io/temp/client-side-upload-signature")
+            _ = ImageKit.init(clientPublicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
             self.router = Router.register("https://upload.imagekit.io")
         }
         
@@ -1318,6 +846,7 @@ class UploadSpec: QuickSpec {
                     urlConfiguration.protocolClasses = [Server.self]
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
+                        token: "",
                         fileName: "default-image-test.jpg",
                         urlConfiguration: urlConfiguration,
                         completion: { result in
@@ -1345,6 +874,7 @@ class UploadSpec: QuickSpec {
                     urlConfiguration.protocolClasses = [Server.self]
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
+                        token: "",
                         fileName: "default-image-test.jpg",
                         urlConfiguration: urlConfiguration,
                         completion: { result in
@@ -1373,6 +903,7 @@ class UploadSpec: QuickSpec {
                     urlConfiguration.protocolClasses = [Server.self]
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
+                        token: "",
                         fileName: "default-image-test.jpg",
                         urlConfiguration: urlConfiguration,
                         completion: { result in
@@ -1417,6 +948,7 @@ class UploadSpec: QuickSpec {
                     urlConfiguration.protocolClasses = [Server.self]
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
+                        token: "",
                         fileName: "default-image-test.jpg",
                         urlConfiguration: urlConfiguration,
                         completion: { result in
@@ -1468,6 +1000,7 @@ class UploadSpec: QuickSpec {
                     urlConfiguration.protocolClasses = [Server.self]
                     ImageKit.shared.uploader().upload(
                         file: image,
+                        token: "",
                         fileName: "default-image-test.jpg",
                         urlConfiguration: urlConfiguration,
                         completion: { result in
@@ -1519,6 +1052,7 @@ class UploadSpec: QuickSpec {
                     urlConfiguration.protocolClasses = [Server.self]
                     ImageKit.shared.uploader().upload(
                         file: UIImagePNGRepresentation(image)!,
+                        token: "",
                         fileName: "default-image-test.jpg",
                         urlConfiguration: urlConfiguration,
                         completion: { result in
@@ -1551,12 +1085,95 @@ class UploadSpec: QuickSpec {
     }
 }
 
+class UploadPreprocessorSpec: QuickSpec {
+    override func spec() {
+        beforeSuite {
+            _ = ImageKit.init(clientPublicKey: "Dummy public key", imageKitEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
+        }
+        
+        describe("Image preprocessor") {
+            let image = getImageWithColor(color: .black, size: CGSize(width: 1500, height: 800))
+            it("Image dimensions limiting") {
+                let imageData = ImageUploadPreprocessor<UIImage>.Builder()
+                    .limit(width: 1366, height: 768)
+                    .format(format: .PNG)
+                    .build()
+                    .outputFile(input: image, fileName: "test1.png")
+                let output = UIImage(data: imageData)
+                expect(output?.size.width).to(equal(1366))
+                expect(output?.size.height).to(equal(768))
+            }
+            it("Image rotation") {
+                let imageData = ImageUploadPreprocessor<UIImage>.Builder()
+                    .rotate(degrees: 30)
+                    .format(format: .PNG)
+                    .build()
+                    .outputFile(input: image, fileName: "test2.png")
+                let output = UIImage(data: imageData)
+                let outputDimensions = CGRect(origin: CGPoint.zero, size: CGSize(width: 1500, height: 800))
+                    .applying(CGAffineTransform(rotationAngle: 30 * Double.pi / 180))
+                expect(output?.size.width).to(equal(floor(outputDimensions.width)))
+                expect(output?.size.height).to(equal(floor(outputDimensions.height)))
+            }
+            it("Image crop") {
+                let cropSrc = getImageWithGradient(colors: [UIColor.red, UIColor.green, UIColor.blue], size: CGSize(width: 1500, height: 800))
+                let imageData = ImageUploadPreprocessor<UIImage>.Builder()
+                    .crop(p1: CGPoint(x: 20, y: 40), p2: CGPoint(x: 160, y: 200))
+                    .format(format: .PNG)
+                    .build()
+                    .outputFile(input: cropSrc, fileName: "test2.png")
+                let output = UIImage(data: imageData)
+                let outputPixeldata = CFDataGetBytePtr(output?.cgImage?.dataProvider?.data)
+                for x in 20...160 {
+                    for y in 40...200 {
+                        expect(output?[x - 20, y - 40]).to(equal(cropSrc[x, y]))
+                    }
+                }
+            }
+        }
+    }
+}
+
 func getImageWithColor(color: UIColor, size: CGSize) -> UIImage {
     let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-    UIGraphicsBeginImageContextWithOptions(size, false, 0)
+    UIGraphicsBeginImageContextWithOptions(size, false, 1)
     color.setFill()
     UIRectFill(rect)
     let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
     UIGraphicsEndImageContext()
     return image
+}
+
+func getImageWithGradient(colors: [UIColor], size: CGSize) -> UIImage {
+    let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+    UIGraphicsBeginImageContextWithOptions(size, false, 1)
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.colors = colors
+    gradientLayer.frame = rect
+    gradientLayer.draw(in: UIGraphicsGetCurrentContext()!)
+    let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+    UIGraphicsEndImageContext()
+    return image
+}
+
+extension UIImage {
+    subscript (x: Int, y: Int) -> UIColor? {
+        guard x >= 0 && x < Int(size.width) && y >= 0 && y < Int(size.height),
+            let cgImage = cgImage,
+            let provider = cgImage.dataProvider,
+            let providerData = provider.data,
+            let data = CFDataGetBytePtr(providerData) else {
+            return nil
+        }
+
+        let numberOfComponents = 4
+        let pixelData = ((Int(size.width) * y) + x) * numberOfComponents
+
+        let r = CGFloat(data[pixelData]) / 255.0
+        let g = CGFloat(data[pixelData + 1]) / 255.0
+        let b = CGFloat(data[pixelData + 2]) / 255.0
+        let a = CGFloat(data[pixelData + 3]) / 255.0
+
+        return UIColor(red: r, green: g, blue: b, alpha: a)
+    }
 }

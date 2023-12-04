@@ -31,7 +31,7 @@ public class ImageKitUploader {
         progress: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         policy: UploadPolicy = ImageKit.shared.defaultUploadPolicy,
-        preprocessor: (any UploadPreprocessor)? = nil,
+        preprocessor: UploadPreprocessor<Data>? = nil,
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
             if checkUploadPolicy(policy, completion) {
                 DispatchQueue.global(qos: .default).async {

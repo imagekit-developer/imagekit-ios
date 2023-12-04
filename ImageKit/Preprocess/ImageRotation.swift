@@ -17,10 +17,12 @@ internal class ImageRotation : Preprocess {
     }
     
     func process(source: UIImage) -> UIImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
         var rotatedSize = CGRect(origin: CGPoint.zero, size: source.size).applying(CGAffineTransform(rotationAngle: angle * Double.pi / 180)).size
         rotatedSize.width = floor(rotatedSize.width)
         rotatedSize.height = floor(rotatedSize.height)
-        let renderer = UIGraphicsImageRenderer(size: rotatedSize)
+        let renderer = UIGraphicsImageRenderer(size: rotatedSize, format: format)
         return renderer.image(actions: { context in
             context.cgContext.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
             context.cgContext.rotate(by: angle * Double.pi / 180)
