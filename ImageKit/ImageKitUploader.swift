@@ -7,7 +7,7 @@
 
 import Foundation
 import Network
-import Reachability
+//import Reachability
 
 public class ImageKitUploader {
 
@@ -65,7 +65,7 @@ public class ImageKitUploader {
                                 }
                             )
                         }
-                        videoProcessor.outputFile(input: file, fileName: fileName)
+                        _ = videoProcessor.outputFile(input: file, fileName: fileName)
                         return
                     }
                     UploadAPI.upload(
@@ -201,8 +201,6 @@ public class ImageKitUploader {
             var isNetworkMetered = false
             if #available(iOS 12.0, *) {
                 isNetworkMetered = NWPathMonitor().currentPath.isExpensive
-            } else {
-                isNetworkMetered = (try? Reachability())?.connection != .wifi
             }
             if isNetworkMetered {
                 completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_METERED_NETWORK", help: nil)))

@@ -38,7 +38,7 @@ public final class VideoUploadPreprocessor : UploadPreprocessor<Data> {
         let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("\(NSUUID().uuidString).mp4")
         try! input.write(to: tempUrl)
         let asset = AVAsset(url: tempUrl)
-        var tracks = asset.tracks
+        let tracks = asset.tracks
         print("tracks count: \(tracks.count)")
         let videoTrack = asset.tracks(withMediaType: .video).first!
         let audioTrack = asset.tracks(withMediaType: .audio).first
@@ -52,7 +52,6 @@ public final class VideoUploadPreprocessor : UploadPreprocessor<Data> {
         
               
         let reader = try! AVAssetReader(asset: asset)
-        let duration = CMTimeGetSeconds(asset.duration)
         let assetReaderVideoTrackOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32ARGB])
         var assetReaderAudioTrackOutput: AVAssetReaderTrackOutput?
         var audioWriterInput: AVAssetWriterInput?

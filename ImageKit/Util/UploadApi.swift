@@ -8,6 +8,8 @@
 import Foundation
 
 class UploadAPI: NSObject, URLSessionTaskDelegate {
+    internal static var baseUrl = "https://upload.imagekit.io"
+    
     internal static func upload(
         file: Any,
         token: String,
@@ -31,7 +33,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void,
         retryCount: Int = 0
     ) {
-        var request = URLRequest(url: URL(string: "https://upload.imagekit.io/api/v2/files/upload")!)
+        var request = URLRequest(url: URL(string: "\(baseUrl)/api/v2/files/upload")!)
         request.httpMethod = "POST"
 
         var mimeType: String? = nil
