@@ -69,6 +69,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         if extData != nil {
             formData.append(extData, withName: "extensions")
         }
+        formData.append(webhookUrl?.data(using: String.Encoding.utf8), withName: "webhookUrl")
         if let overwriteFile = overwriteFile {
             formData.append(String(overwriteFile).data(using: String.Encoding.utf8), withName: "overwriteFile")
         }
