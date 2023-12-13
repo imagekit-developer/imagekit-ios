@@ -836,9 +836,45 @@ class UploadSpec: QuickSpec {
             }
         }
                 
-        describe("Successful Upload"){
-            it("Upload From Url"){
+        describe("Successful Upload") {
+            let sampleExtensions = [
+                ["name" : "remove-bg", "options" : ["add_shadow" : true]],
+                ["name": "google-auto-tagging", "minConfidence": 80, "maxTags": 5]
+            ]
+            let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
+            it("Upload From Url") {
                 self.server?["/api/v2/files/upload"] = { request in
+                    var bodyParts = request.parseMultiPartFormData()
+                    expect(String(bytes: bodyParts.first { $0.name == "file" }?.body ?? [], encoding: .utf8))
+                        .to(equal("https://ik.imagekit.io/demo/default-image.jpg"))
+                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test1"))
+                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
+                        .to(equal("default-image-test.jpg"))
+                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test,image"))
+                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
+                        .to(equal("/tmp/test"))
+                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
+                        .to(equal("10,10,100,100"))
+                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
+                        .to(equal("tags,customCoordinates,isPrivateFile"))
+                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
+                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
+                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
+                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
+                        .to(equal("https://dummy.io/hook"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
+                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
+                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
                     return HttpResponse.ok(.json([
                         "fileId": "5f881125ce8f14336dda25b6",
                         "name": "default-image-test_1JO5mllWR.jpg",
@@ -855,8 +891,19 @@ class UploadSpec: QuickSpec {
                     let urlConfiguration = URLSessionConfiguration.default
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
-                        token: "",
+                        token: "test1",
                         fileName: "default-image-test.jpg",
+                        tags: ["test", "image",],
+                        folder: "/tmp/test",
+                        customCoordinates: "10,10,100,100",
+                        responseFields: "tags,customCoordinates,isPrivateFile",
+                        extensions: sampleExtensions,
+                        webhookUrl: "https://dummy.io/hook",
+                        overwriteFile: false,
+                        overwriteAITags: false,
+                        overwriteTags: true,
+                        overwriteCustomMetadata: true,
+                        customMetadata: sampleMetadata,
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
@@ -884,8 +931,37 @@ class UploadSpec: QuickSpec {
                     })
                 }
             }
-            it("Upload UIImage"){
+            it("Upload UIImage") {
                 self.server?["/api/v2/files/upload"] = { request in
+                    var bodyParts = request.parseMultiPartFormData()
+                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test2"))
+                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
+                        .to(equal("default-image-test.jpg"))
+                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test,image"))
+                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
+                        .to(equal("/tmp/test"))
+                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
+                        .to(equal("10,10,100,100"))
+                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
+                        .to(equal("tags,customCoordinates,isPrivateFile"))
+                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
+                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
+                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
+                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
+                        .to(equal("https://dummy.io/hook"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
+                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
+                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
                     return HttpResponse.ok(.json([
                         "fileId": "5f881125ce8f14336dda25b6",
                         "name": "default-image-test_1JO5mllWR.jpg",
@@ -903,8 +979,19 @@ class UploadSpec: QuickSpec {
                     let urlConfiguration = URLSessionConfiguration.default
                     ImageKit.shared.uploader().upload(
                         file: image,
-                        token: "",
+                        token: "test2",
                         fileName: "default-image-test.jpg",
+                        tags: ["test", "image",],
+                        folder: "/tmp/test",
+                        customCoordinates: "10,10,100,100",
+                        responseFields: "tags,customCoordinates,isPrivateFile",
+                        extensions: sampleExtensions,
+                        webhookUrl: "https://dummy.io/hook",
+                        overwriteFile: false,
+                        overwriteAITags: false,
+                        overwriteTags: true,
+                        overwriteCustomMetadata: true,
+                        customMetadata: sampleMetadata,
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
@@ -934,6 +1021,35 @@ class UploadSpec: QuickSpec {
             }
             it("Upload Data"){
                 self.server?["/api/v2/files/upload"] = { request in
+                    var bodyParts = request.parseMultiPartFormData()
+                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test3"))
+                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
+                        .to(equal("default-image-test.jpg"))
+                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test,image"))
+                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
+                        .to(equal("/tmp/test"))
+                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
+                        .to(equal("10,10,100,100"))
+                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
+                        .to(equal("tags,customCoordinates,isPrivateFile"))
+                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
+                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
+                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
+                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
+                        .to(equal("https://dummy.io/hook"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
+                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
+                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
                     return HttpResponse.ok(.json([
                         "fileId": "5f881125ce8f14336dda25b6",
                         "name": "default-image-test_1JO5mllWR.jpg",
@@ -951,8 +1067,19 @@ class UploadSpec: QuickSpec {
                     let urlConfiguration = URLSessionConfiguration.default
                     ImageKit.shared.uploader().upload(
                         file: UIImagePNGRepresentation(image)!,
-                        token: "",
+                        token: "test3",
                         fileName: "default-image-test.jpg",
+                        tags: ["test", "image",],
+                        folder: "/tmp/test",
+                        customCoordinates: "10,10,100,100",
+                        responseFields: "tags,customCoordinates,isPrivateFile",
+                        extensions: sampleExtensions,
+                        webhookUrl: "https://dummy.io/hook",
+                        overwriteFile: false,
+                        overwriteAITags: false,
+                        overwriteTags: true,
+                        overwriteCustomMetadata: true,
+                        customMetadata: sampleMetadata,
                         urlConfiguration: urlConfiguration,
                         completion: { result in
                             switch result{
