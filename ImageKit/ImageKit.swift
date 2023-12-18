@@ -25,6 +25,8 @@ open class ImageKit: NSObject {
     lazy var userDefaults = UserDefaults.standard
 
     public static let shared = ImageKit()
+    
+    private let sharedUploader = ImageKitUploader()
 
     public override init() {
 
@@ -79,7 +81,7 @@ open class ImageKit: NSObject {
     }
 
     public func uploader() -> ImageKitUploader {
-        return ImageKitUploader()
+        return sharedUploader
     }
 
 }

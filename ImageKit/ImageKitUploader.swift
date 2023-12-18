@@ -10,6 +10,18 @@ import Network
 //import Reachability
 
 public class ImageKitUploader {
+    
+    var currentNetworkPath: NWPath
+    
+    public init() {
+        let monitor = NWPathMonitor()
+        currentNetworkPath = monitor.currentPath
+        monitor.pathUpdateHandler = { path in
+            self.currentNetworkPath = path
+        }
+        monitor.start(queue: .main)
+        UIDevice.current.isBatteryMonitoringEnabled = true
+    }
 
     public func upload(
         file: Data,
@@ -197,17 +209,10 @@ public class ImageKitUploader {
         }
     
     internal func checkUploadPolicy(_ policy: UploadPolicy, _ completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) -> Bool {
-        if policy.networkType == .UNMETERED {
-            var isNetworkMetered = false
-            if #available(iOS 12.0, *) {
-                isNetworkMetered = NWPathMonitor().currentPath.isExpensive
-            }
-            if isNetworkMetered {
-                completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_METERED_NETWORK", help: nil)))
-                return false
-            }
+        if policy.networkType == .UNMETERED && currentNetworkPath.isExpensive {
+            completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_METERED_NETWORK", help: nil)))
+            return false
         }
-        UIDevice.current.isBatteryMonitoringEnabled = true
         if policy.requiresCharging && UIDevice.current.batteryState == .unplugged {
             completion(Result.failure(UploadAPIError(message: "POLICY_ERROR_BATTERY_DISCHARGING", help: nil)))
             return false
