@@ -87,6 +87,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         }
 
         request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
+        print("Retry attempt: \(retryCount), timeout: \(getRetryTimeOut(uploadPolicy, retryCount))")
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(getRetryTimeOut(uploadPolicy, retryCount))) {
             do {
@@ -148,7 +149,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         }
     }
     
-    private static func getRetryTimeOut(_ policy: UploadPolicy, _ retryCount: Int) -> Int {
+    internal static func getRetryTimeOut(_ policy: UploadPolicy, _ retryCount: Int) -> Int {
         return policy.backoffPolicy == .LINEAR
             ? policy.backoffMillis * retryCount
             : policy.backoffPolicy == .EXPONENTIAL && retryCount > 0

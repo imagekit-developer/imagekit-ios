@@ -1111,6 +1111,38 @@ class UploadSpec: QuickSpec {
     }
 }
 
+class UploadPolicySpec: QuickSpec {
+    
+    override func spec() {
+        beforeSuite {
+            _ = ImageKit.init(publicKey: "Dummy public key", urlEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
+        }
+                
+        describe("Retry timeouts") {
+            it("With linear backoff") {
+                let backoffPolicy = UploadPolicy.Builder()
+                    .backoffCriteria(backoffMillis: 200, backoffPolicy: .LINEAR)
+                    .build()
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 0)).to(equal(0))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 1)).to(equal(200))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 2)).to(equal(400))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 3)).to(equal(600))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 4)).to(equal(800))
+            }
+            it("With exponential backoff") {
+                let backoffPolicy = UploadPolicy.Builder()
+                    .backoffCriteria(backoffMillis: 200, backoffPolicy: .EXPONENTIAL)
+                    .build()
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 0)).to(equal(0))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 1)).to(equal(200))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 2)).to(equal(400))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 3)).to(equal(800))
+                expect(UploadAPI.getRetryTimeOut(backoffPolicy, 4)).to(equal(1600))
+            }
+        }
+    }
+}
+
 class UploadPreprocessorSpec: QuickSpec {
     override func spec() {
         beforeSuite {
