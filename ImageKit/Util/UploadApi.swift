@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import OSLog
 
 class UploadAPI: NSObject, URLSessionTaskDelegate {
     internal static var baseUrl = "https://upload.imagekit.io"
+    internal static let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "ImageKitIO")
     
     internal static func upload(
         file: Any,
@@ -87,7 +89,6 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         }
 
         request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
-        print("Retry attempt: \(retryCount), timeout: \(getRetryTimeOut(uploadPolicy, retryCount))")
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(getRetryTimeOut(uploadPolicy, retryCount))) {
             do {
@@ -97,39 +98,64 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
                 let urlSession = URLSession(configuration: urlConfiguration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
                 uploadDelegate.uploadProgressHandler = progressClosure
                 let task = urlSession.dataTask(with: request) { data, response, error in
-                    if let error = error {
-                        completion(Result.failure(error))
+                    if let err = error {
+                        os_log("[Upload file=%s] Upload request failed, error: %@", log: log, fileName, err as CVarArg)
+                        if retryCount == uploadPolicy.maxErrorRetries {
+                            completion(Result.failure(err))
+                        } else {
+                            os_log("[Upload file=%s] Retry attempt %d", log: log, fileName, retryCount + 1)
+                            upload(
+                                file: file,
+                                token: token,
+                                fileName: fileName,
+                                useUniqueFileName: useUniqueFileName,
+                                tags: tags,
+                                folder: folder,
+                                isPrivateFile: isPrivateFile,
+                                progressClosure: progressClosure,
+                                urlConfiguration: urlConfiguration,
+                                uploadPolicy: uploadPolicy,
+                                completion: completion,
+                                retryCount: retryCount + 1
+                            )
+                        }
                         return
                     }
-                    let response = response as! HTTPURLResponse
-                    let status = response.statusCode
+                    let httpResponse = response as! HTTPURLResponse
+                    let status = httpResponse.statusCode
                     if (200...299).contains(status) {
-                        completion(Result.success((response, try? IKJSONDecoder().decode(UploadAPIResponse.self, from: data!))))
-                    } else if (400..<500).contains(status) || retryCount == uploadPolicy.maxErrorRetries {
-                        let uploadApiError = try? IKJSONDecoder().decode(UploadAPIError.self, from: data!)
-                        completion(Result.failure(uploadApiError!))
+                        completion(Result.success((httpResponse, try? IKJSONDecoder().decode(UploadAPIResponse.self, from: data!))))
                     } else {
-                        upload(
-                            file: file,
-                            token: token,
-                            fileName: fileName,
-                            useUniqueFileName: useUniqueFileName,
-                            tags: tags,
-                            folder: folder,
-                            isPrivateFile: isPrivateFile,
-                            progressClosure: progressClosure,
-                            urlConfiguration: urlConfiguration,
-                            uploadPolicy: uploadPolicy,
-                            completion: completion,
-                            retryCount: retryCount + 1
-                        )
+                        let uploadApiError = try? IKJSONDecoder().decode(UploadAPIError.self, from: data!)
+                        os_log("[Upload file=%s] Upload request failed, response status: HTTP %d, response message: %s", log: log, fileName, status, uploadApiError?.message ?? "")
+                        if (400..<500).contains(status) || retryCount == uploadPolicy.maxErrorRetries {
+                            completion(Result.failure(uploadApiError!))
+                        } else {
+                            os_log("[Upload file=%s] Retry attempt %d", log: log, fileName, retryCount + 1)
+                            upload(
+                                file: file,
+                                token: token,
+                                fileName: fileName,
+                                useUniqueFileName: useUniqueFileName,
+                                tags: tags,
+                                folder: folder,
+                                isPrivateFile: isPrivateFile,
+                                progressClosure: progressClosure,
+                                urlConfiguration: urlConfiguration,
+                                uploadPolicy: uploadPolicy,
+                                completion: completion,
+                                retryCount: retryCount + 1
+                            )
+                        }
                     }
                 }
                 task.resume()
             } catch let error {
+                os_log("[Upload file=%s] Retry attempt %@", log: log, fileName, error as CVarArg)
                 if retryCount == uploadPolicy.maxErrorRetries {
                     completion(Result.failure(error))
                 } else {
+                    os_log("[Upload file=%s] Retry attempt %d", log: log, fileName, retryCount + 1)
                     upload(
                         file: file,
                         token: token,
