@@ -281,13 +281,13 @@ The complete list of transformations supported and their usage in ImageKit can b
 | effectContrast | effectContrast(flag: Bool) | e-contrast |
 | effectGray | effectGray(flag: Bool) | e-grayscale |
 | original | original() | orig |
-| Raw param string | raw(params: String) | - |
+| Raw transformation string | raw(params: String) | - |
 
 </details>
 
 ### Responsive image loading
-ImageKit URL constructor can be set to input any Android View and determine the parameters for image height and width based on the dimensions of the view. If the view's dimensions are not set at the time, it uses the display's dimensions as the fallback. It also sets the DPR of the image automatically to match that of the device display.
-To automatically set the dimensions and pixel ratio of the image , call `ImageKit.getInstance().url(...).setResponsive(...)` with a set of parameters defined below:
+ImageKit URL constructor can be set to input any instance of `UIView` and determine the parameters for image height and width based on the dimensions of the view. If the view's dimensions are not set at the time, it uses the display's dimensions as the fallback. It also sets the DPR of the image automatically to match that of the device display.
+To automatically set the dimensions and pixel ratio of the image , call `ImageKit.shared.url(...).setResponsive(...)` with a set of parameters defined below:
 
 | Parameter | Type | Description |
 |:----------|:------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -362,7 +362,7 @@ The `ImageKit.shared.uploader().upload(...)` accepts the following parameters
 | :----------------| :----|:----------------------------- |
 | file | Data / UIImage / String | Required. 
 | fileName | String | Required. If not specified, the file system name is picked. 
-| token | String | Required. the client-generated JSON Web Token (JWT), which the ImageKit.io server uses to authenticate and check that the upload request parameters have not been tampered with after the generation of the token. Refer this [guide](https://docs.imagekit.io/api-reference/upload-file-api/secure-client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) to create the token below on the page. |
+| token | String | Required. The client-generated JSON Web Token (JWT), which the ImageKit.io server uses to authenticate and check that the upload request parameters have not been tampered with after the generation of the token. Refer this [guide](https://docs.imagekit.io/api-reference/upload-file-api/secure-client-side-file-upload#how-to-implement-authenticationendpoint-endpoint) to create the token below on the page. |
 | useUniqueFileName  | Bool | Optional. Accepts `true` of `false`. The default value is `true`. Specify whether to use a unique filename for this file or not. |
 | tags     | Array of string | Optional. Set the tags while uploading the file e.g. ["tag1","tag2"] |
 | folder        | String | Optional. The folder path (e.g. `/images/folder/`) in which the file has to be uploaded. If the folder doesn't exist before, a new folder is created.|
@@ -380,8 +380,11 @@ The `ImageKit.shared.uploader().upload(...)` accepts the following parameters
 | progress      | ((Progress) -> Void) | Optional. |
 | completion      | (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void | Required. |
 
-Note: Sending a JWT that has been used in the past will result in a validation error. Even if your previous request resulted in an error, you should always send a new JWT as the token parameter.
-Warning: JWT must be generated on the server-side because it is generated using your account's private API key. This field is required for authentication when uploading a file from the client-side.
+> [!Note]
+> Sending a JWT that has been used in the past will result in a validation error. Even if your previous request resulted in an error, you should always send a new JWT as the token parameter.
+
+> [!Warning]
+> JWT must be generated on the server-side because it is generated using your account's private API key. This field is required for authentication when uploading a file from the client-side.
 
 Sample Usage
 ```swift
@@ -443,7 +446,7 @@ let policy = UploadPolicy.Builder()
 ### Image preprocessing
 The `ImageUploadPreprocessor` class encapsulates a set of methods to apply certain transformations to an image before uploading. This will create a copy of the selected image, which will be transformed as per the given parameters before uploading.
 
-`ImageUploadPreprocessor.Builder` class is responsible for building the ImagePreprocess instances. This class provides following methods to access and modify the policy parameters:
+`ImageUploadPreprocessor.Builder` class is responsible for building the `ImageUploadPreprocessor` instances. This class provides following methods to access and modify the policy parameters:
 
 | Parameter | Type | Description |
 |:------------------------------------------------------------------------------------------------------------------------|:--------------------------|:-------------------------------------------------------------------------|
@@ -464,7 +467,7 @@ let preprocessor = ImageUploadPreprocessor.Builder()
 ### Video preprocessing
 The `VideoUploadPreprocessor` class encapsulates a set of methods to apply certain transformations to an image before uploading. This will create a copy of the selected image, which will be transformed as per the given parameters before uploading.
 
-`VideoUploadPreprocessor.Builder` class is responsible for building the ImagePreprocess instances. This class provides following methods to access and modify the policy parameters:
+`VideoUploadPreprocessor.Builder` class is responsible for building the `VideoUploadPreprocessor` instances. This class provides following methods to access and modify the policy parameters:
 
 | Parameter | Type | Description |
 |:------------------------------------------------------------------------------------------------------------------------|:--------------------------|:-------------------------------------------------------------------------|
