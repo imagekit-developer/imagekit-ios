@@ -6,68 +6,181 @@
 //
 
 import Foundation
+import OSLog
 
 class UploadAPI: NSObject, URLSessionTaskDelegate {
-    public static func upload(
-        file: Data,
-        publicKey: String,
-        signature: SignatureAPIResponse,
+    internal static var baseUrl = "https://upload.imagekit.io"
+    internal static let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "ImageKitIO")
+    
+    internal static func upload(
+        file: Any,
+        token: String,
         fileName: String,
-        useUniqueFileName: Bool,
-        tags: String,
-        folder: String? = "",
-        isPrivateFile: Bool,
-        customCoordinates: String? = "",
-        responseFields: String? = "",
+        useUniqueFileName: Bool? = nil,
+        tags: String? = nil,
+        folder: String? = nil,
+        isPrivateFile: Bool?,
+        customCoordinates: String? = nil,
+        responseFields: String? = nil,
+        extensions: [[String : Any]]? = nil,
+        webhookUrl: String? = nil,
+        overwriteFile: Bool? = nil,
+        overwriteAITags: Bool? = nil,
+        overwriteTags: Bool? = nil,
+        overwriteCustomMetadata: Bool? = nil,
+        customMetadata: [String : Any]? = nil,
         progressClosure: ((Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
-        completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void) {
-        
-        let mimeType = MimeDetector.mimeType(data: file)?.mime ?? "image/png"
-
-        var request = URLRequest(url: URL(string: "https://upload.imagekit.io/api/v1/files/upload")!)
+        uploadPolicy: UploadPolicy,
+        completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void,
+        retryCount: Int = 0
+    ) {
+        var request = URLRequest(url: URL(string: "\(baseUrl)/api/v2/files/upload")!)
         request.httpMethod = "POST"
 
+        var mimeType: String? = nil
         let formData = MultipartFormData()
-        formData.append(file, withName: "file", fileName: fileName, mimeType: mimeType)
-        formData.append(publicKey.data(using: String.Encoding.utf8)!, withName: "publicKey")
-        formData.append(signature.signature.data(using: String.Encoding.utf8)!, withName: "signature")
-        formData.append(String(signature.expire).data(using: String.Encoding.utf8)!, withName: "expire")
-        formData.append(signature.token.data(using: String.Encoding.utf8)!, withName: "token")
+        var fileData: Data
+        if file is Data {
+            fileData = file as! Data
+            mimeType = MimeDetector.mimeType(data: fileData)?.mime ?? "image/png"
+        } else {
+            fileData = (file as! String).data(using: String.Encoding.utf8)!
+        }
+        var extData: Data? = nil
+        var metaData: Data? = nil
+        if let extensions = extensions {
+            extData = try? JSONSerialization.data(withJSONObject: extensions)
+        }
+        if let customMetadata = customMetadata {
+            metaData = try? JSONSerialization.data(withJSONObject: customMetadata)
+        }
+        formData.append(fileData, withName: "file", fileName: fileName, mimeType: file is Data ? mimeType! : "text/plain")
+        formData.append(token.data(using: String.Encoding.utf8)!, withName: "token")
         formData.append(fileName.data(using: String.Encoding.utf8)!, withName: "fileName")
-        formData.append(String(useUniqueFileName).data(using: String.Encoding.utf8)!, withName: "useUniqueFileName")
-        formData.append(tags.data(using: String.Encoding.utf8)!, withName: "tags")
-        formData.append(folder!.data(using: String.Encoding.utf8)!, withName: "folder")
-        formData.append(String(isPrivateFile).data(using: String.Encoding.utf8)!, withName: "isPrivateFile")
-        formData.append(customCoordinates!.data(using: String.Encoding.utf8)!, withName: "customCoordinates")
-        formData.append(responseFields!.data(using: String.Encoding.utf8)!, withName: "responseFields")
+        if let useUniqueFileName = useUniqueFileName {
+            formData.append(String(useUniqueFileName).data(using: String.Encoding.utf8), withName: "useUniqueFileName")
+        }
+        formData.append(tags?.data(using: String.Encoding.utf8), withName: "tags")
+        formData.append(folder?.data(using: String.Encoding.utf8), withName: "folder")
+        if let isPrivateFile = isPrivateFile {
+            formData.append(String(isPrivateFile).data(using: String.Encoding.utf8), withName: "isPrivateFile")
+        }
+        formData.append(customCoordinates?.data(using: String.Encoding.utf8), withName: "customCoordinates")
+        formData.append(responseFields?.data(using: String.Encoding.utf8), withName: "responseFields")
+        if extData != nil {
+            formData.append(extData, withName: "extensions")
+        }
+        formData.append(webhookUrl?.data(using: String.Encoding.utf8), withName: "webhookUrl")
+        if let overwriteFile = overwriteFile {
+            formData.append(String(overwriteFile).data(using: String.Encoding.utf8), withName: "overwriteFile")
+        }
+        if let overwriteAITags = overwriteAITags {
+            formData.append(String(overwriteAITags).data(using: String.Encoding.utf8), withName: "overwriteAITags")
+        }
+        if let overwriteTags = overwriteTags {
+            formData.append(String(overwriteTags).data(using: String.Encoding.utf8), withName: "overwriteTags")
+        }
+        if let overwriteCustomMetadata = overwriteCustomMetadata {
+            formData.append(String(overwriteCustomMetadata).data(using: String.Encoding.utf8), withName: "overwriteCustomMetadata")
+        }
+        if metaData != nil {
+            formData.append(metaData, withName: "customMetadata")
+        }
 
         request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
 
-        do {
-            let multipartData = try formData.encode()
-            request.httpBody = multipartData
-            let uploadDelegate = UploadTaskDelegate()
-            let urlSession = URLSession(configuration: urlConfiguration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
-            uploadDelegate.uploadProgressHandler = progressClosure
-            let task = urlSession.dataTask(with: request) { data, response, error in
-                if let error = error {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(getRetryTimeOut(uploadPolicy, retryCount))) {
+            do {
+                let multipartData = try formData.encode()
+                request.httpBody = multipartData
+                let uploadDelegate = UploadTaskDelegate()
+                let urlSession = URLSession(configuration: urlConfiguration, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
+                uploadDelegate.uploadProgressHandler = progressClosure
+                let task = urlSession.dataTask(with: request) { data, response, error in
+                    if let err = error {
+                        os_log("[Upload file=%s] Upload request failed, error: %@", log: log, fileName, err as CVarArg)
+                        if retryCount == uploadPolicy.maxErrorRetries {
+                            completion(Result.failure(err))
+                        } else {
+                            os_log("[Upload file=%s] Retry attempt %d", log: log, fileName, retryCount + 1)
+                            upload(
+                                file: file,
+                                token: token,
+                                fileName: fileName,
+                                useUniqueFileName: useUniqueFileName,
+                                tags: tags,
+                                folder: folder,
+                                isPrivateFile: isPrivateFile,
+                                progressClosure: progressClosure,
+                                urlConfiguration: urlConfiguration,
+                                uploadPolicy: uploadPolicy,
+                                completion: completion,
+                                retryCount: retryCount + 1
+                            )
+                        }
+                        return
+                    }
+                    let httpResponse = response as! HTTPURLResponse
+                    let status = httpResponse.statusCode
+                    if (200...299).contains(status) {
+                        completion(Result.success((httpResponse, try? IKJSONDecoder().decode(UploadAPIResponse.self, from: data!))))
+                    } else {
+                        let uploadApiError = try? IKJSONDecoder().decode(UploadAPIError.self, from: data!)
+                        os_log("[Upload file=%s] Upload request failed, response status: HTTP %d, response message: %s", log: log, fileName, status, uploadApiError?.message ?? "")
+                        if (400..<500).contains(status) || retryCount == uploadPolicy.maxErrorRetries {
+                            completion(Result.failure(uploadApiError!))
+                        } else {
+                            os_log("[Upload file=%s] Retry attempt %d", log: log, fileName, retryCount + 1)
+                            upload(
+                                file: file,
+                                token: token,
+                                fileName: fileName,
+                                useUniqueFileName: useUniqueFileName,
+                                tags: tags,
+                                folder: folder,
+                                isPrivateFile: isPrivateFile,
+                                progressClosure: progressClosure,
+                                urlConfiguration: urlConfiguration,
+                                uploadPolicy: uploadPolicy,
+                                completion: completion,
+                                retryCount: retryCount + 1
+                            )
+                        }
+                    }
+                }
+                task.resume()
+            } catch let error {
+                os_log("[Upload file=%s] Retry attempt %@", log: log, fileName, error as CVarArg)
+                if retryCount == uploadPolicy.maxErrorRetries {
                     completion(Result.failure(error))
-                    return
+                } else {
+                    os_log("[Upload file=%s] Retry attempt %d", log: log, fileName, retryCount + 1)
+                    upload(
+                        file: file,
+                        token: token,
+                        fileName: fileName,
+                        useUniqueFileName: useUniqueFileName,
+                        tags: tags,
+                        folder: folder,
+                        isPrivateFile: isPrivateFile,
+                        progressClosure: progressClosure,
+                        urlConfiguration: urlConfiguration,
+                        uploadPolicy: uploadPolicy,
+                        completion: completion,
+                        retryCount: retryCount + 1
+                    )
                 }
-                let response = response as! HTTPURLResponse
-                let status = response.statusCode
-                guard (200...299).contains(status) else {
-                    let uploadApiError = try? IKJSONDecoder().decode(UploadAPIError.self, from: data!)
-                    completion(Result.failure(uploadApiError!))
-                    return
-                }
-                completion(Result.success((response, try? IKJSONDecoder().decode(UploadAPIResponse.self, from: data!))))
             }
-            task.resume()
-        } catch let error {
-            completion(Result.failure(error))
         }
+    }
+    
+    internal static func getRetryTimeOut(_ policy: UploadPolicy, _ retryCount: Int) -> Int {
+        return policy.backoffPolicy == .LINEAR
+            ? policy.backoffMillis * retryCount
+            : policy.backoffPolicy == .EXPONENTIAL && retryCount > 0
+                ? policy.backoffMillis * Int(pow(2.0, Double(retryCount - 1)))
+                : 0
     }
 
     public typealias HTTPHeaders = [String: String]
@@ -102,7 +215,8 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
             }
         }
 
-        public func append(_ data: Data, withName name: String) {
+        public func append(_ data: Data?, withName name: String) {
+            guard let data = data else { return }
             let headers = contentHeaders(withName: name)
             let stream = InputStream(data: data)
             let length = UInt64(data.count)
