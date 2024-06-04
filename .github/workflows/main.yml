@@ -22,12 +22,12 @@ jobs:
       - name: Build Example Project
         run: |
           cd Example
-          xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 15' clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+          xcodebuild -workspace ImageKit.xcworkspace -scheme ImageKit-Example -destination 'platform=iOS Simulator,name=iPhone 15' clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 
       - name: Run Tests
         run: |
           cd Example
-          xcodebuild -workspace ImageKit.xcworkspace -scheme imagekit-Example -destination 'platform=iOS Simulator,name=iPhone 15' -enableCodeCoverage YES clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+          xcodebuild -workspace ImageKit.xcworkspace -scheme ImageKit-Example -destination 'platform=iOS Simulator,name=iPhone 15' -enableCodeCoverage YES clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
           
       - name: Upload Coverage to codecov
         run: bash <(curl -s https://codecov.io/bash) -J '^ImageKitIO$' -X coveragepy
