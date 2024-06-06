@@ -31,7 +31,7 @@ class FetchImageViewController: UIViewController {
     }
     
     @IBAction func OnClickTransformation2(_ sender: Any) {
-        let url = ImageKit.shared.url(path: "default-image.jpg", transformationPosition: TransformationPosition.QUERY)
+        let url = ImageKit.shared.url(path: SAMPLE_IMAGE, transformationPosition: TransformationPosition.QUERY)
             .height(height: 400)
             .aspectRatio(width: 3, height: 2)
             .create()
