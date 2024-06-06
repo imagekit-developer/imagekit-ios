@@ -13,7 +13,7 @@ class UploadAuthService {
     
     static func getUploadToken(payload: [String : String]) -> [String : String]? {
         let urlSession = URLSession(configuration: URLSessionConfiguration.default, delegate: URLSession.shared.delegate, delegateQueue: URLSession.shared.delegateQueue)
-        var request = URLRequest(url: URL(string: "AUTH_SERVER_HOST")!)
+        var request = URLRequest(url: URL(string: AUTH_SERVER_API_ENDPOINT)!)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         var tokenResponse: [String : String]? = nil
