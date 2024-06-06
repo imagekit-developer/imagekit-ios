@@ -226,12 +226,10 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ImageKit_Example/Pods-ImageKit_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/ImageKitIO/ImageKitIO.framework",
-				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImageKitIO.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

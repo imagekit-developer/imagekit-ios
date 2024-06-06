@@ -1,32 +1,33 @@
 const dotenv = require('dotenv');
 const express = require('express');
-const router = express.Router();
-var cors = require('cors');
+const jwt = require('jsonwebtoken');
 const app = express();
-app.use(cors());
+const cors = require('cors');
 
 dotenv.config();
 
-const uuid = require('uuid');
-const crypto = require("crypto");
+app.use(cors());
+app.use(express.json());
 
+const publicKey = process.env.PUBLIC_KEY;
 const privateKey = process.env.PRIVATE_KEY;
 
-router.get("/auth", function(req, res) {
-    var token = req.query.token || uuid.v4();
-    var expire = req.query.expire || parseInt(Date.now()/1000)+2400;
-    var privateAPIKey = `${privateKey}`;
-    var signature = crypto.createHmac('sha1', privateAPIKey).update(token+expire).digest('hex');
-    res.status(200);
-    res.send({
-        token : token,
-        expire : expire,
-        signature : signature
-    });
+app.post("/auth", function (req, res) {
+  const token = jwt.sign(
+    req.body.uploadPayload,
+    privateKey,
+    {
+      expiresIn: req.body.expire,
+      header: {
+        alg: "HS256",
+        typ: "JWT",
+        kid: publicKey,
+      },
+    })
+  res.status(200);
+  res.send({ token });
 });
 
-app.use("/",router);
-
-app.listen(8080,function(){
+app.listen(8080, function () {
   console.log("Live at Port 8080");
 });

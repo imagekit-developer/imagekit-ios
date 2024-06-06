@@ -537,6 +537,13 @@ class UnitTestSpec: QuickSpec {
                     .create()
                 expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:w-300/medium_cafe_B1iTdD0C.jpg")))
             }
+            it("With raw transforms string") {
+                let actual = ImageKit.shared
+                    .url(src: "https://ik.imagekit.io/demo/img/plant.jpeg")
+                    .raw(params: "w-400:l-text,i-Hand%20with%20a%20green%20plant,co-264120,fs-30,lx-10,ly-20,l-end")
+                    .create()
+                expect(actual).to(equal("https://ik.imagekit.io/demo/img/plant.jpeg?tr=w-400:l-text,i-Hand%20with%20a%20green%20plant,co-264120,fs-30,lx-10,ly-20,l-end"))
+            }
         }
         
         describe("Image Path with Transformations height: 300, width: 300 and rotate: 90") {
@@ -591,13 +598,6 @@ class UnitTestSpec: QuickSpec {
                     .rotation(rotation: Rotation.VALUE_90)
                     .create()
                 expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300:rt-90")))
-            }
-            it("With raw transforms string") {
-                let actual = ImageKit.shared
-                    .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
-                    .raw(params: "h-300,w-300,rt-90")
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=h-300,w-300,rt-90")))
             }
             it("Empty URL") {
                 let actual = ImageKit.shared
