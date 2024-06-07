@@ -17,7 +17,7 @@ class UploadAuthService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         var tokenResponse: [String : String]? = nil
-        guard let body = try? JSONSerialization.data(withJSONObject: ["uploadPayload": payload, "expire": 60, "publicKey": "IK_PUBLIC_KEY"] as [String : Any]) else {
+        guard let body = try? JSONSerialization.data(withJSONObject: ["uploadPayload": payload, "expire": 60, "publicKey": IK_PUBLIC_KEY] as [String : Any]) else {
             return nil
         }
         request.httpBody = body
