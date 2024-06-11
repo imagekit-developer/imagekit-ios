@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ImageKitIO'
-  s.version          = '2.0.1'
+  s.version          = '3.0.0'
   s.summary          = 'iOS SDK for ImageKit.io'
 
 
@@ -15,14 +15,14 @@ ImageKit is a complete image optimization and transformation solution that comes
   s.source           = { :git => 'https://github.com/imagekit-developer/imagekit-ios.git', :tag => s.version.to_s }
 
   s.swift_version    = '4.0'
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '12.0'
 
   s.source_files = 'ImageKit/**/*'
 
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'Tests/**/*'
-    test_spec.dependency 'Quick', '~> 1.2.0'
-    test_spec.dependency 'Nimble', '~> 7.0'
-    test_spec.dependency 'Kakapo'
+    test_spec.dependency 'Quick', '~> 5.0.1'
+    test_spec.dependency 'Nimble', '~> 10.0.0'
+    test_spec.dependency 'Swifter', '~> 1.5.0'
   end
 end

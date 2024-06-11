@@ -31,7 +31,7 @@ class FetchImageViewController: UIViewController {
     }
     
     @IBAction func OnClickTransformation2(_ sender: Any) {
-        let url = ImageKit.shared.url(path: "default-image.jpg", transformationPosition: TransformationPosition.QUERY)
+        let url = ImageKit.shared.url(path: SAMPLE_IMAGE, transformationPosition: TransformationPosition.QUERY)
             .height(height: 400)
             .aspectRatio(width: 3, height: 2)
             .create()
@@ -39,28 +39,24 @@ class FetchImageViewController: UIViewController {
     }
     
     @IBAction func OnClickTransformation3(_ sender: Any) {
-        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg", transformationPosition: TransformationPosition.PATH)
-            .overlayImage(overlayImage: "logo-white_SJwqB4Nfe.png")
-            .overlayX(overlayX: 10)
-            .overlayY(overlayY: 20)
-            .create()
+        guard let url = try? ImageKit.shared.url(urlEndpoint: "https://ik.imagekit.io/demo/img", path: "/medium_cafe_B1iTdD0C.jpg", transformationPosition: TransformationPosition.PATH)
+            .raw(params: "l-text,i-logo-white_SJwqB4Nfe.png,ox-10,l-end")
+            .setResponsive(view: imageView)
+            .create() else { return }
         self.showImage(url: url)
     }
     
     @IBAction func OnClickTransformation4(_ sender: Any) {
-        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/tr:oi-logo-white_SJwqB4Nfe.png,ox-N10,oy-20/medium_cafe_B1iTdD0C.jpg")
+        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
+            .raw(params: "l-image,i-logo-white_SJwqB4Nfe.png,lx-N20,ly-20,l-end")
             .create()
         self.showImage(url: url)
     }
     
     @IBAction func OnClickTransformation5(_ sender: Any) {
-        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/img/plant.jpeg?tr=oi-logo-white_SJwqB4Nfe.png,ox-10,oy-20")
+        let url = ImageKit.shared.url(src: "https://ik.imagekit.io/demo/img/plant.jpeg")
+            .raw(params: "l-text,i-Hand%20with%20a%20green%20plant,co-264120,fs-30,lx-10,ly-20,l-end")
             .addCustomTransformation(key: "w", value: "400")
-            .overlayText(overlayText: "Hand with a green plant")
-            .overlayTextColor(overlayTextColor: "264120")
-            .overlayTextFontSize(overlayTextSize: 30)
-            .overlayX(overlayX: 10)
-            .overlayY(overlayY: 20)
             .create()
         self.showImage(url: url)
     }
