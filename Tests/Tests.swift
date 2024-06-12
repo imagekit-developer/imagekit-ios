@@ -823,13 +823,14 @@ import Swifter
 
 class UploadSpec: QuickSpec {
     
-    private var server: HttpServer? = HttpServer()
+    private var server: HttpServer
     
     override func spec() {
         beforeSuite {
             _ = ImageKit.init(publicKey: "Dummy public key", urlEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
+            self.server = HttpServer()
             do {
-                try self.server?.start(8000, forceIPv4: true)
+                try self.server.start(8000, forceIPv4: true)
                 UploadAPI.baseUrl = "http://localhost:8000"
             } catch {
                 fail("Mocker server failed to start: \(error)")
@@ -843,7 +844,7 @@ class UploadSpec: QuickSpec {
             ]
             let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
             it("Upload From Url") {
-                self.server?["/api/v2/files/upload"] = { request in
+                self.server["/api/v2/files/upload"] = { request in
                     var bodyParts = request.parseMultiPartFormData()
                     expect(String(bytes: bodyParts.first { $0.name == "file" }?.body ?? [], encoding: .utf8))
                         .to(equal("https://ik.imagekit.io/demo/default-image.jpg"))
@@ -932,7 +933,7 @@ class UploadSpec: QuickSpec {
                 }
             }
             it("Upload UIImage") {
-                self.server?["/api/v2/files/upload"] = { request in
+                self.server["/api/v2/files/upload"] = { request in
                     var bodyParts = request.parseMultiPartFormData()
                     expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
                         .to(equal("test2"))
@@ -1020,7 +1021,7 @@ class UploadSpec: QuickSpec {
                 }
             }
             it("Upload Data"){
-                self.server?["/api/v2/files/upload"] = { request in
+                self.server["/api/v2/files/upload"] = { request in
                     var bodyParts = request.parseMultiPartFormData()
                     expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
                         .to(equal("test3"))
