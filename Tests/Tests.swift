@@ -829,8 +829,8 @@ class UploadSpec: QuickSpec {
         beforeSuite {
             _ = ImageKit.init(publicKey: "Dummy public key", urlEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
             do {
-                try self.server?.start(3000, forceIPv4: true)
-                UploadAPI.baseUrl = "http://127.0.0.1:3000"
+                try self.server?.start(9000, forceIPv4: true)
+                UploadAPI.baseUrl = "http://localhost:9000"
             } catch {
                 fail("Mocker server failed to start: \(error)")
             }
