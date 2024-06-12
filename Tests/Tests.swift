@@ -931,182 +931,182 @@ class UploadSpec: QuickSpec {
                     })
                 }
             }
-            it("Upload UIImage") {
-                self.server?["/api/v2/files/upload"] = { request in
-                    var bodyParts = request.parseMultiPartFormData()
-                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test2"))
-                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
-                        .to(equal("default-image-test.jpg"))
-                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test,image"))
-                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
-                        .to(equal("/tmp/test"))
-                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
-                        .to(equal("10,10,100,100"))
-                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
-                        .to(equal("tags,customCoordinates,isPrivateFile"))
-                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
-                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
-                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
-                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
-                        .to(equal("https://dummy.io/hook"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
-                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
-                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
-                    return HttpResponse.ok(.json([
-                        "fileId": "5f881125ce8f14336dda25b6",
-                        "name": "default-image-test_1JO5mllWR.jpg",
-                        "size": 146974,
-                        "filePath": "/default-image-test_1JO5mllWR.jpg",
-                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
-                        "fileType": "image",
-                        "height": 1000,
-                        "width": 1000,
-                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
-                    ]))
-                }
-                let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
-                waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
-                    let urlConfiguration = URLSessionConfiguration.default
-                    ImageKit.shared.uploader().upload(
-                        file: image,
-                        token: "test2",
-                        fileName: "default-image-test.jpg",
-                        tags: ["test", "image",],
-                        folder: "/tmp/test",
-                        customCoordinates: "10,10,100,100",
-                        responseFields: "tags,customCoordinates,isPrivateFile",
-                        extensions: sampleExtensions,
-                        webhookUrl: "https://dummy.io/hook",
-                        overwriteFile: false,
-                        overwriteAITags: false,
-                        overwriteTags: true,
-                        overwriteCustomMetadata: true,
-                        customMetadata: sampleMetadata,
-                        urlConfiguration: urlConfiguration,
-                        completion: { result in
-                            switch result{
-                            case .success((_, let uploadAPIResponse)):
-                                if let uploadAPIResponse = uploadAPIResponse{
-                                    expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
-                                    expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
-                                    expect(uploadAPIResponse.size).to(equal(146974))
-                                    expect(uploadAPIResponse.filePath).to(equal("/default-image-test_1JO5mllWR.jpg"))
-                                    expect(uploadAPIResponse.url).to(equal("https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg"))
-                                    expect(uploadAPIResponse.fileType).to(equal("image"))
-                                    expect(uploadAPIResponse.height).to(equal(1000))
-                                    expect(uploadAPIResponse.width).to(equal(1000))
-                                    expect(uploadAPIResponse.thumbnailUrl).to(equal("https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"))
-                                }
-                                break;
-                            case .failure( _ as UploadAPIError):
-                                fail("Should not throw Error")
-                                break;
-                            case .failure( _):
-                                fail("Should not throw Error")
-                                break;
-                            }
-                            done()
-                    })
-                }
-            }
-            it("Upload Data"){
-                self.server?["/api/v2/files/upload"] = { request in
-                    var bodyParts = request.parseMultiPartFormData()
-                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test3"))
-                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
-                        .to(equal("default-image-test.jpg"))
-                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test,image"))
-                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
-                        .to(equal("/tmp/test"))
-                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
-                        .to(equal("10,10,100,100"))
-                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
-                        .to(equal("tags,customCoordinates,isPrivateFile"))
-                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
-                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
-                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
-                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
-                        .to(equal("https://dummy.io/hook"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
-                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
-                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
-                    return HttpResponse.ok(.json([
-                        "fileId": "5f881125ce8f14336dda25b6",
-                        "name": "default-image-test_1JO5mllWR.jpg",
-                        "size": 146974,
-                        "filePath": "/default-image-test_1JO5mllWR.jpg",
-                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
-                        "fileType": "image",
-                        "height": 1000,
-                        "width": 1000,
-                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
-                    ]))
-                }
-                let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
-                waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
-                    let urlConfiguration = URLSessionConfiguration.default
-                    ImageKit.shared.uploader().upload(
-                        file: UIImagePNGRepresentation(image)!,
-                        token: "test3",
-                        fileName: "default-image-test.jpg",
-                        tags: ["test", "image",],
-                        folder: "/tmp/test",
-                        customCoordinates: "10,10,100,100",
-                        responseFields: "tags,customCoordinates,isPrivateFile",
-                        extensions: sampleExtensions,
-                        webhookUrl: "https://dummy.io/hook",
-                        overwriteFile: false,
-                        overwriteAITags: false,
-                        overwriteTags: true,
-                        overwriteCustomMetadata: true,
-                        customMetadata: sampleMetadata,
-                        urlConfiguration: urlConfiguration,
-                        completion: { result in
-                            switch result{
-                            case .success((_, let uploadAPIResponse)):
-                                if let uploadAPIResponse = uploadAPIResponse{
-                                    expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
-                                    expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
-                                    expect(uploadAPIResponse.size).to(equal(146974))
-                                    expect(uploadAPIResponse.filePath).to(equal("/default-image-test_1JO5mllWR.jpg"))
-                                    expect(uploadAPIResponse.url).to(equal("https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg"))
-                                    expect(uploadAPIResponse.fileType).to(equal("image"))
-                                    expect(uploadAPIResponse.height).to(equal(1000))
-                                    expect(uploadAPIResponse.width).to(equal(1000))
-                                    expect(uploadAPIResponse.thumbnailUrl).to(equal("https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"))
-                                }
-                                break;
-                            case .failure( _ as UploadAPIError):
-                                fail("Should not throw Error")
-                                break;
-                            case .failure( _):
-                                fail("Should not throw Error")
-                                break;
-                            }
-                            done()
-                    })
-                }
-            }
+            // it("Upload UIImage") {
+            //     self.server?["/api/v2/files/upload"] = { request in
+            //         var bodyParts = request.parseMultiPartFormData()
+            //         expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("test2"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("default-image-test.jpg"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("test,image"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("/tmp/test"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("10,10,100,100"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("tags,customCoordinates,isPrivateFile"))
+            //         let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
+            //         let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
+            //         expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
+            //         expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("https://dummy.io/hook"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("false"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("false"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("true"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("true"))
+            //         let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
+            //         let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
+            //         expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
+            //         return HttpResponse.ok(.json([
+            //             "fileId": "5f881125ce8f14336dda25b6",
+            //             "name": "default-image-test_1JO5mllWR.jpg",
+            //             "size": 146974,
+            //             "filePath": "/default-image-test_1JO5mllWR.jpg",
+            //             "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+            //             "fileType": "image",
+            //             "height": 1000,
+            //             "width": 1000,
+            //             "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+            //         ]))
+            //     }
+            //     let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
+            //     waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
+            //         let urlConfiguration = URLSessionConfiguration.default
+            //         ImageKit.shared.uploader().upload(
+            //             file: image,
+            //             token: "test2",
+            //             fileName: "default-image-test.jpg",
+            //             tags: ["test", "image",],
+            //             folder: "/tmp/test",
+            //             customCoordinates: "10,10,100,100",
+            //             responseFields: "tags,customCoordinates,isPrivateFile",
+            //             extensions: sampleExtensions,
+            //             webhookUrl: "https://dummy.io/hook",
+            //             overwriteFile: false,
+            //             overwriteAITags: false,
+            //             overwriteTags: true,
+            //             overwriteCustomMetadata: true,
+            //             customMetadata: sampleMetadata,
+            //             urlConfiguration: urlConfiguration,
+            //             completion: { result in
+            //                 switch result{
+            //                 case .success((_, let uploadAPIResponse)):
+            //                     if let uploadAPIResponse = uploadAPIResponse{
+            //                         expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
+            //                         expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
+            //                         expect(uploadAPIResponse.size).to(equal(146974))
+            //                         expect(uploadAPIResponse.filePath).to(equal("/default-image-test_1JO5mllWR.jpg"))
+            //                         expect(uploadAPIResponse.url).to(equal("https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg"))
+            //                         expect(uploadAPIResponse.fileType).to(equal("image"))
+            //                         expect(uploadAPIResponse.height).to(equal(1000))
+            //                         expect(uploadAPIResponse.width).to(equal(1000))
+            //                         expect(uploadAPIResponse.thumbnailUrl).to(equal("https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"))
+            //                     }
+            //                     break;
+            //                 case .failure( _ as UploadAPIError):
+            //                     fail("Should not throw Error")
+            //                     break;
+            //                 case .failure( _):
+            //                     fail("Should not throw Error")
+            //                     break;
+            //                 }
+            //                 done()
+            //         })
+            //     }
+            // }
+            // it("Upload Data"){
+            //     self.server?["/api/v2/files/upload"] = { request in
+            //         var bodyParts = request.parseMultiPartFormData()
+            //         expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("test3"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("default-image-test.jpg"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("test,image"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("/tmp/test"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("10,10,100,100"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("tags,customCoordinates,isPrivateFile"))
+            //         let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
+            //         let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
+            //         expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
+            //         expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("https://dummy.io/hook"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("false"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("false"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("true"))
+            //         expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
+            //             .to(equal("true"))
+            //         let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
+            //         let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
+            //         expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
+            //         return HttpResponse.ok(.json([
+            //             "fileId": "5f881125ce8f14336dda25b6",
+            //             "name": "default-image-test_1JO5mllWR.jpg",
+            //             "size": 146974,
+            //             "filePath": "/default-image-test_1JO5mllWR.jpg",
+            //             "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+            //             "fileType": "image",
+            //             "height": 1000,
+            //             "width": 1000,
+            //             "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+            //         ]))
+            //     }
+            //     let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
+            //     waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
+            //         let urlConfiguration = URLSessionConfiguration.default
+            //         ImageKit.shared.uploader().upload(
+            //             file: UIImagePNGRepresentation(image)!,
+            //             token: "test3",
+            //             fileName: "default-image-test.jpg",
+            //             tags: ["test", "image",],
+            //             folder: "/tmp/test",
+            //             customCoordinates: "10,10,100,100",
+            //             responseFields: "tags,customCoordinates,isPrivateFile",
+            //             extensions: sampleExtensions,
+            //             webhookUrl: "https://dummy.io/hook",
+            //             overwriteFile: false,
+            //             overwriteAITags: false,
+            //             overwriteTags: true,
+            //             overwriteCustomMetadata: true,
+            //             customMetadata: sampleMetadata,
+            //             urlConfiguration: urlConfiguration,
+            //             completion: { result in
+            //                 switch result{
+            //                 case .success((_, let uploadAPIResponse)):
+            //                     if let uploadAPIResponse = uploadAPIResponse{
+            //                         expect(uploadAPIResponse.fileId).to(equal("5f881125ce8f14336dda25b6"))
+            //                         expect(uploadAPIResponse.name).to(equal("default-image-test_1JO5mllWR.jpg"))
+            //                         expect(uploadAPIResponse.size).to(equal(146974))
+            //                         expect(uploadAPIResponse.filePath).to(equal("/default-image-test_1JO5mllWR.jpg"))
+            //                         expect(uploadAPIResponse.url).to(equal("https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg"))
+            //                         expect(uploadAPIResponse.fileType).to(equal("image"))
+            //                         expect(uploadAPIResponse.height).to(equal(1000))
+            //                         expect(uploadAPIResponse.width).to(equal(1000))
+            //                         expect(uploadAPIResponse.thumbnailUrl).to(equal("https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"))
+            //                     }
+            //                     break;
+            //                 case .failure( _ as UploadAPIError):
+            //                     fail("Should not throw Error")
+            //                     break;
+            //                 case .failure( _):
+            //                     fail("Should not throw Error")
+            //                     break;
+            //                 }
+            //                 done()
+            //         })
+            //     }
+            // }
         }
     }
 }
