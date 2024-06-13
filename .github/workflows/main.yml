@@ -27,8 +27,7 @@ jobs:
       - name: Run Tests
         run: |
           cd Example
-          ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
-          xcodebuild -workspace ImageKit.xcworkspace -scheme ImageKit-Example -destination 'platform=iOS Simulator,name=iPhone 15' -enableCodeCoverage YES clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO IP_ADDRESS=$ip
+          xcodebuild -workspace ImageKit.xcworkspace -scheme ImageKit-Example -destination 'platform=iOS Simulator,name=iPhone 15' -enableCodeCoverage YES clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
           
       - name: Upload Coverage to codecov
         run: bash <(curl -s https://codecov.io/bash) -J '^ImageKitIO$' -X coveragepy

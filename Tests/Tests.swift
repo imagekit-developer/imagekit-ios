@@ -831,9 +831,8 @@ class UploadSpec: QuickSpec {
                 return .ok(.text("Mock response"))
             }
             do {
-                try self.server.start(8003, forceIPv4: true)
-                let ipAddress = ProcessInfo.processInfo.environment["IP_ADDRESS"] ?? "localhost"
-                UploadAPI.baseUrl = "http://\(ipAddress):8003"
+                try self.server.start(18080, forceIPv4: true)
+                UploadAPI.baseUrl = "http://127.0.0.1:18080"
                 
                 NSLog("Mocker server started at: \(try self.server.port())")
                 
