@@ -1,8 +1,7 @@
 import Quick
 import Nimble
 @testable import ImageKitIO
-import Swifter
-
+import Mocker
 
 class URLGenerationSpec: QuickSpec {
     
@@ -655,24 +654,22 @@ class UnitTestSpec: QuickSpec {
 
 class MimeDetectorSpec: QuickSpec {
     override func spec() {
-        describe(".readBytes()") {
-            context("when we want to read 4 bytes of string data") {
-                let str = "hello"
-                let data = str.data(using: .utf8)!
-                let mimeDetector = MimeDetector(data: data)
-                let bytes = mimeDetector.readBytes(count: 4)
+        describe(".readBytes() when we want to read 4 bytes of string data") {
+            let str = "hello"
+            let data = str.data(using: .utf8)!
+            let mimeDetector = MimeDetector(data: data)
+            let bytes = mimeDetector.readBytes(count: 4)
+            
+            it("should return 4 bytes") {
+                expect(bytes.count) == 4
+            }
+            
+            it("should return correct bytes") {
+                let endIndex = str.index(str.startIndex, offsetBy: 4)
+                let substr = str[..<endIndex]
+                let expectation = [UInt8](substr.utf8)
                 
-                it("should return 4 bytes") {
-                    expect(bytes.count) == 4
-                }
-                
-                it("should return correct bytes") {
-                    let endIndex = str.index(str.startIndex, offsetBy: 4)
-                    let substr = str[..<endIndex]
-                    let expectation = [UInt8](substr.utf8)
-                    
-                    expect(bytes) == expectation
-                }
+                expect(bytes) == expectation
             }
         }
         
@@ -823,19 +820,14 @@ func loadFileData(path: String) -> Data {
 
 class UploadSpec: QuickSpec {
     
-    private var server: HttpServer? = HttpServer()
+    private var urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
     
     override func spec() {
         beforeSuite {
             _ = ImageKit.init(publicKey: "Dummy public key", urlEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
-            do {
-                try self.server?.start(8080, forceIPv4: true)
-                UploadAPI.baseUrl = "http://localhost:8080"
-            } catch {
-                fail("Mocker server failed to start: \(error)")
-            }
+            self.urlConfiguration.protocolClasses = [MockingURLProtocol.self]
         }
-                
+        
         describe("Successful Upload") {
             let sampleExtensions = [
                 ["name" : "remove-bg", "options" : ["add_shadow" : true]],
@@ -843,52 +835,23 @@ class UploadSpec: QuickSpec {
             ]
             let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
             it("Upload From Url") {
-                self.server?["/api/v2/files/upload"] = { request in
-                    var bodyParts = request.parseMultiPartFormData()
-                    expect(String(bytes: bodyParts.first { $0.name == "file" }?.body ?? [], encoding: .utf8))
-                        .to(equal("https://ik.imagekit.io/demo/default-image.jpg"))
-                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test1"))
-                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
-                        .to(equal("default-image-test.jpg"))
-                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test,image"))
-                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
-                        .to(equal("/tmp/test"))
-                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
-                        .to(equal("10,10,100,100"))
-                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
-                        .to(equal("tags,customCoordinates,isPrivateFile"))
-                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
-                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
-                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
-                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
-                        .to(equal("https://dummy.io/hook"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
-                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
-                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
-                    return HttpResponse.ok(.json([
-                        "fileId": "5f881125ce8f14336dda25b6",
-                        "name": "default-image-test_1JO5mllWR.jpg",
-                        "size": 146974,
-                        "filePath": "/default-image-test_1JO5mllWR.jpg",
-                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
-                        "fileType": "image",
-                        "height": 1000,
-                        "width": 1000,
-                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
-                    ]))
-                }
+                Mock(url: URL(string: "https://upload.imagekit.io/api/v2/files/upload")!, dataType: .json, statusCode: 200, data: [
+                    .post : Data("""
+                         {
+                             "fileId": "5f881125ce8f14336dda25b6",
+                             "name": "default-image-test_1JO5mllWR.jpg",
+                             "size": 146974,
+                             "filePath": "/default-image-test_1JO5mllWR.jpg",
+                             "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+                             "fileType": "image",
+                             "height": 1000,
+                             "width": 1000,
+                             "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+                         }
+                     """.utf8)
+                ]).register()
+                
                 waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
-                    let urlConfiguration = URLSessionConfiguration.default
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
                         token: "test1",
@@ -904,7 +867,7 @@ class UploadSpec: QuickSpec {
                         overwriteTags: true,
                         overwriteCustomMetadata: true,
                         customMetadata: sampleMetadata,
-                        urlConfiguration: urlConfiguration,
+                        urlConfiguration: self.urlConfiguration,
                         completion: { result in
                             switch result{
                             case .success((_, let uploadAPIResponse)):
@@ -928,55 +891,29 @@ class UploadSpec: QuickSpec {
                                 break;
                             }
                             done()
-                    })
+                        })
                 }
             }
             it("Upload UIImage") {
-                self.server?["/api/v2/files/upload"] = { request in
-                    var bodyParts = request.parseMultiPartFormData()
-                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test2"))
-                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
-                        .to(equal("default-image-test.jpg"))
-                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test,image"))
-                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
-                        .to(equal("/tmp/test"))
-                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
-                        .to(equal("10,10,100,100"))
-                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
-                        .to(equal("tags,customCoordinates,isPrivateFile"))
-                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
-                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
-                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
-                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
-                        .to(equal("https://dummy.io/hook"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
-                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
-                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
-                    return HttpResponse.ok(.json([
-                        "fileId": "5f881125ce8f14336dda25b6",
-                        "name": "default-image-test_1JO5mllWR.jpg",
-                        "size": 146974,
-                        "filePath": "/default-image-test_1JO5mllWR.jpg",
-                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
-                        "fileType": "image",
-                        "height": 1000,
-                        "width": 1000,
-                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
-                    ]))
-                }
+                
+                Mock(url: URL(string: "https://upload.imagekit.io/api/v2/files/upload")!, dataType: .json, statusCode: 200, data: [
+                    .post : Data("""
+                        {
+                            "fileId": "5f881125ce8f14336dda25b6",
+                            "name": "default-image-test_1JO5mllWR.jpg",
+                            "size": 146974,
+                            "filePath": "/default-image-test_1JO5mllWR.jpg",
+                            "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+                            "fileType": "image",
+                            "height": 1000,
+                            "width": 1000,
+                            "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+                        }
+                    """.utf8)
+                ]).register()
+                
                 let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
                 waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
-                    let urlConfiguration = URLSessionConfiguration.default
                     ImageKit.shared.uploader().upload(
                         file: image,
                         token: "test2",
@@ -992,7 +929,7 @@ class UploadSpec: QuickSpec {
                         overwriteTags: true,
                         overwriteCustomMetadata: true,
                         customMetadata: sampleMetadata,
-                        urlConfiguration: urlConfiguration,
+                        urlConfiguration: self.urlConfiguration,
                         completion: { result in
                             switch result{
                             case .success((_, let uploadAPIResponse)):
@@ -1016,55 +953,28 @@ class UploadSpec: QuickSpec {
                                 break;
                             }
                             done()
-                    })
+                        })
                 }
             }
             it("Upload Data"){
-                self.server?["/api/v2/files/upload"] = { request in
-                    var bodyParts = request.parseMultiPartFormData()
-                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test3"))
-                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
-                        .to(equal("default-image-test.jpg"))
-                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("test,image"))
-                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
-                        .to(equal("/tmp/test"))
-                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
-                        .to(equal("10,10,100,100"))
-                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
-                        .to(equal("tags,customCoordinates,isPrivateFile"))
-                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
-                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
-                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
-                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
-                        .to(equal("https://dummy.io/hook"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("false"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
-                        .to(equal("true"))
-                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
-                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
-                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
-                    return HttpResponse.ok(.json([
-                        "fileId": "5f881125ce8f14336dda25b6",
-                        "name": "default-image-test_1JO5mllWR.jpg",
-                        "size": 146974,
-                        "filePath": "/default-image-test_1JO5mllWR.jpg",
-                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
-                        "fileType": "image",
-                        "height": 1000,
-                        "width": 1000,
-                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
-                    ]))
-                }
+                Mock(url: URL(string: "https://upload.imagekit.io/api/v2/files/upload")!, dataType: .json, statusCode: 200, data: [
+                    .post : Data("""
+                         {
+                             "fileId": "5f881125ce8f14336dda25b6",
+                             "name": "default-image-test_1JO5mllWR.jpg",
+                             "size": 146974,
+                             "filePath": "/default-image-test_1JO5mllWR.jpg",
+                             "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+                             "fileType": "image",
+                             "height": 1000,
+                             "width": 1000,
+                             "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+                         }
+                     """.utf8)
+                ]).register()
+                
                 let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
                 waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
-                    let urlConfiguration = URLSessionConfiguration.default
                     ImageKit.shared.uploader().upload(
                         file: UIImagePNGRepresentation(image)!,
                         token: "test3",
@@ -1080,7 +990,7 @@ class UploadSpec: QuickSpec {
                         overwriteTags: true,
                         overwriteCustomMetadata: true,
                         customMetadata: sampleMetadata,
-                        urlConfiguration: urlConfiguration,
+                        urlConfiguration: self.urlConfiguration,
                         completion: { result in
                             switch result{
                             case .success((_, let uploadAPIResponse)):
@@ -1104,7 +1014,7 @@ class UploadSpec: QuickSpec {
                                 break;
                             }
                             done()
-                    })
+                        })
                 }
             }
         }
@@ -1117,7 +1027,7 @@ class UploadPolicySpec: QuickSpec {
         beforeSuite {
             _ = ImageKit.init(publicKey: "Dummy public key", urlEndpoint: "https://ik.imagekit.io/demo", transformationPosition: TransformationPosition.PATH)
         }
-                
+        
         describe("Retry timeouts") {
             it("With linear backoff") {
                 let backoffPolicy = UploadPolicy.Builder()
@@ -1216,21 +1126,21 @@ func getImageWithGradient(colors: [UIColor], size: CGSize) -> UIImage {
 extension UIImage {
     subscript (x: Int, y: Int) -> UIColor? {
         guard x >= 0 && x < Int(size.width) && y >= 0 && y < Int(size.height),
-            let cgImage = cgImage,
-            let provider = cgImage.dataProvider,
-            let providerData = provider.data,
-            let data = CFDataGetBytePtr(providerData) else {
+              let cgImage = cgImage,
+              let provider = cgImage.dataProvider,
+              let providerData = provider.data,
+              let data = CFDataGetBytePtr(providerData) else {
             return nil
         }
-
+        
         let numberOfComponents = 4
         let pixelData = ((Int(size.width) * y) + x) * numberOfComponents
-
+        
         let r = CGFloat(data[pixelData]) / 255.0
         let g = CGFloat(data[pixelData + 1]) / 255.0
         let b = CGFloat(data[pixelData + 2]) / 255.0
         let a = CGFloat(data[pixelData + 3]) / 255.0
-
+        
         return UIColor(red: r, green: g, blue: b, alpha: a)
     }
 }
