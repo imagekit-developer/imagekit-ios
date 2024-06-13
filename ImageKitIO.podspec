@@ -23,6 +23,6 @@ ImageKit is a complete image optimization and transformation solution that comes
     test_spec.source_files = 'Tests/**/*'
     test_spec.dependency 'Quick', '~> 5.0.1'
     test_spec.dependency 'Nimble', '~> 10.0.0'
-    test_spec.dependency 'Swifter', '~> 1.5.0'
+    test_spec.dependency 'Mocker', '~> 2.5'
   end
 end
