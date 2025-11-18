@@ -32,9 +32,58 @@ ImageKit iOS Pod allows you to use real-time [image resizing](https://docs.image
 ## Installation
 
 ### Requirements
-The library requires Swift 4.0 or above.
+The library requires Swift 6.0 and minimum iOS version for deployment be 13.0 or above.
 
-#### CocoaPods
+### Swift Package Manager
+
+You can integrate ImageKit into your iOS project using the Swift Package Manager (SPM).
+
+After completing the Swift Package setup in your project, you can add ImageKit in one of the following ways:
+
+#### Using Xcode
+
+Open your project in Xcode, then go to File → Add Packages…
+
+```
+https://github.com/imagekit-developer/imagekit-ios.git
+```
+
+Select the Up to Next Major version rule, starting from version 3.1.0, and add the package to your app target’s Package Dependencies list.
+
+#### Using `Package.swift`
+
+If you prefer managing dependencies manually, add ImageKit to the dependencies array in your `Package.swift` file:
+
+```swift
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "Example",
+    platforms: [
+        .iOS(.v13)
+    ],
+    dependencies: [
+        .package(url: "https://github.com/imagekit-developer/imagekit-ios.git", .upToNextMajor(from: "3.1.0"))
+    ],
+    targets: [
+        .target(
+            name: "Example",
+            dependencies: [
+                "ImageKitIO"
+            ]
+        )
+    ]
+)
+```
+
+Once added, you can import ImageKitIO into your Swift files:
+
+```
+import ImageKitIO
+```
+
+### CocoaPods
 
 You can use CocoaPods to install ImageKit by adding it to your Podfile:
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 public final class ImageUploadPreprocessor<I> : UploadPreprocessor<I> {
     private let limit: ImageDimensionsLimiter
@@ -30,7 +31,7 @@ public final class ImageUploadPreprocessor<I> : UploadPreprocessor<I> {
         image = limit.process(source: image)
         image = cropPoints?.process(source: image) ?? image
         image = rotation.process(source: image)
-        return format == .JPEG ? UIImageJPEGRepresentation(image, 1.0)! : UIImagePNGRepresentation(image)!
+        return format == .JPEG ? image.jpegData(compressionQuality: 1.0)! : image.pngData()!
     }
     
     public enum OutputFormat {
