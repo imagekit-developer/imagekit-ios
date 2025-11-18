@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class UploadPolicy {
+public final class UploadPolicy : Sendable {
     private static let DEFAULT_MAX_ERROR_RETRIES = 5
     private static let DEFAULT_BACKOFF_MILLIS = 1000
     private static let DEFAULT_BACKOFF_POLICY = BackoffPolicy.LINEAR
@@ -26,12 +26,12 @@ public class UploadPolicy {
         self.backoffPolicy = backoffPolicy
     }
     
-    public enum NetworkType {
+    public enum NetworkType : Sendable {
         case ANY
         case UNMETERED
     }
     
-    public enum BackoffPolicy {
+    public enum BackoffPolicy : Sendable {
         case LINEAR
         case EXPONENTIAL
     }

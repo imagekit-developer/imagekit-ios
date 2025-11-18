@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
+import AudioToolbox
 
 public final class VideoUploadPreprocessor : UploadPreprocessor<Data> {
     
@@ -43,23 +44,17 @@ public final class VideoUploadPreprocessor : UploadPreprocessor<Data> {
         let videoTrack = asset.tracks(withMediaType: .video).first!
         let audioTrack = asset.tracks(withMediaType: .audio).first
         let dimensions = videoTrack.naturalSize.applying(videoTrack.preferredTransform)
-        let size = CGSize(width: fabs(dimensions.width), height: fabs(dimensions.height))
-        print("dimensions: width: \(fabs(dimensions.width)), height: \(fabs(dimensions.height))")
+        let size = CGSize(width: abs(dimensions.width), height: abs(dimensions.height))
+        print("dimensions: width: \(abs(dimensions.width)), height: \(abs(dimensions.height))")
         print("fps: \(videoTrack.minFrameDuration.seconds)")
-        
-        var audioWriteFinished = false
-        var videoWriteFinished = false
-        
               
         let reader = try! AVAssetReader(asset: asset)
         let assetReaderVideoTrackOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32ARGB])
         var assetReaderAudioTrackOutput: AVAssetReaderTrackOutput?
         var audioWriterInput: AVAssetWriterInput?
         if audioTrack != nil {
-            assetReaderAudioTrackOutput = AVAssetReaderTrackOutput(track: audioTrack!, outputSettings: nil)
+            assetReaderAudioTrackOutput = AVAssetReaderTrackOutput(track: audioTrack!, outputSettings: [AVFormatIDKey: kAudioFormatLinearPCM])
             reader.add(assetReaderAudioTrackOutput!)
-        } else {
-            audioWriteFinished = true
         }
         reader.add(assetReaderVideoTrackOutput)
         
@@ -89,52 +84,42 @@ public final class VideoUploadPreprocessor : UploadPreprocessor<Data> {
                 outputSettings: [
                     AVFormatIDKey: pointee.mFormatID,
                     AVEncoderBitRateKey: targetAudioBitrate,
-                    AVSampleRateKey: pointee.mSampleRate
+                    AVSampleRateKey: pointee.mSampleRate,
+                    AVNumberOfChannelsKey: pointee.mChannelsPerFrame
                 ]
             )
             writer.add(audioWriterInput!)
         }
         writer.startWriting()
         reader.startReading()
-        writer.startSession(atSourceTime: kCMTimeZero)
+        writer.startSession(atSourceTime: CMTime.zero)
         
         videoWriterInput.requestMediaDataWhenReady(on: videoDispatchQueue, using: {
             while videoWriterInput.isReadyForMoreMediaData {
                 guard let sample = assetReaderVideoTrackOutput.copyNextSampleBuffer() else {
                     guard writer.inputs.contains(videoWriterInput) == true else { return }
                     videoWriterInput.markAsFinished()
-                    videoWriteFinished = true
-                    if videoWriteFinished && audioWriteFinished {
-                        writer.finishWriting(completionHandler: {
-                            reader.cancelReading()
-                            self.completionListener(try! Data(contentsOf: processedVideoUrl))
-                        })
-                    }
                     break
                 }
                 videoWriterInput.append(sample)
             }
-        })
-        
-        if audioTrack != nil {
-            audioWriterInput?.requestMediaDataWhenReady(on: audioDispatchQueue, using: {
-                while audioWriterInput!.isReadyForMoreMediaData {
-                    guard let sample = assetReaderAudioTrackOutput?.copyNextSampleBuffer() else {
-                        guard writer.inputs.contains(audioWriterInput!) == true else { return }
-                        audioWriterInput!.markAsFinished()
-                        audioWriteFinished = true
-                        if videoWriteFinished && audioWriteFinished {
+            if audioTrack != nil {
+                audioWriterInput?.requestMediaDataWhenReady(on: audioDispatchQueue, using: {
+                    while audioWriterInput!.isReadyForMoreMediaData {
+                        guard let sample = assetReaderAudioTrackOutput?.copyNextSampleBuffer() else {
+                            guard writer.inputs.contains(audioWriterInput!) == true else { return }
+                            audioWriterInput!.markAsFinished()
                             writer.finishWriting(completionHandler: {
                                 reader.cancelReading()
                                 self.completionListener(try! Data(contentsOf: processedVideoUrl))
                             })
+                            break
                         }
-                        break
+                        audioWriterInput!.append(sample)
                     }
-                    audioWriterInput!.append(sample)
-                }
-            })
-        }
+                })
+            }
+        })
         
         return Data()
     }

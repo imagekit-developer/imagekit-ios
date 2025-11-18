@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum FileType {
+public enum FileType : Sendable{
   case amr
   case ar
   case avi
@@ -69,7 +69,7 @@ public enum FileType {
   case zip
 }
 
-public struct MimeType {
+public struct MimeType  : Sendable {
   /// Mime type string representation. For example "application/pdf"
   public let mime: String
 
@@ -84,7 +84,7 @@ public struct MimeType {
   fileprivate let bytesCount: Int
 
   /// A function to check if the bytes match the `MimeType` specifications.
-  fileprivate let matches: ([UInt8], MimeDetector) -> Bool
+  fileprivate let matches: @Sendable ([UInt8], MimeDetector) -> Bool
 
   ///  Check if the given bytes matches with `MimeType`
   ///  it will check for the `bytes.count` first before delegating the

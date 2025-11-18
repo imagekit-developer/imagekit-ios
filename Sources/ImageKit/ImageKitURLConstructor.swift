@@ -5,6 +5,7 @@
 //  Created by Abhinav Dhiman on 16/07/20.
 //
 import Foundation
+import UIKit
 
 public class ImagekitUrlConstructor {
     
@@ -528,6 +529,7 @@ public class ImagekitUrlConstructor {
      * @param focus Possible values include the values defined in enum FocusType.
      * @return the current ImagekitUrlConstructor object.
      */
+    @MainActor
     public func setResponsive(
         view: UIView,
         minSize: Int = 0,

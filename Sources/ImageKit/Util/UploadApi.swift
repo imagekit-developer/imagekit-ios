@@ -8,12 +8,20 @@
 import Foundation
 import OSLog
 
-class UploadAPI: NSObject, URLSessionTaskDelegate {
-    internal static var baseUrl = "https://upload.imagekit.io"
+fileprivate class SendableAny : @unchecked Sendable {
+    let value: Any
+    
+    init(value: Any) {
+        self.value = value
+    }
+}
+
+class UploadAPI: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+    nonisolated(unsafe) internal static var baseUrl = "https://upload.imagekit.io"
     internal static let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "ImageKitIO")
     
     internal static func upload(
-        file: Any,
+        file: Sendable,
         token: String,
         fileName: String,
         useUniqueFileName: Bool? = nil,
@@ -29,10 +37,58 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         overwriteTags: Bool? = nil,
         overwriteCustomMetadata: Bool? = nil,
         customMetadata: [String : Any]? = nil,
-        progressClosure: ((Progress) -> Void)? = nil,
+        progressClosure: (@Sendable (Progress) -> Void)? = nil,
         urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
         uploadPolicy: UploadPolicy,
-        completion: @escaping (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void,
+        completion: @escaping @Sendable (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void,
+        retryCount: Int = 0
+    ) {
+        uploadWithSendableValues(
+            file: file,
+            token: token,
+            fileName: fileName,
+            useUniqueFileName: useUniqueFileName,
+            tags: tags,
+            folder: folder,
+            isPrivateFile: isPrivateFile,
+            customCoordinates: customCoordinates,
+            responseFields: responseFields,
+            extensions: extensions?.map { $0.mapValues { SendableAny(value: $0) } },
+            webhookUrl: webhookUrl,
+            overwriteFile: overwriteFile,
+            overwriteAITags: overwriteAITags,
+            overwriteTags: overwriteTags,
+            overwriteCustomMetadata: overwriteCustomMetadata,
+            customMetadata: customMetadata?.mapValues { SendableAny(value: $0) },
+            progressClosure: progressClosure,
+            urlConfiguration: urlConfiguration,
+            uploadPolicy: uploadPolicy,
+            completion: completion,
+            retryCount: retryCount + 1
+        )
+    }
+    
+    private static func uploadWithSendableValues(
+        file: Sendable,
+        token: String,
+        fileName: String,
+        useUniqueFileName: Bool? = nil,
+        tags: String? = nil,
+        folder: String? = nil,
+        isPrivateFile: Bool?,
+        customCoordinates: String? = nil,
+        responseFields: String? = nil,
+        extensions: [[String : SendableAny]]? = nil,
+        webhookUrl: String? = nil,
+        overwriteFile: Bool? = nil,
+        overwriteAITags: Bool? = nil,
+        overwriteTags: Bool? = nil,
+        overwriteCustomMetadata: Bool? = nil,
+        customMetadata: [String : SendableAny]? = nil,
+        progressClosure: (@Sendable (Progress) -> Void)? = nil,
+        urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        uploadPolicy: UploadPolicy,
+        completion: @escaping @Sendable (Result<(HTTPURLResponse?, UploadAPIResponse?), Error>) -> Void,
         retryCount: Int = 0
     ) {
         var request = URLRequest(url: URL(string: "\(baseUrl)/api/v2/files/upload")!)
@@ -50,10 +106,12 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
         var extData: Data? = nil
         var metaData: Data? = nil
         if let extensions = extensions {
-            extData = try? JSONSerialization.data(withJSONObject: extensions)
+            let extsObject = extensions.map { $0.mapValues { $0.value } }
+            extData = try? JSONSerialization.data(withJSONObject: extsObject)
         }
         if let customMetadata = customMetadata {
-            metaData = try? JSONSerialization.data(withJSONObject: customMetadata)
+            let metaObject = customMetadata.mapValues { $0.value }
+            metaData = try? JSONSerialization.data(withJSONObject: metaObject)
         }
         formData.append(fileData, withName: "file", fileName: fileName, mimeType: file is Data ? mimeType! : "text/plain")
         formData.append(token.data(using: String.Encoding.utf8)!, withName: "token")
@@ -112,6 +170,15 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
                                 tags: tags,
                                 folder: folder,
                                 isPrivateFile: isPrivateFile,
+                                customCoordinates: customCoordinates,
+                                responseFields: responseFields,
+                                extensions: extensions,
+                                webhookUrl: webhookUrl,
+                                overwriteFile: overwriteFile,
+                                overwriteAITags: overwriteAITags,
+                                overwriteTags: overwriteTags,
+                                overwriteCustomMetadata: overwriteCustomMetadata,
+                                customMetadata: customMetadata,
                                 progressClosure: progressClosure,
                                 urlConfiguration: urlConfiguration,
                                 uploadPolicy: uploadPolicy,
@@ -140,6 +207,15 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
                                 tags: tags,
                                 folder: folder,
                                 isPrivateFile: isPrivateFile,
+                                customCoordinates: customCoordinates,
+                                responseFields: responseFields,
+                                extensions: extensions,
+                                webhookUrl: webhookUrl,
+                                overwriteFile: overwriteFile,
+                                overwriteAITags: overwriteAITags,
+                                overwriteTags: overwriteTags,
+                                overwriteCustomMetadata: overwriteCustomMetadata,
+                                customMetadata: customMetadata,
                                 progressClosure: progressClosure,
                                 urlConfiguration: urlConfiguration,
                                 uploadPolicy: uploadPolicy,
@@ -164,6 +240,15 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
                         tags: tags,
                         folder: folder,
                         isPrivateFile: isPrivateFile,
+                        customCoordinates: customCoordinates,
+                        responseFields: responseFields,
+                        extensions: extensions,
+                        webhookUrl: webhookUrl,
+                        overwriteFile: overwriteFile,
+                        overwriteAITags: overwriteAITags,
+                        overwriteTags: overwriteTags,
+                        overwriteCustomMetadata: overwriteCustomMetadata,
+                        customMetadata: customMetadata,
                         progressClosure: progressClosure,
                         urlConfiguration: urlConfiguration,
                         uploadPolicy: uploadPolicy,
@@ -332,7 +417,7 @@ class UploadAPI: NSObject, URLSessionTaskDelegate {
     }
 }
 
-class UploadTaskDelegate: NSObject, URLSessionDataDelegate {
+class UploadTaskDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
 
     var uploadProgress: Progress
     var uploadProgressHandler: ((Progress) -> Void)?

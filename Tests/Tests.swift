@@ -1,4 +1,6 @@
 import Quick
+import UIKit
+import Foundation
 import Nimble
 @testable import ImageKitIO
 import Mocker
@@ -480,7 +482,7 @@ class UnitTestSpec: QuickSpec {
             it("Background: UIColor.black") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .background(backgroundColor: UIColor.black)
+                    .background(backgroundColor: "000000")
                     .create()
                 expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:bg-000000/medium_cafe_B1iTdD0C.jpg")))
             }
@@ -495,7 +497,7 @@ class UnitTestSpec: QuickSpec {
             it("Border: 5, UIColor.blue") {
                 let actual = ImageKit.shared
                     .url(path: "medium_cafe_B1iTdD0C.jpg")
-                    .border(borderWidth: 5, borderColor: UIColor.blue)
+                    .border(borderWidth: 5, borderColor: "0000FF")
                     .create()
                 expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/tr:b-5_0000FF/medium_cafe_B1iTdD0C.jpg")))
             }
@@ -639,14 +641,18 @@ class UnitTestSpec: QuickSpec {
         
         describe("Responsive URL loading for UIViews") {
             it("With default params") {
-                let view = UIView()
-                let dpr = String(format: "%.2f", Float(UIScreen.main.scale.rounded(.toNearestOrAwayFromZero)))
-                view.frame = CGRect(x: 0, y: 0, width: 400, height: 300)
-                let actual = try! ImageKit.shared
-                    .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
-                    .setResponsive(view: view)
-                    .create()
-                expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=w-400,h-300,dpr-\(dpr),cm-resize,fo-center")))
+                Task.detached(operation: {
+                    await MainActor.run(body: {
+                        let view = UIView()
+                        let dpr = String(format: "%.2f", Float(UIScreen.main.scale.rounded(.toNearestOrAwayFromZero)))
+                        view.frame = CGRect(x: 0, y: 0, width: 400, height: 300)
+                        let actual = try! ImageKit.shared
+                            .url(src: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg")
+                            .setResponsive(view: view)
+                            .create()
+                        expect(actual).to(equal(String(format: "https://ik.imagekit.io/demo/medium_cafe_B1iTdD0C.jpg?tr=w-400,h-300,dpr-\(dpr),cm-resize,fo-center")))
+                    })
+                })
             }
         }
     }
@@ -745,7 +751,7 @@ class MimeDetectorSpec: QuickSpec {
             for ext in extensions {
                 context("when extension is \(ext)") {
                     it("shoud guess the correct mime type") {
-                        let data = loadFileData(path: "/Tests/fixtures/fixture.\(ext)")
+                        let data = self.loadFileData(path: "/fixture.\(ext)")
                         let mimeType = MimeDetector.mimeType(data: data)
                         
                         if let mime = mimeTypeByExtension[ext] {
@@ -781,7 +787,7 @@ class MimeDetectorSpec: QuickSpec {
         describe("MimeDetector.mimeType(bytes:).type") {
             context("when file type is image/jpeg") {
                 it("should return true") {
-                    let data: Data = loadFileData(path: "/Tests/fixtures/fixture.jpg")
+                    let data: Data = self.loadFileData(path: "/fixture.jpg")
                     let mimeType = MimeDetector.mimeType(data: data)
                     
                     expect(mimeType?.type) == .jpg
@@ -790,7 +796,7 @@ class MimeDetectorSpec: QuickSpec {
             
             context("when file type is application/pdf") {
                 it("should return true") {
-                    let data: Data = loadFileData(path: "/Tests/fixtures/fixture.pdf")
+                    let data: Data = self.loadFileData(path: "/fixture.pdf")
                     let mimeType = MimeDetector.mimeType(data: data)
                     
                     expect(mimeType?.type) == .pdf
@@ -799,7 +805,7 @@ class MimeDetectorSpec: QuickSpec {
             
             context("when file type is not image/jpeg") {
                 it("should return true") {
-                    let data: Data = loadFileData(path: "/Tests/fixtures/fixture.png")
+                    let data: Data = self.loadFileData(path: "/fixture.png")
                     let mimeType = MimeDetector.mimeType(data: data)
                     
                     expect(mimeType?.type) != .jpg
@@ -807,15 +813,15 @@ class MimeDetectorSpec: QuickSpec {
             }
         }
     }
-}
-
-func loadFileData(path: String) -> Data {
-    let projectDir = URL(fileURLWithPath: #file).pathComponents.prefix(while: { $0 != "Tests" }).joined(separator: "/").dropFirst()
-    print(projectDir)
-    let absolutePath = "\(projectDir)\(path)"
-    print(absolutePath)
-    let url = URL(fileURLWithPath: absolutePath, isDirectory: false)
-    return try! Data(contentsOf: url)
+    
+    func loadFileData(path: String) -> Data {
+        let projectDir = Bundle(for: MimeDetectorSpec.self).resourceURL?.appendingPathComponent("ImageKitIO_ImageKitIO-Tests.bundle").path ?? ""
+        print(projectDir)
+        let absolutePath = "\(projectDir)\(path)"
+        print(absolutePath)
+        let url = URL(fileURLWithPath: absolutePath, isDirectory: false)
+        return try! Data(contentsOf: url)
+    }
 }
 
 class UploadSpec: QuickSpec {
@@ -835,23 +841,57 @@ class UploadSpec: QuickSpec {
             ]
             let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
             it("Upload From Url") {
-                Mock(url: URL(string: "https://upload.imagekit.io/api/v2/files/upload")!, dataType: .json, statusCode: 200, data: [
-                    .post : Data("""
-                         {
-                             "fileId": "5f881125ce8f14336dda25b6",
-                             "name": "default-image-test_1JO5mllWR.jpg",
-                             "size": 146974,
-                             "filePath": "/default-image-test_1JO5mllWR.jpg",
-                             "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
-                             "fileType": "image",
-                             "height": 1000,
-                             "width": 1000,
-                             "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
-                         }
-                     """.utf8)
-                ]).register()
-                
-                waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
+                self.server?["/api/v2/files/upload"] = { request in
+                    let bodyParts = request.parseMultiPartFormData()
+                    expect(String(bytes: bodyParts.first { $0.name == "file" }?.body ?? [], encoding: .utf8))
+                        .to(equal("https://ik.imagekit.io/demo/default-image.jpg"))
+                    expect(String(bytes: bodyParts.first { $0.name == "token" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test1"))
+                    expect(String(bytes: bodyParts.first { $0.name == "fileName" }?.body ?? [], encoding: .utf8))
+                        .to(equal("default-image-test.jpg"))
+                    expect(String(bytes: bodyParts.first { $0.name == "tags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("test,image"))
+                    expect(String(bytes: bodyParts.first { $0.name == "folder" }?.body ?? [], encoding: .utf8))
+                        .to(equal("/tmp/test"))
+                    expect(String(bytes: bodyParts.first { $0.name == "customCoordinates" }?.body ?? [], encoding: .utf8))
+                        .to(equal("10,10,100,100"))
+                    expect(String(bytes: bodyParts.first { $0.name == "responseFields" }?.body ?? [], encoding: .utf8))
+                        .to(equal("tags,customCoordinates,isPrivateFile"))
+                    let receivedExt = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "extensions" }?.body ?? [])), options: .sortedKeys)
+                    let expectedExt = try! JSONSerialization.data(withJSONObject: sampleExtensions, options: .sortedKeys)
+                    expect(String(data: receivedExt, encoding: .utf8)).to(equal(String(data: expectedExt, encoding: .utf8)))
+                    expect(String(bytes: bodyParts.first { $0.name == "webhookUrl" }?.body ?? [], encoding: .utf8))
+                        .to(equal("https://dummy.io/hook"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteFile" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteAITags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("false"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteTags" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    expect(String(bytes: bodyParts.first { $0.name == "overwriteCustomMetadata" }?.body ?? [], encoding: .utf8))
+                        .to(equal("true"))
+                    let receivedMeta = try! JSONSerialization.data(withJSONObject: try! JSONSerialization.jsonObject(with: Data(bytes: bodyParts.first { $0.name == "customMetadata" }?.body ?? [])), options: .sortedKeys)
+                    let expectedMeta = try! JSONSerialization.data(withJSONObject: sampleMetadata, options: .sortedKeys)
+                    expect(String(data: receivedMeta, encoding: .utf8)).to(equal(String(data: expectedMeta, encoding: .utf8)))
+                    return HttpResponse.ok(.json([
+                        "fileId": "5f881125ce8f14336dda25b6",
+                        "name": "default-image-test_1JO5mllWR.jpg",
+                        "size": 146974,
+                        "filePath": "/default-image-test_1JO5mllWR.jpg",
+                        "url": "https://ik.imagekit.io/demo/default-image-test_1JO5mllWR.jpg",
+                        "fileType": "image",
+                        "height": 1000,
+                        "width": 1000,
+                        "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"
+                    ]))
+                }
+                Task { @MainActor in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    let sampleExtensions = [
+                        ["name" : "remove-bg", "options" : ["add_shadow" : true]],
+                        ["name": "google-auto-tagging", "minConfidence": 80, "maxTags": 5]
+                    ]
+                    let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
                     ImageKit.shared.uploader().upload(
                         file: "https://ik.imagekit.io/demo/default-image.jpg",
                         token: "test1",
@@ -882,15 +922,10 @@ class UploadSpec: QuickSpec {
                                     expect(uploadAPIResponse.width).to(equal(1000))
                                     expect(uploadAPIResponse.thumbnailUrl).to(equal("https://ik.imagekit.io/demo/tr:n-media_library_thumbnail/default-image-test_1JO5mllWR.jpg"))
                                 }
-                                break;
-                            case .failure( _ as UploadAPIError):
-                                fail("Should not throw Error")
-                                break;
-                            case .failure( _):
+                            case .failure(_):
                                 fail("Should not throw Error")
                                 break;
                             }
-                            done()
                         })
                 }
             }
@@ -913,7 +948,13 @@ class UploadSpec: QuickSpec {
                 ]).register()
                 
                 let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
-                waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
+                Task { @MainActor in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    let sampleExtensions = [
+                        ["name" : "remove-bg", "options" : ["add_shadow" : true]],
+                        ["name": "google-auto-tagging", "minConfidence": 80, "maxTags": 5]
+                    ]
+                    let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
                     ImageKit.shared.uploader().upload(
                         file: image,
                         token: "test2",
@@ -952,8 +993,7 @@ class UploadSpec: QuickSpec {
                                 fail("Should not throw Error")
                                 break;
                             }
-                            done()
-                        })
+                    })
                 }
             }
             it("Upload Data"){
@@ -974,9 +1014,15 @@ class UploadSpec: QuickSpec {
                 ]).register()
                 
                 let image = getImageWithColor(color: .red, size: .init(width: 200, height: 200))
-                waitUntil(timeout: DispatchTimeInterval.seconds(60)){ done in
+                Task { @MainActor in
+                    let urlConfiguration = URLSessionConfiguration.default
+                    let sampleExtensions = [
+                        ["name" : "remove-bg", "options" : ["add_shadow" : true]],
+                        ["name": "google-auto-tagging", "minConfidence": 80, "maxTags": 5]
+                    ]
+                    let sampleMetadata = ["device_name": "Emulator", "uid": 167434]
                     ImageKit.shared.uploader().upload(
-                        file: UIImagePNGRepresentation(image)!,
+                        file: image.pngData()!,
                         token: "test3",
                         fileName: "default-image-test.jpg",
                         tags: ["test", "image",],
@@ -1013,7 +1059,6 @@ class UploadSpec: QuickSpec {
                                 fail("Should not throw Error")
                                 break;
                             }
-                            done()
                         })
                 }
             }

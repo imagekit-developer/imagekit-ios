@@ -17,7 +17,7 @@ public enum IKError: Error {
         case serverSideError(Int)
     }
 
-    public enum MultipartEncodingFailureReason {
+    public enum MultipartEncodingFailureReason : Sendable {
         case inputStreamReadFailed(error: Error)
     }
 

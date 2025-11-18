@@ -38,3 +38,7 @@ Pods/*
 Example/Pods/*
 Server/node_modules
 Server/*.lock
+
+#Swift package build outputs
+.swiftpm
+.build/

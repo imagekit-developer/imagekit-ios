@@ -1,7 +1,6 @@
 PODS:
-  - ImageKitIO (3.0.0)
-  - ImageKitIO/Tests (3.0.0):
-    - Mocker (~> 2.5)
+  - ImageKitIO (3.0.1)
+  - ImageKitIO/Tests (3.0.1):
     - Nimble (~> 10.0.0)
     - Quick (~> 5.0.1)
   - Mocker (2.5.5)
@@ -23,11 +22,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ImageKitIO: 804da6f03a903c4f540d6a3c0dd8ee87e9f29040
-  Mocker: 8c731a8104962f246cadf2b02556218e9edc1390
+  ImageKitIO: 086bfd60d19d1a8f55fc48d01b1c07ecfb5b6a19
   Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
   Quick: 749aa754fd1e7d984f2000fe051e18a3a9809179
 
-PODFILE CHECKSUM: 406170311ac5dd5482330203b884d5db8ef323c7
+PODFILE CHECKSUM: 8224e8c767b2e111bf4f338e9aaa55d7cd447b9e
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

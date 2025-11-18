@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 internal class ImageDimensionsLimiter : Preprocess {
     typealias T = UIImage

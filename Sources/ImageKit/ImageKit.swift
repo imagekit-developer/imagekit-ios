@@ -6,7 +6,6 @@
 //
 
 import Foundation
-public var TESTING: Bool = true
 
 public struct UserDefaultKeys {
     public static let KEY_CLIENT_PUBLIC_KEY = "IKClientKey"
@@ -14,7 +13,7 @@ public struct UserDefaultKeys {
     public static let KEY_IMAGEKIT_TRANSFORMATION_POSITION = "IKTransformationPosition"
 }
 
-open class ImageKit: NSObject {
+open class ImageKit: NSObject, @unchecked Sendable {
 
     open fileprivate(set) var clientPublicKey: String! = ""
     open fileprivate(set) var imageKitEndpoint: String! = ""
@@ -26,7 +25,8 @@ open class ImageKit: NSObject {
 
     public static let shared = ImageKit()
     
-    private let sharedUploader = ImageKitUploader()
+    @MainActor
+    private lazy var sharedUploader = ImageKitUploader()
 
     public override init() {
 
@@ -43,11 +43,13 @@ open class ImageKit: NSObject {
     }
     
     @available(*, deprecated, message: "clientPublicKey Renamed to publicKey")
+    @MainActor
     public convenience init(clientPublicKey: String = "", imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH) {
         self.init(publicKey: clientPublicKey, imageKitEndpoint: imageKitEndpoint, transformationPosition: transformationPosition)
     }
     
     @available(*, deprecated, message: "imageKitEndpoint Renamed to urlEndpoint")
+    @MainActor
     public convenience init(publicKey: String = "", imageKitEndpoint: String, transformationPosition: TransformationPosition = TransformationPosition.PATH) {
         self.init(publicKey: publicKey, urlEndpoint: imageKitEndpoint, transformationPosition: transformationPosition)
     }
@@ -80,6 +82,7 @@ open class ImageKit: NSObject {
         return ImagekitUrlConstructor(src: src, transformationPosition: transformationPosition)
     }
 
+    @MainActor
     public func uploader() -> ImageKitUploader {
         return sharedUploader
     }
